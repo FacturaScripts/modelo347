@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\Modelo347\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Dinamic\Lib\Export\XLSExport;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Dinamic\Model\Proveedor;
@@ -85,7 +86,7 @@ class Modelo347 extends Controller
      */
     public function allExamine()
     {
-        return ['invoices', 'accounting'];
+        return ['invoices'];
     }
 
     /**
@@ -118,7 +119,8 @@ class Modelo347 extends Controller
         $action = $this->request->request->get('action', '');
         switch ($action) {
             case 'download':
-                $this->toolBox()->log()->info($action);
+                $this->defaultAction();
+                $this->downloadAction();
                 break;
 
             default:
@@ -135,6 +137,51 @@ class Modelo347 extends Controller
 
         $this->loadCustomersData();
         $this->loadSuppliersData();
+    }
+
+    protected function downloadAction()
+    {
+        $this->setTemplate(false);
+        $xlsExport = new XLSExport();
+        $xlsExport->newDoc($this->toolBox()->i18n()->trans('model-347'));
+
+        $i18n = $this->toolBox()->i18n();
+
+        /// customers data
+        $customersHeaders = [
+            'cifnif' => $i18n->trans('cifnif'),
+            'cliente' => $i18n->trans('customer'),
+            'codpostal' => $i18n->trans('zip-code'),
+            'ciudad' => $i18n->trans('city'),
+            'provincia' => $i18n->trans('province'),
+            't1' => $i18n->trans('first-trimester'),
+            't2' => $i18n->trans('second-trimester'),
+            't3' => $i18n->trans('third-trimester'),
+            't4' => $i18n->trans('fourth-trimester'),
+            'total' => $i18n->trans('total'),
+        ];
+        $rows1 = $this->customersData;
+        $rows1[] = $this->customersTotals;
+        $xlsExport->addTablePage($customersHeaders, $rows1);
+
+        /// suppliers data
+        $suppliersHeaders = [
+            'cifnif' => $i18n->trans('cifnif'),
+            'proveedor' => $i18n->trans('supplier'),
+            'codpostal' => $i18n->trans('zip-code'),
+            'ciudad' => $i18n->trans('city'),
+            'provincia' => $i18n->trans('province'),
+            't1' => $i18n->trans('first-trimester'),
+            't2' => $i18n->trans('second-trimester'),
+            't3' => $i18n->trans('third-trimester'),
+            't4' => $i18n->trans('fourth-trimester'),
+            'total' => $i18n->trans('total'),
+        ];
+        $rows2 = $this->suppliersData;
+        $rows2[] = $this->suppliersTotals;
+        $xlsExport->addTablePage($suppliersHeaders, $rows2);
+
+        $xlsExport->show($this->response);
     }
 
     /**
@@ -160,16 +207,17 @@ class Modelo347 extends Controller
     protected function loadCustomersData()
     {
         switch ($this->examine) {
-            case 'accounting':
-                $this->customersData = $this->loadCustomersDataAccounting();
-                break;
-
             default:
                 $this->customersData = $this->loadCustomersDataInvoices();
         }
 
         /// totals
         $this->customersTotals = [
+            'cifnif' => '',
+            'ciudad' => '',
+            'cliente' => '',
+            'codpostal' => '',
+            'provincia' => '',
             't1' => 0.0,
             't2' => 0.0,
             't3' => 0.0,
@@ -183,11 +231,6 @@ class Modelo347 extends Controller
             $this->customersTotals['t4'] += $row['t4'];
             $this->customersTotals['total'] += $row['total'];
         }
-    }
-
-    protected function loadCustomersDataAccounting(): array
-    {
-        return [];
     }
 
     protected function loadCustomersDataInvoices(): array
@@ -245,16 +288,17 @@ class Modelo347 extends Controller
     protected function loadSuppliersData()
     {
         switch ($this->examine) {
-            case 'accounting':
-                $this->suppliersData = $this->loadSuppliersDataAccounting();
-                break;
-
             default:
                 $this->suppliersData = $this->loadSuppliersDataInvoices();
         }
 
         /// totals
         $this->suppliersTotals = [
+            'cifnif' => '',
+            'ciudad' => '',
+            'proveedor' => '',
+            'codpostal' => '',
+            'provincia' => '',
             't1' => 0.0,
             't2' => 0.0,
             't3' => 0.0,
@@ -268,11 +312,6 @@ class Modelo347 extends Controller
             $this->suppliersTotals['t4'] += $row['t4'];
             $this->suppliersTotals['total'] += $row['total'];
         }
-    }
-
-    protected function loadSuppliersDataAccounting(): array
-    {
-        return [];
     }
 
     protected function loadSuppliersDataInvoices(): array
