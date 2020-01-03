@@ -1,0 +1,188 @@
+{% extends "Master/MenuTemplate.html.twig" %}
+
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <h1 class="h2">
+                    <i class="fas fa-book fa-fw"></i>
+                    {{ i18n.trans(fsc.title) }}
+                </h1>
+                <p>
+                    {{ i18n.trans('model-347-p') }}
+                </p>
+            </div>
+        </div>
+        <form method="post">
+            <div class="row align-items-end">
+                <div class="col">
+                    <div class="form-group">
+                        {{ i18n.trans('exercise') }}
+                        <select name="codejercicio" class="form-control" required="true">
+                            {% for exercise in fsc.allExercises() %}
+                                {% if exercise.codejercicio == fsc.codejercicio %}
+                                    <option value="{{ exercise.codejercicio }}" selected="">{{ exercise.nombre }}</option>
+                                {% else %}
+                                    <option value="{{ exercise.codejercicio }}">{{ exercise.nombre }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        {{ i18n.trans('examine') }}
+                        <select name="examine" class="form-control" required="true">
+                            {% for type in fsc.allExamine() %}
+                                {% if type == fsc.examine %}
+                                    <option value="{{ type }}" selected="">{{ i18n.trans(type) }}</option>
+                                {% else %}
+                                    <option value="{{ type }}">{{ i18n.trans(type) }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        {{ i18n.trans('amount') }}
+                        <input type="number" name="amount" value="{{ fsc.amount }}" class="form-control" required="true"/>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group form-check">
+                        {% if fsc.excludeIrpf %}
+                            <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf" class="form-check-input" checked=""/>
+                        {% else %}
+                            <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf" class="form-check-input"/>
+                        {% endif %}
+                        <label for="checkboxirpf">{{ i18n.trans('exclude-irpf') }}</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <div class="btn-group">
+                            <button type="submit" name="action" value="download" class="btn btn-light">
+                                <i class="fas fa-download fa-fw"></i> {{ i18n.trans('download') }}
+                            </button>
+                            <button type="submit" name="action" value="show" class="btn btn-primary">
+                                <i class="fas fa-eye fa-fw"></i> {{ i18n.trans('preview') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="customers-tab" data-toggle="tab" href="#customers" role="tab" aria-controls="customers" aria-selected="true">
+                {{ i18n.trans('customers') }}
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab" aria-controls="suppliers" aria-selected="false">
+                {{ i18n.trans('suppliers') }}
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="customers" role="tabpanel" aria-labelledby="customers-tab">
+            {{ _self.customersData(fsc, i18n) }}
+        </div>
+        <div class="tab-pane fade" id="suppliers" role="tabpanel" aria-labelledby="suppliers-tab">
+            {{ _self.suppliersData(fsc, i18n) }}
+        </div>
+    </div>         
+{% endblock %}
+
+{% macro customersData(fsc, i18n) %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{{ i18n.trans('cifnif') }}</th>
+                    <th>{{ i18n.trans('customer') }}</th>
+                    <th>{{ i18n.trans('zip-code') }}</th>
+                    <th>{{ i18n.trans('city') }}</th>
+                    <th>{{ i18n.trans('province') }}</th>
+                    <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('total') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in fsc.customersData %}
+                    <tr>
+                        <td>{{ row.cifnif }}</td>
+                        <td>{{ row.cliente }}</td>
+                        <td>{{ row.codpostal }}</td>
+                        <td>{{ row.ciudad }}</td>
+                        <td>{{ row.provincia }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t1) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t2) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t3) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t4) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.total) }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="table-warning">
+                    <td colspan="5"></td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.customersTotals.t1) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.customersTotals.t2) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.customersTotals.t3) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.customersTotals.t4) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.customersTotals.total) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
+
+{% macro suppliersData(fsc, i18n) %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{{ i18n.trans('cifnif') }}</th>
+                    <th>{{ i18n.trans('supplier') }}</th>
+                    <th>{{ i18n.trans('zip-code') }}</th>
+                    <th>{{ i18n.trans('city') }}</th>
+                    <th>{{ i18n.trans('province') }}</th>
+                    <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
+                    <th class="text-right">{{ i18n.trans('total') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in fsc.suppliersData %}
+                    <tr>
+                        <td>{{ row.cifnif }}</td>
+                        <td>{{ row.proveedor }}</td>
+                        <td>{{ row.codpostal }}</td>
+                        <td>{{ row.ciudad }}</td>
+                        <td>{{ row.provincia }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t1) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t2) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t3) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.t4) }}</td>
+                        <td class="text-right">{{ fsc.toolBox().coins().format(row.total) }}</td>
+                    </tr>
+                {% endfor %}
+                <tr class="table-warning">
+                    <td colspan="5"></td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t1) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t2) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t3) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t4) }}</td>
+                    <td class="text-right">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.total) }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endmacro %}
