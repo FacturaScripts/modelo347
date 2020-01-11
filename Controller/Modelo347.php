@@ -60,7 +60,7 @@ class Modelo347 extends Controller
      *
      * @var string
      */
-    public $examine;
+    public $examine = 'invoices';
 
     /**
      *
@@ -130,9 +130,19 @@ class Modelo347 extends Controller
 
     protected function defaultAction()
     {
+        /// get last exercise code
+        $codejercicio = null;
+        $exerciseModel = new Ejercicio();
+        foreach ($exerciseModel->all([], ['fechainicio' => 'DESC'], 0, 0) as $exe) {
+            if ($exe->isOpened()) {
+                $codejercicio = $exe->codejercicio;
+                break;
+            }
+        }
+
         $this->amount = (float) $this->request->request->get('amount', $this->amount);
-        $this->codejercicio = $this->request->request->get('codejercicio');
-        $this->examine = $this->request->request->get('examine');
+        $this->codejercicio = $this->request->request->get('codejercicio', $codejercicio);
+        $this->examine = $this->request->request->get('examine', $this->examine);
         $this->excludeIrpf = (bool) $this->request->request->get('excludeirpf', $this->excludeIrpf);
 
         $this->loadCustomersData();
@@ -209,6 +219,13 @@ class Modelo347 extends Controller
         switch ($this->examine) {
             default:
                 $this->customersData = $this->loadCustomersDataInvoices();
+        }
+
+        /// exclude if total lower than amount
+        foreach ($this->customersData as $key => $row) {
+            if ($row['total'] < $this->amount) {
+                unset($this->customersData[$key]);
+            }
         }
 
         /// totals
@@ -290,6 +307,13 @@ class Modelo347 extends Controller
         switch ($this->examine) {
             default:
                 $this->suppliersData = $this->loadSuppliersDataInvoices();
+        }
+
+        /// exclude if total lower than amount
+        foreach ($this->suppliersData as $key => $row) {
+            if ($row['total'] < $this->amount) {
+                unset($this->suppliersData[$key]);
+            }
         }
 
         /// totals

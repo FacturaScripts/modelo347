@@ -62,11 +62,11 @@
                 <div class="col">
                     <div class="form-group">
                         <div class="btn-group">
-                            <button type="submit" name="action" value="download" class="btn btn-light">
-                                <i class="fas fa-download fa-fw"></i> {{ i18n.trans('download') }}
-                            </button>
                             <button type="submit" name="action" value="show" class="btn btn-primary">
                                 <i class="fas fa-eye fa-fw"></i> {{ i18n.trans('preview') }}
+                            </button>
+                            <button type="submit" name="action" value="download" class="btn btn-light">
+                                <i class="fas fa-download fa-fw"></i> {{ i18n.trans('download') }}
                             </button>
                         </div>
                     </div>
@@ -118,10 +118,10 @@
                 {% for row in fsc.customersData %}
                     <tr>
                         <td>{{ row.cifnif }}</td>
-                        <td>{{ row.cliente }}</td>
+                        <td>{{ row.cliente | raw }}</td>
                         <td>{{ row.codpostal }}</td>
-                        <td>{{ row.ciudad }}</td>
-                        <td>{{ row.provincia }}</td>
+                        <td>{{ row.ciudad | raw }}</td>
+                        <td>{{ row.provincia | raw }}</td>
                         <td class="text-right">{{ fsc.toolBox().coins().format(row.t1) }}</td>
                         <td class="text-right">{{ fsc.toolBox().coins().format(row.t2) }}</td>
                         <td class="text-right">{{ fsc.toolBox().coins().format(row.t3) }}</td>
@@ -163,10 +163,10 @@
                 {% for row in fsc.suppliersData %}
                     <tr>
                         <td>{{ row.cifnif }}</td>
-                        <td>{{ row.proveedor }}</td>
+                        <td>{{ row.proveedor | raw }}</td>
                         <td>{{ row.codpostal }}</td>
-                        <td>{{ row.ciudad }}</td>
-                        <td>{{ row.provincia }}</td>
+                        <td>{{ row.ciudad | raw }}</td>
+                        <td>{{ row.provincia | raw }}</td>
                         <td class="text-right">{{ fsc.toolBox().coins().format(row.t1) }}</td>
                         <td class="text-right">{{ fsc.toolBox().coins().format(row.t2) }}</td>
                         <td class="text-right">{{ fsc.toolBox().coins().format(row.t3) }}</td>
