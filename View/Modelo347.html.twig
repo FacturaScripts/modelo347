@@ -1,6 +1,7 @@
 {% extends "Master/MenuTemplate.html.twig" %}
 
-{% block body %}
+{% block bodyHeaderOptions %}
+    {{ parent() }}
     <div class="container-fluid">
         <div class="row">
             <div class="col">
@@ -15,7 +16,7 @@
         </div>
         <form method="post">
             <div class="row align-items-end">
-                <div class="col">
+                <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('exercise') }}
                         <select name="codejercicio" class="form-control" required="true">
@@ -29,7 +30,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('examine') }}
                         <select name="examine" class="form-control" required="true">
@@ -43,13 +44,13 @@
                         </select>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('amount') }}
                         <input type="number" name="amount" value="{{ fsc.amount }}" class="form-control" required="true"/>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-sm">
                     <div class="form-group form-check">
                         {% if fsc.excludeIrpf %}
                             <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf" class="form-check-input" checked=""/>
@@ -59,13 +60,13 @@
                         <label for="checkboxirpf">{{ i18n.trans('exclude-irpf') }}</label>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-sm text-right">
                     <div class="form-group">
                         <div class="btn-group">
                             <button type="submit" name="action" value="show" class="btn btn-primary">
                                 <i class="fas fa-eye fa-fw"></i> {{ i18n.trans('preview') }}
                             </button>
-                            <button type="submit" name="action" value="download" class="btn btn-light">
+                            <button type="submit" name="action" value="download" class="btn btn-secondary">
                                 <i class="fas fa-download fa-fw"></i> {{ i18n.trans('download') }}
                             </button>
                         </div>
@@ -87,6 +88,9 @@
             </a>
         </li>
     </ul>
+{% endblock %}
+
+{% block body %}
     <div class="tab-content">
         <div class="tab-pane fade show active" id="customers" role="tabpanel" aria-labelledby="customers-tab">
             {{ _self.customersData(fsc, i18n) }}
@@ -186,3 +190,12 @@
         </table>
     </div>
 {% endmacro %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        .bg-header {
+            background-color: #FAFBFC;
+        }
+    </style>
+{% endblock %}
