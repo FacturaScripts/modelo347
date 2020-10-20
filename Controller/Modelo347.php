@@ -168,7 +168,7 @@ class Modelo347 extends Controller
             't2' => $i18n->trans('second-trimester'),
             't3' => $i18n->trans('third-trimester'),
             't4' => $i18n->trans('fourth-trimester'),
-            'total' => $i18n->trans('total'),
+            'total' => $i18n->trans('total')
         ];
         $rows1 = $this->customersData;
         $rows1[] = $this->customersTotals;
@@ -185,13 +185,123 @@ class Modelo347 extends Controller
             't2' => $i18n->trans('second-trimester'),
             't3' => $i18n->trans('third-trimester'),
             't4' => $i18n->trans('fourth-trimester'),
-            'total' => $i18n->trans('total'),
+            'total' => $i18n->trans('total')
         ];
         $rows2 = $this->suppliersData;
         $rows2[] = $this->suppliersTotals;
         $xlsExport->addTablePage($suppliersHeaders, $rows2);
 
         $xlsExport->show($this->response);
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    protected function getCustomersDataInvoices(): array
+    {
+        $sql = \strtolower(FS_DB_TYPE) == 'postgresql' ?
+            "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(totaleuros) as total FROM facturascli"
+            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
+            "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(totaleuros) as total FROM facturascli"
+            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
+
+        if ($this->excludeIrpf) {
+            $sql .= " AND irpf = 0";
+        }
+
+        $sql .= " GROUP BY codcliente, mes ORDER BY codcliente;";
+
+        $items = [];
+        foreach ($this->dataBase->select($sql) as $row) {
+            $codcliente = $row['codcliente'];
+            if (isset($items[$codcliente])) {
+                $this->groupTotals($items[$codcliente], $row);
+                continue;
+            }
+
+            $items[$codcliente] = [
+                'cifnif' => '',
+                'cliente' => $row['codcliente'],
+                'codpostal' => '',
+                'ciudad' => '',
+                'provincia' => '',
+                't1' => 0.0,
+                't2' => 0.0,
+                't3' => 0.0,
+                't4' => 0.0,
+                'total' => 0.0
+            ];
+
+            $cliente = new Cliente();
+            if ($cliente->loadFromCode($codcliente)) {
+                $dir = $cliente->getDefaultAddress();
+                $items[$codcliente]['cifnif'] = $cliente->cifnif;
+                $items[$codcliente]['cliente'] = $cliente->razonsocial;
+                $items[$codcliente]['codpostal'] = $dir->codpostal;
+                $items[$codcliente]['ciudad'] = $dir->ciudad;
+                $items[$codcliente]['provincia'] = $dir->provincia;
+            }
+
+            $this->groupTotals($items[$codcliente], $row);
+        }
+
+        return $items;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    protected function getSuppliersDataInvoices(): array
+    {
+        $sql = \strtolower(FS_DB_TYPE) == 'postgresql' ?
+            "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(totaleuros) as total FROM facturasprov"
+            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
+            "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(totaleuros) as total FROM facturasprov"
+            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
+
+        if ($this->excludeIrpf) {
+            $sql .= " AND irpf = 0";
+        }
+
+        $sql .= " GROUP BY codproveedor, mes ORDER BY codproveedor;";
+
+        $items = [];
+        foreach ($this->dataBase->select($sql) as $row) {
+            $codproveedor = $row['codproveedor'];
+            if (isset($items[$codproveedor])) {
+                $this->groupTotals($items[$codproveedor], $row);
+                continue;
+            }
+
+            $items[$codproveedor] = [
+                'cifnif' => '',
+                'proveedor' => $row['codproveedor'],
+                'codpostal' => '',
+                'ciudad' => '',
+                'provincia' => '',
+                't1' => 0.0,
+                't2' => 0.0,
+                't3' => 0.0,
+                't4' => 0.0,
+                'total' => 0.0
+            ];
+
+            $proveedor = new Proveedor();
+            if ($proveedor->loadFromCode($codproveedor)) {
+                $dir = $proveedor->getDefaultAddress();
+                $items[$codproveedor]['cifnif'] = $proveedor->cifnif;
+                $items[$codproveedor]['proveedor'] = $proveedor->razonsocial;
+                $items[$codproveedor]['codpostal'] = $dir->codpostal;
+                $items[$codproveedor]['ciudad'] = $dir->ciudad;
+                $items[$codproveedor]['provincia'] = $dir->provincia;
+            }
+
+            $this->groupTotals($items[$codproveedor], $row);
+        }
+
+        return $items;
     }
 
     /**
@@ -216,10 +326,7 @@ class Modelo347 extends Controller
 
     protected function loadCustomersData()
     {
-        switch ($this->examine) {
-            default:
-                $this->customersData = $this->loadCustomersDataInvoices();
-        }
+        $this->customersData = $this->getCustomersDataInvoices();
 
         /// exclude if total lower than amount
         foreach ($this->customersData as $key => $row) {
@@ -231,9 +338,9 @@ class Modelo347 extends Controller
         /// totals
         $this->customersTotals = [
             'cifnif' => '',
-            'ciudad' => '',
             'cliente' => '',
             'codpostal' => '',
+            'ciudad' => '',
             'provincia' => '',
             't1' => 0.0,
             't2' => 0.0,
@@ -250,64 +357,9 @@ class Modelo347 extends Controller
         }
     }
 
-    protected function loadCustomersDataInvoices(): array
-    {
-        if (\strtolower(FS_DB_TYPE) == 'postgresql') {
-            $sql = "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(totaleuros) as total
-                FROM facturascli
-                WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
-        } else {
-            $sql = "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(totaleuros) as total
-                FROM facturascli
-                WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
-        }
-
-        if ($this->excludeIrpf) {
-            $sql .= " AND irpf = 0";
-        }
-
-        $sql .= " GROUP BY codcliente, mes ORDER BY codcliente;";
-
-        $items = [];
-        foreach ($this->dataBase->select($sql) as $row) {
-            $codcliente = $row['codcliente'];
-            if (!isset($items[$codcliente])) {
-                $items[$codcliente] = [
-                    'cifnif' => '',
-                    'ciudad' => '',
-                    'cliente' => $row['codcliente'],
-                    'codpostal' => '',
-                    'provincia' => '',
-                    't1' => 0.0,
-                    't2' => 0.0,
-                    't3' => 0.0,
-                    't4' => 0.0,
-                    'total' => 0.0,
-                ];
-
-                $cliente = new Cliente();
-                if ($cliente->loadFromCode($codcliente)) {
-                    $dir = $cliente->getDefaultAddress();
-                    $items[$codcliente]['cifnif'] = $cliente->cifnif;
-                    $items[$codcliente]['ciudad'] = $dir->ciudad;
-                    $items[$codcliente]['cliente'] = $cliente->razonsocial;
-                    $items[$codcliente]['codpostal'] = $dir->codpostal;
-                    $items[$codcliente]['provincia'] = $dir->provincia;
-                }
-            }
-
-            $this->groupTotals($items[$codcliente], $row);
-        }
-
-        return $items;
-    }
-
     protected function loadSuppliersData()
     {
-        switch ($this->examine) {
-            default:
-                $this->suppliersData = $this->loadSuppliersDataInvoices();
-        }
+        $this->suppliersData = $this->getSuppliersDataInvoices();
 
         /// exclude if total lower than amount
         foreach ($this->suppliersData as $key => $row) {
@@ -319,9 +371,9 @@ class Modelo347 extends Controller
         /// totals
         $this->suppliersTotals = [
             'cifnif' => '',
-            'ciudad' => '',
             'proveedor' => '',
             'codpostal' => '',
+            'ciudad' => '',
             'provincia' => '',
             't1' => 0.0,
             't2' => 0.0,
@@ -336,57 +388,5 @@ class Modelo347 extends Controller
             $this->suppliersTotals['t4'] += $row['t4'];
             $this->suppliersTotals['total'] += $row['total'];
         }
-    }
-
-    protected function loadSuppliersDataInvoices(): array
-    {
-        if (\strtolower(FS_DB_TYPE) == 'postgresql') {
-            $sql = "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(totaleuros) as total
-                FROM facturasprov
-                WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
-        } else {
-            $sql = "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(totaleuros) as total
-                FROM facturasprov
-                WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
-        }
-
-        if ($this->excludeIrpf) {
-            $sql .= " AND irpf = 0";
-        }
-
-        $sql .= " GROUP BY codproveedor, mes ORDER BY codproveedor;";
-
-        $items = [];
-        foreach ($this->dataBase->select($sql) as $row) {
-            $codproveedor = $row['codproveedor'];
-            if (!isset($items[$codproveedor])) {
-                $items[$codproveedor] = [
-                    'cifnif' => '',
-                    'ciudad' => '',
-                    'proveedor' => $row['codproveedor'],
-                    'codpostal' => '',
-                    'provincia' => '',
-                    't1' => 0.0,
-                    't2' => 0.0,
-                    't3' => 0.0,
-                    't4' => 0.0,
-                    'total' => 0.0,
-                ];
-
-                $proveedor = new Proveedor();
-                if ($proveedor->loadFromCode($codproveedor)) {
-                    $dir = $proveedor->getDefaultAddress();
-                    $items[$codproveedor]['cifnif'] = $proveedor->cifnif;
-                    $items[$codproveedor]['ciudad'] = $dir->ciudad;
-                    $items[$codproveedor]['proveedor'] = $proveedor->razonsocial;
-                    $items[$codproveedor]['codpostal'] = $dir->codpostal;
-                    $items[$codproveedor]['provincia'] = $dir->provincia;
-                }
-            }
-
-            $this->groupTotals($items[$codproveedor], $row);
-        }
-
-        return $items;
     }
 }
