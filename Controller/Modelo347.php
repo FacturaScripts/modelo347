@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Modelo347 plugin for FacturaScripts
- * Copyright (C) 2020 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2020-2021 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -201,9 +201,9 @@ class Modelo347 extends Controller
     protected function getCustomersDataInvoices(): array
     {
         $sql = \strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(totaleuros) as total FROM facturascli"
+            "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(totaleuros) as total FROM facturascli"
+            "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
 
         if ($this->excludeIrpf) {
@@ -256,9 +256,9 @@ class Modelo347 extends Controller
     protected function getSuppliersDataInvoices(): array
     {
         $sql = \strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(totaleuros) as total FROM facturasprov"
+            "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(totaleuros) as total FROM facturasprov"
+            "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
 
         if ($this->excludeIrpf) {
