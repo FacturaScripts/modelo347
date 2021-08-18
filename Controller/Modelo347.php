@@ -81,7 +81,7 @@ class Modelo347 extends Controller
     public $suppliersTotals = [];
 
     /**
-     * 
+     *
      * @return array
      */
     public function allExamine()
@@ -90,7 +90,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return Ejercicio[]
      */
     public function allExercises()
@@ -100,7 +100,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function getPageData(): array
@@ -153,7 +153,7 @@ class Modelo347 extends Controller
     {
         $this->setTemplate(false);
         $xlsExport = new XLSExport();
-        $xlsExport->newDoc($this->toolBox()->i18n()->trans('model-347'));
+        $xlsExport->newDoc($this->toolBox()->i18n()->trans('model-347'), 0, '');
 
         $i18n = $this->toolBox()->i18n();
 
@@ -195,7 +195,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return array
      */
     protected function getCustomersDataInvoices(): array
@@ -250,7 +250,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return array
      */
     protected function getSuppliersDataInvoices(): array
@@ -305,7 +305,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @param array $item
      * @param array $row
      */
