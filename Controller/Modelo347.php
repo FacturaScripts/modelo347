@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace FacturaScripts\Plugins\Modelo347\Controller;
 
 use FacturaScripts\Core\Base\Controller;
@@ -81,7 +82,7 @@ class Modelo347 extends Controller
     public $suppliersTotals = [];
 
     /**
-     * 
+     *
      * @return array
      */
     public function allExamine()
@@ -90,7 +91,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return Ejercicio[]
      */
     public function allExercises()
@@ -100,7 +101,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return array
      */
     public function getPageData(): array
@@ -140,10 +141,10 @@ class Modelo347 extends Controller
             }
         }
 
-        $this->amount = (float) $this->request->request->get('amount', $this->amount);
+        $this->amount = (float)$this->request->request->get('amount', $this->amount);
         $this->codejercicio = $this->request->request->get('codejercicio', $codejercicio);
         $this->examine = $this->request->request->get('examine', $this->examine);
-        $this->excludeIrpf = (bool) $this->request->request->get('excludeirpf', $this->excludeIrpf);
+        $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
 
         $this->loadCustomersData();
         $this->loadSuppliersData();
@@ -195,7 +196,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return array
      */
     protected function getCustomersDataInvoices(): array
@@ -250,7 +251,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @return array
      */
     protected function getSuppliersDataInvoices(): array
@@ -305,23 +306,23 @@ class Modelo347 extends Controller
     }
 
     /**
-     * 
+     *
      * @param array $item
      * @param array $row
      */
     protected function groupTotals(&$item, $row)
     {
         if (\in_array($row['mes'], ['1', '2', '3', '01', '02', '03'])) {
-            $item['t1'] += (float) $row['total'];
+            $item['t1'] += (float)$row['total'];
         } elseif (\in_array($row['mes'], ['4', '5', '6', '04', '05', '06'])) {
-            $item['t2'] += (float) $row['total'];
+            $item['t2'] += (float)$row['total'];
         } elseif (\in_array($row['mes'], ['7', '8', '9', '07', '08', '09'])) {
-            $item['t3'] += (float) $row['total'];
+            $item['t3'] += (float)$row['total'];
         } else {
-            $item['t4'] += (float) $row['total'];
+            $item['t4'] += (float)$row['total'];
         }
 
-        $item['total'] += (float) $row['total'];
+        $item['total'] += (float)$row['total'];
     }
 
     protected function loadCustomersData()
