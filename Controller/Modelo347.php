@@ -154,7 +154,7 @@ class Modelo347 extends Controller
     {
         $this->setTemplate(false);
         $xlsExport = new XLSExport();
-        $xlsExport->newDoc($this->toolBox()->i18n()->trans('model-347'));
+        $xlsExport->newDoc($this->toolBox()->i18n()->trans('model-347'), 0, '');
 
         $i18n = $this->toolBox()->i18n();
 
