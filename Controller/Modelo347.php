@@ -35,6 +35,12 @@ class Modelo347 extends Controller
 
     /**
      *
+     * @var string
+     */
+    public $activetab = 'customers';
+
+    /**
+     *
      * @var float
      */
     public $amount = 3005.06;
@@ -117,6 +123,7 @@ class Modelo347 extends Controller
     {
         parent::privateCore($response, $user, $permissions);
 
+        $this->activetab = $this->request->request->get('activetab', $this->activetab);
         $action = $this->request->request->get('action', '');
         switch ($action) {
             case 'download':
