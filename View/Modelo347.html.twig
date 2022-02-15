@@ -19,7 +19,7 @@
                 <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('exercise') }}
-                        <select name="codejercicio" class="form-control" required="true">
+                        <select name="codejercicio" class="form-control" required="true" onchange="this.form.submit()">
                             {% for exercise in fsc.allExercises() %}
                                 {% if exercise.codejercicio == fsc.codejercicio %}
                                     <option value="{{ exercise.codejercicio }}" selected="">{{ exercise.nombre }}</option>
