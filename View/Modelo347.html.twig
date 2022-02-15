@@ -1,4 +1,4 @@
-{% extends "Master/MenuTemplate.html.twig" %}
+{% extends "Master/MenuBghTemplate.html.twig" %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -19,9 +19,7 @@
                     <i class="fas fa-book fa-fw"></i>
                     {{ i18n.trans(fsc.title) }}
                 </h1>
-                <p>
-                    {{ i18n.trans('model-347-p') }}
-                </p>
+                <p>{{ i18n.trans('model-347-p') }}</p>
             </div>
         </div>
         <form method="post" name="modelo347">
@@ -33,7 +31,8 @@
                         <select name="codejercicio" class="form-control" required="true" onchange="this.form.submit()">
                             {% for exercise in fsc.allExercises() %}
                                 {% if exercise.codejercicio == fsc.codejercicio %}
-                                    <option value="{{ exercise.codejercicio }}" selected="">{{ exercise.nombre }}</option>
+                                    <option value="{{ exercise.codejercicio }}"
+                                            selected="">{{ exercise.nombre }}</option>
                                 {% else %}
                                     <option value="{{ exercise.codejercicio }}">{{ exercise.nombre }}</option>
                                 {% endif %}
@@ -58,15 +57,18 @@
                 <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('amount') }}
-                        <input type="number" name="amount" value="{{ fsc.amount }}" class="form-control" required="true"/>
+                        <input type="number" name="amount" value="{{ fsc.amount }}" class="form-control"
+                               required="true"/>
                     </div>
                 </div>
                 <div class="col-sm">
                     <div class="form-group form-check">
                         {% if fsc.excludeIrpf %}
-                            <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf" class="form-check-input" checked=""/>
+                            <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf"
+                                   class="form-check-input" checked=""/>
                         {% else %}
-                            <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf" class="form-check-input"/>
+                            <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf"
+                                   class="form-check-input"/>
                         {% endif %}
                         <label for="checkboxirpf">{{ i18n.trans('exclude-irpf') }}</label>
                     </div>
@@ -89,12 +91,16 @@
 
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link {{ fsc.activetab == 'customers' ? 'active' : '' }}" onclick="activeTab('customers')" id="customers-tab" data-toggle="tab" href="#customers" role="tab" aria-controls="customers" aria-selected="true">
+            <a class="nav-link {{ fsc.activetab == 'customers' ? 'active' : '' }}" onclick="activeTab('customers')"
+               id="customers-tab" data-toggle="tab" href="#customers" role="tab" aria-controls="customers"
+               aria-selected="true">
                 {{ i18n.trans('customers') }}
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ fsc.activetab == 'suppliers' ? 'active' : '' }}" onclick="activeTab('suppliers')" id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab" aria-controls="suppliers" aria-selected="false">
+            <a class="nav-link {{ fsc.activetab == 'suppliers' ? 'active' : '' }}" onclick="activeTab('suppliers')"
+               id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab" aria-controls="suppliers"
+               aria-selected="false">
                 {{ i18n.trans('suppliers') }}
             </a>
         </li>
@@ -103,55 +109,57 @@
 
 {% block body %}
     <div class="tab-content">
-        <div class="tab-pane fade {{ fsc.activetab == 'customers' ? 'show active' : '' }}" id="customers" role="tabpanel" aria-labelledby="customers-tab">
+        <div class="tab-pane fade {{ fsc.activetab == 'customers' ? 'show active' : '' }}" id="customers"
+             role="tabpanel" aria-labelledby="customers-tab">
             {{ _self.customersData(fsc, i18n) }}
         </div>
-        <div class="tab-pane fade {{ fsc.activetab == 'suppliers' ? 'show active' : '' }}" id="suppliers" role="tabpanel" aria-labelledby="suppliers-tab">
+        <div class="tab-pane fade {{ fsc.activetab == 'suppliers' ? 'show active' : '' }}" id="suppliers"
+             role="tabpanel" aria-labelledby="suppliers-tab">
             {{ _self.suppliersData(fsc, i18n) }}
         </div>
-    </div>         
+    </div>
 {% endblock %}
 
 {% macro customersData(fsc, i18n) %}
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
-                <tr>
-                    <th>{{ i18n.trans('cifnif') }}</th>
-                    <th>{{ i18n.trans('customer') }}</th>
-                    <th>{{ i18n.trans('zip-code') }}</th>
-                    <th>{{ i18n.trans('city') }}</th>
-                    <th>{{ i18n.trans('province') }}</th>
-                    <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('total') }}</th>
-                </tr>
+            <tr>
+                <th>{{ i18n.trans('cifnif') }}</th>
+                <th>{{ i18n.trans('customer') }}</th>
+                <th>{{ i18n.trans('zip-code') }}</th>
+                <th>{{ i18n.trans('city') }}</th>
+                <th>{{ i18n.trans('province') }}</th>
+                <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('total') }}</th>
+            </tr>
             </thead>
             <tbody>
-                {% for row in fsc.customersData %}
-                    <tr>
-                        <td>{{ row.cifnif }}</td>
-                        <td>{{ row.cliente | raw }}</td>
-                        <td>{{ row.codpostal }}</td>
-                        <td>{{ row.ciudad | raw }}</td>
-                        <td>{{ row.provincia | raw }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t1) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t2) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t3) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t4) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.total) }}</td>
-                    </tr>
-                {% endfor %}
-                <tr class="table-warning">
-                    <td colspan="5"></td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t1) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t2) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t3) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t4) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.total) }}</td>
+            {% for row in fsc.customersData %}
+                <tr>
+                    <td>{{ row.cifnif }}</td>
+                    <td>{{ row.cliente | raw }}</td>
+                    <td>{{ row.codpostal }}</td>
+                    <td>{{ row.ciudad | raw }}</td>
+                    <td>{{ row.provincia | raw }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t1) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t2) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t3) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t4) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.total) }}</td>
                 </tr>
+            {% endfor %}
+            <tr class="table-warning">
+                <td colspan="5"></td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t1) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t2) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t3) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t4) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.total) }}</td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -161,52 +169,43 @@
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
-                <tr>
-                    <th>{{ i18n.trans('cifnif') }}</th>
-                    <th>{{ i18n.trans('supplier') }}</th>
-                    <th>{{ i18n.trans('zip-code') }}</th>
-                    <th>{{ i18n.trans('city') }}</th>
-                    <th>{{ i18n.trans('province') }}</th>
-                    <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
-                    <th class="text-right">{{ i18n.trans('total') }}</th>
-                </tr>
+            <tr>
+                <th>{{ i18n.trans('cifnif') }}</th>
+                <th>{{ i18n.trans('supplier') }}</th>
+                <th>{{ i18n.trans('zip-code') }}</th>
+                <th>{{ i18n.trans('city') }}</th>
+                <th>{{ i18n.trans('province') }}</th>
+                <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
+                <th class="text-right">{{ i18n.trans('total') }}</th>
+            </tr>
             </thead>
             <tbody>
-                {% for row in fsc.suppliersData %}
-                    <tr>
-                        <td>{{ row.cifnif }}</td>
-                        <td>{{ row.proveedor | raw }}</td>
-                        <td>{{ row.codpostal }}</td>
-                        <td>{{ row.ciudad | raw }}</td>
-                        <td>{{ row.provincia | raw }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t1) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t2) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t3) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t4) }}</td>
-                        <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.total) }}</td>
-                    </tr>
-                {% endfor %}
-                <tr class="table-warning">
-                    <td colspan="5"></td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t1) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t2) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t3) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t4) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.total) }}</td>
+            {% for row in fsc.suppliersData %}
+                <tr>
+                    <td>{{ row.cifnif }}</td>
+                    <td>{{ row.proveedor | raw }}</td>
+                    <td>{{ row.codpostal }}</td>
+                    <td>{{ row.ciudad | raw }}</td>
+                    <td>{{ row.provincia | raw }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t1) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t2) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t3) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t4) }}</td>
+                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.total) }}</td>
                 </tr>
+            {% endfor %}
+            <tr class="table-warning">
+                <td colspan="5"></td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t1) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t2) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t3) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t4) }}</td>
+                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.total) }}</td>
+            </tr>
             </tbody>
         </table>
     </div>
 {% endmacro %}
-
-{% block css %}
-    {{ parent() }}
-    <style>
-        .bg-header {
-            background-color: #FAFBFC;
-        }
-    </style>
-{% endblock %}
