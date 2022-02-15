@@ -1,5 +1,15 @@
 {% extends "Master/MenuTemplate.html.twig" %}
 
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        function activeTab(tab) {
+            document.forms['modelo347']['activetab'].value = tab;
+        }
+    </script>
+{% endblock %}
+
 {% block bodyHeaderOptions %}
     {{ parent() }}
     <div class="container-fluid">
@@ -14,7 +24,8 @@
                 </p>
             </div>
         </div>
-        <form method="post">
+        <form method="post" name="modelo347">
+            <input type="hidden" name="activetab" value="{{ fsc.activetab }}">
             <div class="row align-items-end">
                 <div class="col-sm">
                     <div class="form-group">
@@ -78,12 +89,12 @@
 
     <ul class="nav nav-tabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="customers-tab" data-toggle="tab" href="#customers" role="tab" aria-controls="customers" aria-selected="true">
+            <a class="nav-link {{ fsc.activetab == 'customers' ? 'active' : '' }}" onclick="activeTab('customers')" id="customers-tab" data-toggle="tab" href="#customers" role="tab" aria-controls="customers" aria-selected="true">
                 {{ i18n.trans('customers') }}
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab" aria-controls="suppliers" aria-selected="false">
+            <a class="nav-link {{ fsc.activetab == 'suppliers' ? 'active' : '' }}" onclick="activeTab('suppliers')" id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab" aria-controls="suppliers" aria-selected="false">
                 {{ i18n.trans('suppliers') }}
             </a>
         </li>
@@ -92,10 +103,10 @@
 
 {% block body %}
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="customers" role="tabpanel" aria-labelledby="customers-tab">
+        <div class="tab-pane fade {{ fsc.activetab == 'customers' ? 'show active' : '' }}" id="customers" role="tabpanel" aria-labelledby="customers-tab">
             {{ _self.customersData(fsc, i18n) }}
         </div>
-        <div class="tab-pane fade" id="suppliers" role="tabpanel" aria-labelledby="suppliers-tab">
+        <div class="tab-pane fade {{ fsc.activetab == 'suppliers' ? 'show active' : '' }}" id="suppliers" role="tabpanel" aria-labelledby="suppliers-tab">
             {{ _self.suppliersData(fsc, i18n) }}
         </div>
     </div>         
