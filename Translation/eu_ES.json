@@ -1,6 +1,6 @@
 {
-    "examine": "Examinar",
-    "exclude-irpf": "Excluir IRPF",
-    "model-347": "Modelo 347",
-    "model-347-p": "El Modelo 347 es una declaración anual informativa de operaciones con terceras personas. Los empresarios y profesionales están obligados a la presentación del Modelo 347 siempre que hayan realizado operaciones con terceros por importe superior a 3.005,06 € durante el año natural (se puede cambiar la cantidad), computando de forma separada las entregas y las adquisiciones de bienes y servicios."
+    "examine": "Aztertu",
+    "exclude-irpf": "PFEZ baztertu",
+    "model-347": "347 Eredua",
+    "model-347-p": "347 eredua hirugarrenekin egindako eragiketen urteko aitorpen informatiboa da. Ekintzaileak eta profesionalak 347 eredua aurkeztera behartuta daude, urte naturalean hirugarrenekin 3.005,06 eurotik gorako eragiketak egin badituzte (zenbatekoa alda daiteke), ondasunen eta zerbitzuen entrega eta erosketak bereizita kalkulatuz."
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Modelo347 plugin for FacturaScripts
- * Copyright (C) 2020-2021 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2020-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -34,43 +34,36 @@ class Modelo347 extends Controller
 {
 
     /**
-     *
      * @var string
      */
     public $activetab = 'customers';
 
     /**
-     *
      * @var float
      */
     public $amount = 3005.06;
 
     /**
-     *
      * @var string
      */
     public $codejercicio;
 
     /**
-     *
      * @var array
      */
     public $customersData = [];
 
     /**
-     *
      * @var array
      */
     public $customersTotals = [];
 
     /**
-     *
      * @var string
      */
     public $examine = 'invoices';
 
     /**
-     *
      * @var bool
      */
     public $excludeIrpf = false;
@@ -82,34 +75,24 @@ class Modelo347 extends Controller
     public $suppliersData = [];
 
     /**
-     *
      * @var array
      */
     public $suppliersTotals = [];
 
-    /**
-     *
-     * @return array
-     */
-    public function allExamine()
+    public function allExamine(): array
     {
         return ['invoices'];
     }
 
     /**
-     *
      * @return Ejercicio[]
      */
-    public function allExercises()
+    public function allExercises(): array
     {
         $ejercicio = new Ejercicio();
         return $ejercicio->all([], ['nombre' => 'DESC']);
     }
 
-    /**
-     *
-     * @return array
-     */
     public function getPageData(): array
     {
         $data = parent::getPageData();
@@ -138,7 +121,7 @@ class Modelo347 extends Controller
 
     protected function defaultAction()
     {
-        /// get last exercise code
+        // get last exercise code
         $codejercicio = null;
         $exerciseModel = new Ejercicio();
         foreach ($exerciseModel->all([], ['fechainicio' => 'DESC'], 0, 0) as $exe) {
@@ -209,13 +192,9 @@ class Modelo347 extends Controller
         $xlsExport->show($this->response);
     }
 
-    /**
-     *
-     * @return array
-     */
     protected function getCustomersDataInvoices(): array
     {
-        $sql = \strtolower(FS_DB_TYPE) == 'postgresql' ?
+        $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
             "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
             "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli"
@@ -264,13 +243,9 @@ class Modelo347 extends Controller
         return $items;
     }
 
-    /**
-     *
-     * @return array
-     */
     protected function getSuppliersDataInvoices(): array
     {
-        $sql = \strtolower(FS_DB_TYPE) == 'postgresql' ?
+        $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
             "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
             "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov"
@@ -320,17 +295,16 @@ class Modelo347 extends Controller
     }
 
     /**
-     *
      * @param array $item
      * @param array $row
      */
     protected function groupTotals(&$item, $row)
     {
-        if (\in_array($row['mes'], ['1', '2', '3', '01', '02', '03'])) {
+        if (in_array($row['mes'], ['1', '2', '3', '01', '02', '03'])) {
             $item['t1'] += (float)$row['total'];
-        } elseif (\in_array($row['mes'], ['4', '5', '6', '04', '05', '06'])) {
+        } elseif (in_array($row['mes'], ['4', '5', '6', '04', '05', '06'])) {
             $item['t2'] += (float)$row['total'];
-        } elseif (\in_array($row['mes'], ['7', '8', '9', '07', '08', '09'])) {
+        } elseif (in_array($row['mes'], ['7', '8', '9', '07', '08', '09'])) {
             $item['t3'] += (float)$row['total'];
         } else {
             $item['t4'] += (float)$row['total'];
@@ -343,14 +317,14 @@ class Modelo347 extends Controller
     {
         $this->customersData = $this->getCustomersDataInvoices();
 
-        /// exclude if total lower than amount
+        // exclude if total lower than amount
         foreach ($this->customersData as $key => $row) {
             if ($row['total'] < $this->amount) {
                 unset($this->customersData[$key]);
             }
         }
 
-        /// totals
+        // totals
         $this->customersTotals = [
             'cifnif' => '',
             'cliente' => '',
@@ -376,14 +350,14 @@ class Modelo347 extends Controller
     {
         $this->suppliersData = $this->getSuppliersDataInvoices();
 
-        /// exclude if total lower than amount
+        // exclude if total lower than amount
         foreach ($this->suppliersData as $key => $row) {
             if ($row['total'] < $this->amount) {
                 unset($this->suppliersData[$key]);
             }
         }
 
-        /// totals
+        // totals
         $this->suppliersTotals = [
             'cifnif' => '',
             'proveedor' => '',
