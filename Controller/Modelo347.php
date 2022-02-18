@@ -136,8 +136,11 @@ class Modelo347 extends Controller
         $this->examine = $this->request->request->get('examine', $this->examine);
         $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
 
-        $this->loadCustomersData();
-        $this->loadSuppliersData();
+        if ($this->activetab === 'customers') {
+            $this->loadCustomersData();
+        } else if ($this->activetab === 'suppliers') {
+            $this->loadSuppliersData();
+        }
     }
 
     protected function downloadAction()
@@ -148,39 +151,43 @@ class Modelo347 extends Controller
 
         $i18n = $this->toolBox()->i18n();
 
-        // customers data
-        $customersHeaders = [
-            'cifnif' => $i18n->trans('cifnif'),
-            'cliente' => $i18n->trans('customer'),
-            'codpostal' => $i18n->trans('zip-code'),
-            'ciudad' => $i18n->trans('city'),
-            'provincia' => $i18n->trans('province'),
-            't1' => $i18n->trans('first-trimester'),
-            't2' => $i18n->trans('second-trimester'),
-            't3' => $i18n->trans('third-trimester'),
-            't4' => $i18n->trans('fourth-trimester'),
-            'total' => $i18n->trans('total')
-        ];
-        $rows1 = $this->customersData;
-        $rows1[] = $this->customersTotals;
-        $xlsExport->addTablePage($customersHeaders, $rows1);
+        /// customers data
+        if (false === empty($this->customersData)) {
+            $customersHeaders = [
+                'cifnif' => $i18n->trans('cifnif'),
+                'cliente' => $i18n->trans('customer'),
+                'codpostal' => $i18n->trans('zip-code'),
+                'ciudad' => $i18n->trans('city'),
+                'provincia' => $i18n->trans('province'),
+                't1' => $i18n->trans('first-trimester'),
+                't2' => $i18n->trans('second-trimester'),
+                't3' => $i18n->trans('third-trimester'),
+                't4' => $i18n->trans('fourth-trimester'),
+                'total' => $i18n->trans('total')
+            ];
+            $rows1 = $this->customersData;
+            $rows1[] = $this->customersTotals;
+            $xlsExport->addTablePage($customersHeaders, $rows1);
+        }
 
-        // suppliers data
-        $suppliersHeaders = [
-            'cifnif' => $i18n->trans('cifnif'),
-            'proveedor' => $i18n->trans('supplier'),
-            'codpostal' => $i18n->trans('zip-code'),
-            'ciudad' => $i18n->trans('city'),
-            'provincia' => $i18n->trans('province'),
-            't1' => $i18n->trans('first-trimester'),
-            't2' => $i18n->trans('second-trimester'),
-            't3' => $i18n->trans('third-trimester'),
-            't4' => $i18n->trans('fourth-trimester'),
-            'total' => $i18n->trans('total')
-        ];
-        $rows2 = $this->suppliersData;
-        $rows2[] = $this->suppliersTotals;
-        $xlsExport->addTablePage($suppliersHeaders, $rows2);
+        /// suppliers data
+        if (false === empty($this->suppliersData)) {
+            $suppliersHeaders = [
+                'cifnif' => $i18n->trans('cifnif'),
+                'proveedor' => $i18n->trans('supplier'),
+                'codpostal' => $i18n->trans('zip-code'),
+                'ciudad' => $i18n->trans('city'),
+                'provincia' => $i18n->trans('province'),
+                't1' => $i18n->trans('first-trimester'),
+                't2' => $i18n->trans('second-trimester'),
+                't3' => $i18n->trans('third-trimester'),
+                't4' => $i18n->trans('fourth-trimester'),
+                'total' => $i18n->trans('total')
+            ];
+            $rows2 = $this->suppliersData;
+            $rows2[] = $this->suppliersTotals;
+            $xlsExport->addTablePage($suppliersHeaders, $rows2);
+        }
 
         $xlsExport->show($this->response);
     }
