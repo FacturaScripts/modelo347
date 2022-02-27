@@ -195,9 +195,9 @@ class Modelo347 extends Controller
     protected function getCustomersDataInvoices(): array
     {
         $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(neto+totaliva) as total FROM facturascli"
+            "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(neto+totaliva) as total FROM facturascli"
+            "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
 
         if ($this->excludeIrpf) {
@@ -246,9 +246,9 @@ class Modelo347 extends Controller
     protected function getSuppliersDataInvoices(): array
     {
         $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(neto+totaliva) as total FROM facturasprov"
+            "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(neto+totaliva) as total FROM facturasprov"
+            "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
 
         if ($this->excludeIrpf) {
