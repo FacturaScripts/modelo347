@@ -24,11 +24,11 @@
         </div>
         <form method="post" name="modelo347">
             <input type="hidden" name="activetab" value="{{ fsc.activetab }}">
-            <div class="row align-items-end">
+            <div class="form-row align-items-end">
                 <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('exercise') }}
-                        <select name="codejercicio" class="form-control" required="true" onchange="this.form.submit()">
+                        <select name="codejercicio" class="form-control" required onchange="this.form.submit()">
                             {% for exercise in fsc.allExercises() %}
                                 {% if exercise.codejercicio == fsc.codejercicio %}
                                     <option value="{{ exercise.codejercicio }}"
@@ -43,10 +43,10 @@
                 <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('examine') }}
-                        <select name="examine" class="form-control" required="true">
+                        <select name="examine" class="form-control" required onchange="this.form.submit()">
                             {% for type in fsc.allExamine() %}
                                 {% if type == fsc.examine %}
-                                    <option value="{{ type }}" selected="">{{ i18n.trans(type) }}</option>
+                                    <option value="{{ type }}" selected>{{ i18n.trans(type) }}</option>
                                 {% else %}
                                     <option value="{{ type }}">{{ i18n.trans(type) }}</option>
                                 {% endif %}
@@ -57,15 +57,15 @@
                 <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('amount') }}
-                        <input type="number" name="amount" value="{{ fsc.amount }}" class="form-control"
-                               required="true"/>
+                        <input type="number" min="0" step="any" name="amount" value="{{ fsc.amount }}"
+                               class="form-control" required/>
                     </div>
                 </div>
                 <div class="col-sm">
                     <div class="form-group form-check">
                         {% if fsc.excludeIrpf %}
                             <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf"
-                                   class="form-check-input" checked=""/>
+                                   class="form-check-input" checked/>
                         {% else %}
                             <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf"
                                    class="form-check-input"/>
@@ -73,7 +73,7 @@
                         <label for="checkboxirpf">{{ i18n.trans('exclude-irpf') }}</label>
                     </div>
                 </div>
-                <div class="col-sm text-right">
+                <div class="col-sm-auto">
                     <div class="form-group">
                         <div class="btn-group">
                             <button type="submit" name="action" value="show" class="btn btn-primary">

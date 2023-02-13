@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Modelo347 plugin for FacturaScripts
- * Copyright (C) 2020-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2020-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -20,8 +20,11 @@
 namespace FacturaScripts\Plugins\Modelo347\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\DataSrc\Ejercicios;
 use FacturaScripts\Dinamic\Lib\Export\XLSExport;
 use FacturaScripts\Dinamic\Model\Cliente;
+use FacturaScripts\Dinamic\Model\Cuenta;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Dinamic\Model\Proveedor;
 
@@ -32,56 +35,36 @@ use FacturaScripts\Dinamic\Model\Proveedor;
  */
 class Modelo347 extends Controller
 {
-
-    /**
-     * @var string
-     */
+    /** @var string */
     public $activetab = 'customers';
 
-    /**
-     * @var float
-     */
+    /** @var float */
     public $amount = 3005.06;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $codejercicio;
 
-    /**
-     * @var array
-     */
+    /** @var array */
     public $customersData = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     public $customersTotals = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $examine = 'invoices';
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $excludeIrpf = false;
 
-    /**
-     *
-     * @var array
-     */
+    /** @var array */
     public $suppliersData = [];
 
-    /**
-     * @var array
-     */
+    /** @var array */
     public $suppliersTotals = [];
 
     public function allExamine(): array
     {
-        return ['invoices'];
+        return ['accounting', 'invoices'];
     }
 
     /**
@@ -108,20 +91,16 @@ class Modelo347 extends Controller
 
         $this->activetab = $this->request->request->get('activetab', $this->activetab);
         $action = $this->request->request->get('action', '');
-        switch ($action) {
-            case 'download':
-                $this->defaultAction();
-                $this->downloadAction();
-                break;
 
-            default:
-                $this->defaultAction();
+        $this->defaultAction();
+        if ($action == 'download') {
+            $this->downloadAction();
         }
     }
 
-    protected function defaultAction()
+    protected function defaultAction(): void
     {
-        // get last exercise code
+        // buscamos el primer ejercicio abierto, para tenerlo como predeterminado
         $codejercicio = null;
         $exerciseModel = new Ejercicio();
         foreach ($exerciseModel->all([], ['fechainicio' => 'DESC'], 0, 0) as $exe) {
@@ -143,15 +122,15 @@ class Modelo347 extends Controller
         }
     }
 
-    protected function downloadAction()
+    protected function downloadAction(): void
     {
         $this->setTemplate(false);
+
         $xlsExport = new XLSExport();
         $xlsExport->newDoc($this->toolBox()->i18n()->trans('model-347'), 0, '');
-
         $i18n = $this->toolBox()->i18n();
 
-        /// customers data
+        // customers data
         if (false === empty($this->customersData)) {
             $customersHeaders = [
                 'cifnif' => $i18n->trans('cifnif'),
@@ -170,7 +149,7 @@ class Modelo347 extends Controller
             $xlsExport->addTablePage($customersHeaders, $rows1);
         }
 
-        /// suppliers data
+        // suppliers data
         if (false === empty($this->suppliersData)) {
             $suppliersHeaders = [
                 'cifnif' => $i18n->trans('cifnif'),
@@ -190,6 +169,86 @@ class Modelo347 extends Controller
         }
 
         $xlsExport->show($this->response);
+    }
+
+    protected function getAccountingInfo(Cuenta $cuenta): array
+    {
+        $ejercicio = Ejercicios::get($this->codejercicio);
+
+        if (strtolower(FS_DB_TYPE) == 'postgresql') {
+            $sql = "select idsubcuenta, codsubcuenta, to_char(fecha,'FMMM') as mes, sum(debe) as total from partidas p, asientos a"
+                . " where idsubcuenta IN (select idsubcuenta from subcuentas where idcuenta = " . $this->dataBase->var2str($cuenta->idcuenta) . ")"
+                . " and p.idasiento = a.idasiento"
+                . " and a.operacion is null"
+                . " and fecha >= " . $this->dataBase->var2str($ejercicio->fechainicio)
+                . " and fecha <= " . $this->dataBase->var2str($ejercicio->fechafin)
+                . " and to_char(fecha,'FMYYYY') = " . $this->dataBase->var2str($ejercicio->year())
+                . " group by 1, 2, 3 order by idsubcuenta asc, mes asc;";
+        } else {
+            $sql = "select idsubcuenta, codsubcuenta, DATE_FORMAT(fecha, '%m') as mes, sum(debe) as total from partidas p, asientos a"
+                . " where idsubcuenta IN (select idsubcuenta from subcuentas where idcuenta = " . $this->dataBase->var2str($cuenta->idcuenta) . ")"
+                . " and p.idasiento = a.idasiento"
+                . " and a.operacion is null"
+                . " and fecha >= " . $this->dataBase->var2str($ejercicio->fechainicio)
+                . " and fecha <= " . $this->dataBase->var2str($ejercicio->fechafin)
+                . " and DATE_FORMAT(fecha, '%Y') = " . $this->dataBase->var2str($ejercicio->year())
+                . " group by 1, 2, 3 order by idsubcuenta asc, mes asc;";
+        }
+
+        return $this->dataBase->select($sql);
+    }
+
+    protected function getCustomersDataAccounting(): array
+    {
+        $items = [];
+
+        // buscamos las cuentas especiales de clientes de este ejercicio
+        $cuentaModel = new Cuenta();
+        $where = [
+            new DataBaseWhere('codejercicio', $this->codejercicio),
+            new DataBaseWhere('codcuentaesp', 'CLIENT')
+        ];
+        foreach ($cuentaModel->all($where, [], 0, 0) as $cuenta) {
+            // buscamos las partidas de las subcuentas de esta cuenta
+            foreach ($this->getAccountingInfo($cuenta) as $row) {
+                // buscamos el cliente de la subcuenta
+                $cliente = new Cliente();
+                $where = [new DataBaseWhere('codsubcuenta', $row['codsubcuenta'])];
+                if (false === $cliente->loadFromCode('', $where)) {
+                    // no se ha encontrado el cliente, saltamos
+                    continue;
+                }
+
+                if (isset($items[$cliente->codcliente])) {
+                    $this->groupTotals($items[$cliente->codcliente], $row);
+                    continue;
+                }
+
+                $items[$cliente->codcliente] = [
+                    'cifnif' => '',
+                    'cliente' => $cliente->codcliente,
+                    'codpostal' => '',
+                    'ciudad' => '',
+                    'provincia' => '',
+                    't1' => 0.0,
+                    't2' => 0.0,
+                    't3' => 0.0,
+                    't4' => 0.0,
+                    'total' => 0.0
+                ];
+
+                $dir = $cliente->getDefaultAddress();
+                $items[$cliente->codcliente]['cifnif'] = $cliente->cifnif;
+                $items[$cliente->codcliente]['cliente'] = $cliente->razonsocial;
+                $items[$cliente->codcliente]['codpostal'] = $dir->codpostal;
+                $items[$cliente->codcliente]['ciudad'] = $dir->ciudad;
+                $items[$cliente->codcliente]['provincia'] = $dir->provincia;
+
+                $this->groupTotals($items[$cliente->codcliente], $row);
+            }
+        }
+
+        return $items;
     }
 
     protected function getCustomersDataInvoices(): array
@@ -238,6 +297,59 @@ class Modelo347 extends Controller
             }
 
             $this->groupTotals($items[$codcliente], $row);
+        }
+
+        return $items;
+    }
+
+    protected function getSuppliersDataAccounting(): array
+    {
+        $items = [];
+
+        // buscamos las cuentas especiales de proveedores de este ejercicio
+        $cuentaModel = new Cuenta();
+        $where = [
+            new DataBaseWhere('codejercicio', $this->codejercicio),
+            new DataBaseWhere('codcuentaesp', 'PROVEE')
+        ];
+        foreach ($cuentaModel->all($where, [], 0, 0) as $cuenta) {
+            // consultamos las partidas de cada subcuenta hija
+            foreach ($this->getAccountingInfo($cuenta) as $row) {
+                // buscamos el proveedor de la subcuenta
+                $proveedor = new Proveedor();
+                $where = [new DataBaseWhere('codsubcuenta', $row['codsubcuenta'])];
+                if (false === $proveedor->loadFromCode('', $where)) {
+                    // no existe, saltamos
+                    continue;
+                }
+
+                if (isset($items[$proveedor->codproveedor])) {
+                    $this->groupTotals($items[$proveedor->codproveedor], $row);
+                    continue;
+                }
+
+                $items[$proveedor->codproveedor] = [
+                    'cifnif' => '',
+                    'proveedor' => $proveedor->codproveedor,
+                    'codpostal' => '',
+                    'ciudad' => '',
+                    'provincia' => '',
+                    't1' => 0.0,
+                    't2' => 0.0,
+                    't3' => 0.0,
+                    't4' => 0.0,
+                    'total' => 0.0
+                ];
+
+                $dir = $proveedor->getDefaultAddress();
+                $items[$proveedor->codproveedor]['cifnif'] = $proveedor->cifnif;
+                $items[$proveedor->codproveedor]['proveedor'] = $proveedor->razonsocial;
+                $items[$proveedor->codproveedor]['codpostal'] = $dir->codpostal;
+                $items[$proveedor->codproveedor]['ciudad'] = $dir->ciudad;
+                $items[$proveedor->codproveedor]['provincia'] = $dir->provincia;
+
+                $this->groupTotals($items[$proveedor->codproveedor], $row);
+            }
         }
 
         return $items;
@@ -294,11 +406,7 @@ class Modelo347 extends Controller
         return $items;
     }
 
-    /**
-     * @param array $item
-     * @param array $row
-     */
-    protected function groupTotals(&$item, $row)
+    protected function groupTotals(array &$item, array $row): void
     {
         if (in_array($row['mes'], ['1', '2', '3', '01', '02', '03'])) {
             $item['t1'] += (float)$row['total'];
@@ -315,7 +423,9 @@ class Modelo347 extends Controller
 
     protected function loadCustomersData()
     {
-        $this->customersData = $this->getCustomersDataInvoices();
+        $this->customersData = $this->examine === 'invoices' ?
+            $this->getCustomersDataInvoices() :
+            $this->getCustomersDataAccounting();
 
         // exclude if total lower than amount
         foreach ($this->customersData as $key => $row) {
@@ -348,7 +458,9 @@ class Modelo347 extends Controller
 
     protected function loadSuppliersData()
     {
-        $this->suppliersData = $this->getSuppliersDataInvoices();
+        $this->suppliersData = $this->examine === 'invoices' ?
+            $this->getSuppliersDataInvoices() :
+            $this->getSuppliersDataAccounting();
 
         // exclude if total lower than amount
         foreach ($this->suppliersData as $key => $row) {
