@@ -171,27 +171,25 @@ class Modelo347 extends Controller
         $xlsExport->show($this->response);
     }
 
-    protected function getAccountingInfo(Cuenta $cuenta): array
+    protected function getAccountingInfo(Cuenta $cuenta, string $column): array
     {
         $ejercicio = Ejercicios::get($this->codejercicio);
 
         if (strtolower(FS_DB_TYPE) == 'postgresql') {
-            $sql = "select idsubcuenta, codsubcuenta, to_char(fecha,'FMMM') as mes, sum(debe) as total from partidas p, asientos a"
+            $sql = "select idsubcuenta, codsubcuenta, to_char(fecha,'FMMM') as mes, sum(" . $column . ") as total from partidas p, asientos a"
                 . " where idsubcuenta IN (select idsubcuenta from subcuentas where idcuenta = " . $this->dataBase->var2str($cuenta->idcuenta) . ")"
                 . " and p.idasiento = a.idasiento"
                 . " and a.operacion is null"
                 . " and fecha >= " . $this->dataBase->var2str($ejercicio->fechainicio)
                 . " and fecha <= " . $this->dataBase->var2str($ejercicio->fechafin)
-                . " and to_char(fecha,'FMYYYY') = " . $this->dataBase->var2str($ejercicio->year())
                 . " group by 1, 2, 3 order by idsubcuenta asc, mes asc;";
         } else {
-            $sql = "select idsubcuenta, codsubcuenta, DATE_FORMAT(fecha, '%m') as mes, sum(debe) as total from partidas p, asientos a"
+            $sql = "select idsubcuenta, codsubcuenta, DATE_FORMAT(fecha, '%m') as mes, sum(" . $column . ") as total from partidas p, asientos a"
                 . " where idsubcuenta IN (select idsubcuenta from subcuentas where idcuenta = " . $this->dataBase->var2str($cuenta->idcuenta) . ")"
                 . " and p.idasiento = a.idasiento"
                 . " and a.operacion is null"
                 . " and fecha >= " . $this->dataBase->var2str($ejercicio->fechainicio)
                 . " and fecha <= " . $this->dataBase->var2str($ejercicio->fechafin)
-                . " and DATE_FORMAT(fecha, '%Y') = " . $this->dataBase->var2str($ejercicio->year())
                 . " group by 1, 2, 3 order by idsubcuenta asc, mes asc;";
         }
 
@@ -210,7 +208,7 @@ class Modelo347 extends Controller
         ];
         foreach ($cuentaModel->all($where, [], 0, 0) as $cuenta) {
             // buscamos las partidas de las subcuentas de esta cuenta
-            foreach ($this->getAccountingInfo($cuenta) as $row) {
+            foreach ($this->getAccountingInfo($cuenta, 'debe') as $row) {
                 // buscamos el cliente de la subcuenta
                 $cliente = new Cliente();
                 $where = [new DataBaseWhere('codsubcuenta', $row['codsubcuenta'])];
@@ -314,7 +312,7 @@ class Modelo347 extends Controller
         ];
         foreach ($cuentaModel->all($where, [], 0, 0) as $cuenta) {
             // consultamos las partidas de cada subcuenta hija
-            foreach ($this->getAccountingInfo($cuenta) as $row) {
+            foreach ($this->getAccountingInfo($cuenta, 'haber') as $row) {
                 // buscamos el proveedor de la subcuenta
                 $proveedor = new Proveedor();
                 $where = [new DataBaseWhere('codsubcuenta', $row['codsubcuenta'])];
