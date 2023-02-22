@@ -26,6 +26,7 @@ use FacturaScripts\Dinamic\Lib\Export\XLSExport;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Cuenta;
 use FacturaScripts\Dinamic\Model\Ejercicio;
+use FacturaScripts\Dinamic\Model\Empresa;
 use FacturaScripts\Dinamic\Model\Proveedor;
 use FacturaScripts\Plugins\Modelo347\Lib\Txt347Export;
 
@@ -180,6 +181,20 @@ class Modelo347 extends Controller
 
     protected function downloadTxtAction(): void
     {
+        // obtenemos el ejercicio
+        $exerciseModel = new Ejercicio();
+        $exerciseModel->loadFromCode($this->codejercicio);
+
+        // obtenemos la empresa del ejercicio
+        $companyModel = new Empresa();
+        $companyModel->loadFromCode($exerciseModel->idempresa);
+
+        // comprobamos si el administrador de la empresa o el teléfono de contacto es vacío
+        if (empty($companyModel->administrador) || empty($companyModel->telefono1)) {
+            $this->toolBox()->i18nLog()->warning('admin-or-phone-empty');
+            return;
+        }
+
         $this->setTemplate(false);
 
         // cargamos la información que falte
