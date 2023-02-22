@@ -55,6 +55,12 @@ class Txt347Export
         return $companyData . $customerData . $supplierData;
     }
 
+    protected static function formatOnlyNumber(string $number): string
+    {
+        // eliminamos cualquier carácter que no sea un número
+        return preg_replace('/[^0-9]/', '', $number);
+    }
+
     protected static function formatString(string $string, int $length, string $charter, int $align): string
     {
         // eliminamos los acentos y caracteres especiales
@@ -84,7 +90,7 @@ class Txt347Export
             . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
             . self::formatString(self::$company->nombre, 40, '-', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARANTE
             . 'T' // TIPO DE SOPORTE
-            . self::formatString(self::$company->telefono1, 9, '-', STR_PAD_LEFT) . self::formatString('', 40, '-', STR_PAD_LEFT) // PERSONA CON QUIÉN RELACIONARSE
+            . self::formatString(self::formatOnlyNumber(self::$company->telefono1 ?? ''), 9, '0', STR_PAD_RIGHT) . self::formatString('', 40, '-', STR_PAD_LEFT) // PERSONA CON QUIÉN RELACIONARSE
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN
             . self::formatString('', 1, '-', STR_PAD_LEFT) . self::formatString('', 1, '-', STR_PAD_LEFT) // DECLARACIÓN COMPLEMENTARIA O SUSTITUTIVA
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN ANTERIOR
@@ -92,9 +98,9 @@ class Txt347Export
             . (self::$total < 0 ? 'N' : ' ') . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE TOTAL ANUAL DE LAS OPERACIONES
             . self::formatString('', 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE INMUEBLES
             . (self::$total < 0 ? 'N' : ' ') . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE TOTAL DE LAS OPERACIONES DE ARRENDAMIENTO DE LOCALES DE NEGOCIO
-            . self::formatString('', 205, '-', STR_PAD_LEFT) // BLANCOS
+            . self::formatString('', 205, ' ', STR_PAD_LEFT) // BLANCOS
             . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
-            . self::formatString('', 88, '-', STR_PAD_LEFT) // BLANCOS
+            . self::formatString('', 88, ' ', STR_PAD_LEFT) // BLANCOS
             . self::formatString('', 13, '-', STR_PAD_LEFT); // SELLO ELECTRONICO
     }
 
@@ -114,7 +120,7 @@ class Txt347Export
                 . self::formatString($item['cliente'], 40, '-', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
                 . 'D' // TIPO DE HOJA
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
-                . '-' // BLANCOS
+                . ' ' // BLANCOS
                 . (empty(self::$customersData) ? 'A' : 'B') // CLAVE OPERACIÓN
                 . (self::$total < 0 ? 'N' : ' ') . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . '-' // OPERACIÓN SEGURO
@@ -135,7 +141,7 @@ class Txt347Export
                 . '-' // OPERACIÓN CON INVERSIÓN DEL SUJETO PASIVO
                 . '-' // OPERACIÓN CON BIENES VINCULADOS O DESTINADOS A VINCULARSE AL RÉGIMEN DE DEPÓSITO DISTINTO DEL ADUANERO
                 . self::formatString('', 16, '-', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES DEVENGADAS CONFORME AL CRITERIO DE CAJA DEL IVA
-                . self::formatString('', 200, '-', STR_PAD_LEFT); // BLANCOS
+                . self::formatString('', 201, ' ', STR_PAD_LEFT); // BLANCOS
         }
         return $txt;
     }
@@ -363,7 +369,7 @@ class Txt347Export
                 . self::formatString($item['proveedor'], 40, '-', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
                 . 'D' // TIPO DE HOJA
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
-                . '-' // BLANCOS
+                . ' ' // BLANCOS
                 . (empty(self::$customersData) ? 'A' : 'B') // CLAVE OPERACIÓN
                 . (self::$total < 0 ? 'N' : ' ') . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . '-' // OPERACIÓN SEGURO
@@ -384,7 +390,7 @@ class Txt347Export
                 . '-' // OPERACIÓN CON INVERSIÓN DEL SUJETO PASIVO
                 . '-' // OPERACIÓN CON BIENES VINCULADOS O DESTINADOS A VINCULARSE AL RÉGIMEN DE DEPÓSITO DISTINTO DEL ADUANERO
                 . self::formatString('', 16, '-', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES DEVENGADAS CONFORME AL CRITERIO DE CAJA DEL IVA
-                . self::formatString('', 200, '-', STR_PAD_LEFT); // BLANCOS
+                . self::formatString('', 201, ' ', STR_PAD_LEFT); // BLANCOS
         }
         return $txt;
     }
