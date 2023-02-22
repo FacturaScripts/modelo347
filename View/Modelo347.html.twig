@@ -17,8 +17,7 @@
         <div class="row">
             <div class="col">
                 <h1 class="h2">
-                    <i class="fas fa-book fa-fw"></i>
-                    {{ i18n.trans(fsc.title) }}
+                    <i class="fas fa-book fa-fw"></i> {{ fsc.title }}
                 </h1>
                 <p>{{ i18n.trans('model-347-p') }}</p>
             </div>
@@ -32,8 +31,7 @@
                         <select name="codejercicio" class="form-control" required onchange="this.form.submit()">
                             {% for exercise in fsc.allExercises() %}
                                 {% if exercise.codejercicio == fsc.codejercicio %}
-                                    <option value="{{ exercise.codejercicio }}"
-                                            selected="">{{ exercise.nombre }}</option>
+                                    <option value="{{ exercise.codejercicio }}" selected>{{ exercise.nombre }}</option>
                                 {% else %}
                                     <option value="{{ exercise.codejercicio }}">{{ exercise.nombre }}</option>
                                 {% endif %}
@@ -83,9 +81,13 @@
                             <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-download fa-fw"></i> {{ i18n.trans('download') }}
                             </button>
-                            <div class="dropdown-menu">
-                                <button type="submit" name="action" value="download-excel" class="dropdown-item">{{ i18n.trans('excel') }}</button>
-                                <button type="submit" name="action" value="download-txt" class="dropdown-item">{{ i18n.trans('txt') }}</button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <button type="submit" name="action" value="download-excel" class="dropdown-item">
+                                    <i class="fas fa-file-excel fa-fw mr-1"></i> {{ i18n.trans('spreadsheet-xls') }}
+                                </button>
+                                <button type="submit" name="action" value="download-txt" class="dropdown-item">
+                                    <i class="far fa-file-alt fa-fw mr-1"></i> {{ i18n.trans('txt-for-treasury') }}
+                                </button>
                             </div>
                         </div>
                     </div>
