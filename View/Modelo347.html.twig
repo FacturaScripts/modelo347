@@ -75,14 +75,18 @@
                     </div>
                 </div>
                 <div class="col-sm-auto">
-                    <div class="form-group">
-                        <div class="btn-group">
-                            <button type="submit" name="action" value="show" class="btn btn-primary">
-                                <i class="fas fa-eye fa-fw"></i> {{ i18n.trans('preview') }}
-                            </button>
-                            <button type="submit" name="action" value="download" class="btn btn-secondary">
+                    <div class="btn-group" role="group">
+                        <button type="submit" name="action" value="show" class="btn btn-primary">
+                            <i class="fas fa-eye fa-fw"></i> {{ i18n.trans('preview') }}
+                        </button>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-download fa-fw"></i> {{ i18n.trans('download') }}
                             </button>
+                            <div class="dropdown-menu">
+                                <button type="submit" name="action" value="download-excel" class="dropdown-item">{{ i18n.trans('excel') }}</button>
+                                <button type="submit" name="action" value="download-txt" class="dropdown-item">{{ i18n.trans('txt') }}</button>
+                            </div>
                         </div>
                     </div>
                 </div>
