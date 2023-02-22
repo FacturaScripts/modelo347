@@ -90,7 +90,7 @@ class Txt347Export
             . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
             . self::formatString(self::$company->nombre, 40, ' ', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARANTE
             . 'T' // TIPO DE SOPORTE
-            . self::formatString(self::formatOnlyNumber(self::$company->telefono1 ?? ''), 9, '0', STR_PAD_RIGHT) . self::formatString('', 40, ' ', STR_PAD_LEFT) // PERSONA CON QUIÉN RELACIONARSE
+            . self::formatString(self::formatOnlyNumber(self::$company->telefono1), 9, '0', STR_PAD_RIGHT) . self::formatString(self::$company->administrador, 40, ' ', STR_PAD_LEFT) // PERSONA CON QUIÉN RELACIONARSE
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN
             . self::formatString('', 1, ' ', STR_PAD_LEFT) . self::formatString('', 1, ' ', STR_PAD_LEFT) // DECLARACIÓN COMPLEMENTARIA O SUSTITUTIVA
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN ANTERIOR
