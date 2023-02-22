@@ -27,6 +27,7 @@ use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Cuenta;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Dinamic\Model\Proveedor;
+use FacturaScripts\Plugins\Modelo347\Lib\Txt347Export;
 
 /**
  * Description of Modelo347
@@ -93,8 +94,14 @@ class Modelo347 extends Controller
         $action = $this->request->request->get('action', '');
 
         $this->defaultAction();
-        if ($action == 'download') {
-            $this->downloadAction();
+        switch ($action) {
+            case 'download-excel':
+                $this->downloadExcelAction();
+                break;
+
+            case 'download-txt':
+                $this->downloadTxtAction();
+                break;
         }
     }
 
@@ -122,7 +129,7 @@ class Modelo347 extends Controller
         }
     }
 
-    protected function downloadAction(): void
+    protected function downloadExcelAction(): void
     {
         $this->setTemplate(false);
 
@@ -169,6 +176,28 @@ class Modelo347 extends Controller
         }
 
         $xlsExport->show($this->response);
+    }
+
+    protected function downloadTxtAction(): void
+    {
+        $this->setTemplate(false);
+
+        // creamos el archivo txt
+        $exportFile = FS_FOLDER . '/MyFiles/' . $this->toolBox()->i18n()->trans('model-347') . '.txt';
+        if (false === file_put_contents($exportFile, Txt347Export::export($this->codejercicio, $this->customersData, $this->suppliersData))) {
+            $this->toolBox()->i18nLog()->error('cant-save-file', ['%fileName%' => $exportFile]);
+            return;
+        }
+
+        // descargamos el archivo
+        $this->response->headers->set('Content-Type', 'text/plain; charset=ISO-8859-1');
+        $this->response->headers->set('Content-Disposition', 'attachment; filename="' . basename($exportFile) . '"');
+        $this->response->headers->set('Pragma', 'no-cache');
+        $this->response->headers->set('Expires', '0');
+        $this->response->setContent(file_get_contents($exportFile));
+
+        // eliminamos el archivo
+        unlink($exportFile);
     }
 
     protected function getAccountingInfo(Cuenta $cuenta): array
@@ -240,6 +269,7 @@ class Modelo347 extends Controller
                 $dir = $cliente->getDefaultAddress();
                 $items[$cliente->codcliente]['cifnif'] = $cliente->cifnif;
                 $items[$cliente->codcliente]['cliente'] = $cliente->razonsocial;
+                $items[$cliente->codcliente]['codpais'] = $dir->codpais;
                 $items[$cliente->codcliente]['codpostal'] = $dir->codpostal;
                 $items[$cliente->codcliente]['ciudad'] = $dir->ciudad;
                 $items[$cliente->codcliente]['provincia'] = $dir->provincia;
@@ -291,6 +321,7 @@ class Modelo347 extends Controller
                 $dir = $cliente->getDefaultAddress();
                 $items[$codcliente]['cifnif'] = $cliente->cifnif;
                 $items[$codcliente]['cliente'] = $cliente->razonsocial;
+                $items[$codcliente]['codpais'] = $dir->codpais;
                 $items[$codcliente]['codpostal'] = $dir->codpostal;
                 $items[$codcliente]['ciudad'] = $dir->ciudad;
                 $items[$codcliente]['provincia'] = $dir->provincia;
@@ -344,6 +375,7 @@ class Modelo347 extends Controller
                 $dir = $proveedor->getDefaultAddress();
                 $items[$proveedor->codproveedor]['cifnif'] = $proveedor->cifnif;
                 $items[$proveedor->codproveedor]['proveedor'] = $proveedor->razonsocial;
+                $items[$proveedor->codproveedor]['codpais'] = $dir->codpais;
                 $items[$proveedor->codproveedor]['codpostal'] = $dir->codpostal;
                 $items[$proveedor->codproveedor]['ciudad'] = $dir->ciudad;
                 $items[$proveedor->codproveedor]['provincia'] = $dir->provincia;
@@ -395,6 +427,7 @@ class Modelo347 extends Controller
                 $dir = $proveedor->getDefaultAddress();
                 $items[$codproveedor]['cifnif'] = $proveedor->cifnif;
                 $items[$codproveedor]['proveedor'] = $proveedor->razonsocial;
+                $items[$codproveedor]['codpais'] = $dir->codpais;
                 $items[$codproveedor]['codpostal'] = $dir->codpostal;
                 $items[$codproveedor]['ciudad'] = $dir->ciudad;
                 $items[$codproveedor]['provincia'] = $dir->provincia;
