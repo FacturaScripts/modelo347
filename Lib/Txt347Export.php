@@ -55,6 +55,16 @@ class Txt347Export
         return $companyData . $customerData . $supplierData;
     }
 
+    protected static function checkCifNif(array $item): string
+    {
+        if (strtoupper($item['codpais']) !== 'ES'
+            && false === in_array(strtoupper($item['tipoidfiscal']), ['DNI', 'CIF', 'NIF'])) {
+            return self::formatString('', 9, ' ', STR_PAD_RIGHT);
+        }
+
+        return self::formatString($item['cifnif'], 9, '0', STR_PAD_RIGHT);
+    }
+
     protected static function formatOnlyNumber(string $number): string
     {
         // eliminamos cualquier carácter que no sea un número
@@ -115,7 +125,7 @@ class Txt347Export
                 . '347' // MODELO DECLARACIÓN
                 . date('Y', strtotime(self::$exercise->fechainicio)) // EJERCICIO
                 . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
-                . self::formatString($item['cifnif'], 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARADO
+                . self::checkCifNif($item) // NIF DEL DECLARADO
                 . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
                 . self::formatString($item['cliente'], 40, ' ', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
                 . 'D' // TIPO DE HOJA
@@ -363,7 +373,7 @@ class Txt347Export
                 . '347' // MODELO DECLARACIÓN
                 . date('Y', strtotime(self::$exercise->fechainicio)) // EJERCICIO
                 . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
-                . self::formatString($item['cifnif'], 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARADO
+                . self::checkCifNif($item) // NIF DEL DECLARADO
                 . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
                 . self::formatString($item['proveedor'], 40, ' ', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
                 . 'D' // TIPO DE HOJA

@@ -355,6 +355,7 @@ class Modelo347 extends Controller
                 $items[$cliente->codcliente]['codpostal'] = $dir->codpostal;
                 $items[$cliente->codcliente]['ciudad'] = $dir->ciudad;
                 $items[$cliente->codcliente]['provincia'] = $dir->provincia;
+                $items[$cliente->codcliente]['tipoidfiscal'] = $cliente->tipoidfiscal;
 
                 $this->groupTotals($items[$cliente->codcliente], $row);
             }
@@ -407,6 +408,7 @@ class Modelo347 extends Controller
                 $items[$codcliente]['codpostal'] = $dir->codpostal;
                 $items[$codcliente]['ciudad'] = $dir->ciudad;
                 $items[$codcliente]['provincia'] = $dir->provincia;
+                $items[$codcliente]['tipoidfiscal'] = $cliente->tipoidfiscal;
             }
 
             $this->groupTotals($items[$codcliente], $row);
@@ -461,6 +463,7 @@ class Modelo347 extends Controller
                 $items[$proveedor->codproveedor]['codpostal'] = $dir->codpostal;
                 $items[$proveedor->codproveedor]['ciudad'] = $dir->ciudad;
                 $items[$proveedor->codproveedor]['provincia'] = $dir->provincia;
+                $items[$proveedor->codproveedor]['tipoidfiscal'] = $proveedor->tipoidfiscal;
 
                 $this->groupTotals($items[$proveedor->codproveedor], $row);
             }
@@ -513,6 +516,7 @@ class Modelo347 extends Controller
                 $items[$codproveedor]['codpostal'] = $dir->codpostal;
                 $items[$codproveedor]['ciudad'] = $dir->ciudad;
                 $items[$codproveedor]['provincia'] = $dir->provincia;
+                $items[$codproveedor]['tipoidfiscal'] = $proveedor->tipoidfiscal;
             }
 
             $this->groupTotals($items[$codproveedor], $row);
