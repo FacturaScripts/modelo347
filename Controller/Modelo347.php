@@ -22,12 +22,11 @@ namespace FacturaScripts\Plugins\Modelo347\Controller;
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Ejercicios;
+use FacturaScripts\Core\DataSrc\Empresas;
 use FacturaScripts\Dinamic\Lib\Export\XLSExport;
 use FacturaScripts\Dinamic\Model\Cliente;
-use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Dinamic\Model\Cuenta;
 use FacturaScripts\Dinamic\Model\Ejercicio;
-use FacturaScripts\Dinamic\Model\Empresa;
 use FacturaScripts\Dinamic\Model\Proveedor;
 use FacturaScripts\Plugins\Modelo347\Lib\Txt347Export;
 
@@ -107,71 +106,49 @@ class Modelo347 extends Controller
         }
     }
 
-    protected function checkAddress(Contacto $dir, $contact): bool
+    protected function checkAddress(array $data, string $type): void
     {
-        $result = true;
-        $arrayTrans = [
-            '%type%' => $contact->modelClassName() === 'Cliente' ? $this->toolBox()->i18n()->trans('customer') : $this->toolBox()->i18n()->trans('supplier'),
-            '%cifnif%' => $contact->cifnif,
+        $context = [
+            '%type%' => $this->toolBox()->i18n()->trans($type),
+            '%cifnif%' => $data['cifnif'],
         ];
 
-        if (empty($dir->provincia)) {
-            $this->toolBox()->i18nLog()->warning('347-no-province', $arrayTrans);
-            $result = false;
+        if (empty($data['provincia'])) {
+            $this->toolBox()->i18nLog()->warning('347-no-province', $context);
         }
 
-        if (empty($dir->codpais)) {
-            $this->toolBox()->i18nLog()->warning('347-no-country', $arrayTrans);
-            $result = false;
+        if (empty($data['codpais'])) {
+            $this->toolBox()->i18nLog()->warning('347-no-country', $context);
         }
-
-        return $result;
     }
 
-    protected function checkData(): bool
+    protected function checkData(): void
     {
-        $result = true;
-
         // obtenemos el ejercicio
-        $exerciseModel = new Ejercicio();
-        $exerciseModel->loadFromCode($this->codejercicio);
+        $exerciseModel = Ejercicios::get($this->codejercicio);
 
         // obtenemos la empresa del ejercicio
-        $companyModel = new Empresa();
-        $companyModel->loadFromCode($exerciseModel->idempresa);
+        $companyModel = Empresas::get($exerciseModel->idempresa);
 
         if (empty($companyModel->administrador)) {
             $this->toolBox()->i18nLog()->warning('company-admin-no-data', ['%company%' => $companyModel->nombre]);
-            $result = false;
         }
 
         if (empty($companyModel->telefono1)) {
             $this->toolBox()->i18nLog()->warning('company-phone-no-data', ['%company%' => $companyModel->nombre]);
-            $result = false;
         }
 
         if (empty($this->customersData) && empty($this->suppliersData)) {
             $this->toolBox()->i18nLog()->warning('347-no-data');
-            $result = false;
         }
 
-        foreach ($this->customersData as $key => $data) {
-            $customer = new Cliente();
-            $customer->loadFromCode($key);
-            if (false === $this->checkAddress($customer->getDefaultAddress(), $customer)) {
-                $result = false;
-            }
+        foreach ($this->customersData as $data) {
+            $this->checkAddress($data, 'customer');
         }
 
-        foreach ($this->suppliersData as $key => $data) {
-            $supplier = new Proveedor();
-            $supplier->loadFromCode($key);
-            if (false === $this->checkAddress($supplier->getDefaultAddress(), $supplier)) {
-                $result = false;
-            }
+        foreach ($this->suppliersData as $data) {
+            $this->checkAddress($data, 'supplier');
         }
-
-        return $result;
     }
 
     protected function defaultAction(): void
@@ -191,19 +168,14 @@ class Modelo347 extends Controller
         $this->examine = $this->request->request->get('examine', $this->examine);
         $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
 
-        if ($this->activetab === 'customers') {
-            $this->loadCustomersData();
-        } else {
-            $this->loadSuppliersData();
-        }
+        $this->loadCustomersData();
+        $this->loadSuppliersData();
+
+        $this->checkData();
     }
 
     protected function downloadExcelAction(): void
     {
-        if (false === $this->checkData()) {
-            return;
-        }
-
         $this->setTemplate(false);
 
         $xlsExport = new XLSExport();
@@ -253,18 +225,14 @@ class Modelo347 extends Controller
 
     protected function downloadTxtAction(): void
     {
+        $this->setTemplate(false);
+
         // cargamos la información que falte
         if ($this->activetab === 'suppliers') {
             $this->loadCustomersData();
         } else {
             $this->loadSuppliersData();
         }
-
-        if (false === $this->checkData()) {
-            return;
-        }
-
-        $this->setTemplate(false);
 
         // creamos el archivo txt
         $exportFile = FS_FOLDER . '/MyFiles/' . $this->toolBox()->i18n()->trans('model-347') . '.txt';
