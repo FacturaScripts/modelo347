@@ -160,12 +160,11 @@ class Txt347Export
     protected static function getPais(string $codpais): string
     {
         $paisModel = new Pais();
-        if ($paisModel->loadFromCode($codpais)) {
+        if ($paisModel->loadFromCode($codpais) && $paisModel->codiso !== 'ES') {
             return self::formatString($paisModel->codiso, 2, '', STR_PAD_LEFT);
         }
 
-        $paisModel->loadFromCode(self::$company->codpais);
-        return self::formatString($paisModel->codiso, 2, '', STR_PAD_LEFT);
+        return self::formatString('', 2, ' ', STR_PAD_LEFT);
     }
 
     protected static function getProvincia(?string $provincia): string
