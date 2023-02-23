@@ -24,6 +24,7 @@ use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Ejercicios;
 use FacturaScripts\Dinamic\Lib\Export\XLSExport;
 use FacturaScripts\Dinamic\Model\Cliente;
+use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Dinamic\Model\Cuenta;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Dinamic\Model\Empresa;
@@ -106,6 +107,73 @@ class Modelo347 extends Controller
         }
     }
 
+    protected function checkAddress(Contacto $dir, $contact): bool
+    {
+        $result = true;
+        $arrayTrans = [
+            '%type%' => $contact->modelClassName() === 'Cliente' ? $this->toolBox()->i18n()->trans('customer') : $this->toolBox()->i18n()->trans('supplier'),
+            '%cifnif%' => $contact->cifnif,
+        ];
+
+        if (empty($dir->provincia)) {
+            $this->toolBox()->i18nLog()->warning('347-no-province', $arrayTrans);
+            $result = false;
+        }
+
+        if (empty($dir->codpais)) {
+            $this->toolBox()->i18nLog()->warning('347-no-country', $arrayTrans);
+            $result = false;
+        }
+
+        return $result;
+    }
+
+    protected function checkData(): bool
+    {
+        $result = true;
+
+        // obtenemos el ejercicio
+        $exerciseModel = new Ejercicio();
+        $exerciseModel->loadFromCode($this->codejercicio);
+
+        // obtenemos la empresa del ejercicio
+        $companyModel = new Empresa();
+        $companyModel->loadFromCode($exerciseModel->idempresa);
+
+        if (empty($companyModel->administrador)) {
+            $this->toolBox()->i18nLog()->warning('company-admin-no-data', ['%company%' => $companyModel->nombre]);
+            $result = false;
+        }
+
+        if (empty($companyModel->telefono1)) {
+            $this->toolBox()->i18nLog()->warning('company-phone-no-data', ['%company%' => $companyModel->nombre]);
+            $result = false;
+        }
+
+        if (empty($this->customersData) && empty($this->suppliersData)) {
+            $this->toolBox()->i18nLog()->warning('347-no-data');
+            $result = false;
+        }
+
+        foreach ($this->customersData as $key => $data) {
+            $customer = new Cliente();
+            $customer->loadFromCode($key);
+            if (false === $this->checkAddress($customer->getDefaultAddress(), $customer)) {
+                $result = false;
+            }
+        }
+
+        foreach ($this->suppliersData as $key => $data) {
+            $supplier = new Proveedor();
+            $supplier->loadFromCode($key);
+            if (false === $this->checkAddress($supplier->getDefaultAddress(), $supplier)) {
+                $result = false;
+            }
+        }
+
+        return $result;
+    }
+
     protected function defaultAction(): void
     {
         // buscamos el primer ejercicio abierto, para tenerlo como predeterminado
@@ -132,6 +200,10 @@ class Modelo347 extends Controller
 
     protected function downloadExcelAction(): void
     {
+        if (false === $this->checkData()) {
+            return;
+        }
+
         $this->setTemplate(false);
 
         $xlsExport = new XLSExport();
@@ -181,28 +253,18 @@ class Modelo347 extends Controller
 
     protected function downloadTxtAction(): void
     {
-        // obtenemos el ejercicio
-        $exerciseModel = new Ejercicio();
-        $exerciseModel->loadFromCode($this->codejercicio);
-
-        // obtenemos la empresa del ejercicio
-        $companyModel = new Empresa();
-        $companyModel->loadFromCode($exerciseModel->idempresa);
-
-        // comprobamos si el administrador de la empresa o el teléfono de contacto es vacío
-        if (empty($companyModel->administrador) || empty($companyModel->telefono1)) {
-            $this->toolBox()->i18nLog()->warning('admin-or-phone-empty');
-            return;
-        }
-
-        $this->setTemplate(false);
-
         // cargamos la información que falte
         if ($this->activetab === 'suppliers') {
             $this->loadCustomersData();
         } else {
             $this->loadSuppliersData();
         }
+
+        if (false === $this->checkData()) {
+            return;
+        }
+
+        $this->setTemplate(false);
 
         // creamos el archivo txt
         $exportFile = FS_FOLDER . '/MyFiles/' . $this->toolBox()->i18n()->trans('model-347') . '.txt';
