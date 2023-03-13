@@ -1,6 +1,4 @@
 {
-    "347-no-province": "El %type% %cifnif% no tiene provincia",
-    "347-no-country": "El %type% %cifnif% no tiene país",
     "examine": "Examinar",
     "exclude-irpf": "Excluir IRPF",
     "model-347": "Modelo 347",
