@@ -58,6 +58,9 @@ class Modelo347 extends Controller
     /** @var bool */
     public $excludeIrpf = false;
 
+    /** @var string */
+    public $grouping = 'fiscal-number';
+
     /** @var array */
     public $suppliersData = [];
 
@@ -67,6 +70,11 @@ class Modelo347 extends Controller
     public function allExamine(): array
     {
         return ['accounting', 'invoices'];
+    }
+
+    public function allGroupBy(): array
+    {
+        return ['fiscal-number', 'code'];
     }
 
     /**
@@ -167,6 +175,7 @@ class Modelo347 extends Controller
         $this->codejercicio = $this->request->request->get('codejercicio', $codejercicio);
         $this->examine = $this->request->request->get('examine', $this->examine);
         $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
+        $this->grouping = $this->request->request->get('grouping', $this->grouping);
 
         $this->loadCustomersData();
         $this->loadSuppliersData();
@@ -277,9 +286,21 @@ class Modelo347 extends Controller
         return $this->dataBase->select($sql);
     }
 
+    protected function getCodeForTotal(array &$fiscalnumbers, string $code, string $idfiscal): string
+    {
+        if ($this->grouping === 'fiscal-number') {
+            if (false === isset($fiscalnumbers[$idfiscal])) {
+                $fiscalnumbers[$idfiscal] = $code;
+            }
+            return $fiscalnumbers[$idfiscal];
+        }
+        return $code;
+    }
+
     protected function getCustomersDataAccounting(): array
     {
         $items = [];
+        $fiscalnumbers = [];
 
         // buscamos las cuentas especiales de clientes de este ejercicio
         $cuentaModel = new Cuenta();
@@ -298,11 +319,12 @@ class Modelo347 extends Controller
                     continue;
                 }
 
-                if (isset($items[$cliente->codcliente])) {
-                    $this->groupTotals($items[$cliente->codcliente], $row);
+                $codcliente = $this->getCodeForTotal($fiscalnumbers, $cliente->codcliente, $cliente->cifnif);
+                if (isset($items[$codcliente])) {
+                    $this->groupTotals($items[$codcliente], $row);
                     continue;
                 }
-
+                // Es un cliente nuevo. Utilizamos los datos del cliente.
                 $items[$cliente->codcliente] = [
                     'cifnif' => '',
                     'cliente' => $cliente->codcliente,
@@ -334,21 +356,24 @@ class Modelo347 extends Controller
 
     protected function getCustomersDataInvoices(): array
     {
+        // Esto se puede simplificar con EXTRACT(MONTH FROM fecha) que es general para Mysql y Postgresql.
+        // Se puede unificar con cliente en una sola función. (tabla y nombre campo)
         $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codcliente, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli"
+            "SELECT codcliente, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codcliente, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli"
+            "SELECT codcliente, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
 
         if ($this->excludeIrpf) {
             $sql .= " AND irpf = 0";
         }
 
-        $sql .= " GROUP BY codcliente, mes ORDER BY codcliente;";
+        $sql .= " GROUP BY codcliente, cifnif, mes ORDER BY codcliente;";
 
+        $fiscalnumbers = [];
         $items = [];
         foreach ($this->dataBase->select($sql) as $row) {
-            $codcliente = $row['codcliente'];
+            $codcliente = $this->getCodeForTotal($fiscalnumbers, $row['codcliente'], $row['cifnif']);
             if (isset($items[$codcliente])) {
                 $this->groupTotals($items[$codcliente], $row);
                 continue;
@@ -388,6 +413,7 @@ class Modelo347 extends Controller
     protected function getSuppliersDataAccounting(): array
     {
         $items = [];
+        $fiscalnumbers = [];
 
         // buscamos las cuentas especiales de proveedores de este ejercicio
         $cuentaModel = new Cuenta();
@@ -406,11 +432,13 @@ class Modelo347 extends Controller
                     continue;
                 }
 
-                if (isset($items[$proveedor->codproveedor])) {
-                    $this->groupTotals($items[$proveedor->codproveedor], $row);
+                $codproveedor = $this->getCodeForTotal($fiscalnumbers, $proveedor->codproveedor, $proveedor->cifnif);
+                if (isset($items[$codproveedor])) {
+                    $this->groupTotals($items[$codproveedor], $row);
                     continue;
                 }
 
+                // Es un proveedor nuevo. Utilizamos los datos del proveedor.
                 $items[$proveedor->codproveedor] = [
                     'cifnif' => '',
                     'proveedor' => $proveedor->codproveedor,
@@ -442,21 +470,24 @@ class Modelo347 extends Controller
 
     protected function getSuppliersDataInvoices(): array
     {
+        // Esto se puede simplificar con EXTRACT(MONTH FROM fecha) que es general para Mysql y Postgresql.
+        // Se puede unificar con cliente en una sola función. (tabla y nombre campo)
         $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codproveedor, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov"
+            "SELECT codproveedor, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codproveedor, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov"
+            "SELECT codproveedor, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov"
             . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
 
         if ($this->excludeIrpf) {
             $sql .= " AND irpf = 0";
         }
 
-        $sql .= " GROUP BY codproveedor, mes ORDER BY codproveedor;";
+        $sql .= " GROUP BY codproveedor, cifnif, mes ORDER BY codproveedor;";
 
+        $fiscalnumbers = [];
         $items = [];
         foreach ($this->dataBase->select($sql) as $row) {
-            $codproveedor = $row['codproveedor'];
+            $codproveedor = $this->getCodeForTotal($fiscalnumbers, $row['codproveedor'], $row['cifnif']);
             if (isset($items[$codproveedor])) {
                 $this->groupTotals($items[$codproveedor], $row);
                 continue;
