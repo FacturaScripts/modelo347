@@ -39,6 +39,7 @@
                         </select>
                     </div>
                 </div>
+                {# Examine Input #}
                 <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('examine') }}
@@ -53,6 +54,7 @@
                         </select>
                     </div>
                 </div>
+                {# Amount Input #}
                 <div class="col-sm">
                     <div class="form-group">
                         {{ i18n.trans('amount') }}
@@ -60,6 +62,22 @@
                                class="form-control" required/>
                     </div>
                 </div>
+                {# Grouping Type Input #}
+                <div class="col-sm">
+                    <div class="form-group">
+                        {{ i18n.trans('grouping-type') }}
+                        <select name="grouping" class="form-control" required onchange="this.form.submit()">
+                            {% for groupby in fsc.allGroupBy() %}
+                                {% if groupby == fsc.grouping %}
+                                    <option value="{{ groupby }}" selected>{{ i18n.trans(groupby) }}</option>
+                                {% else %}
+                                    <option value="{{ groupby }}">{{ i18n.trans(groupby) }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                {# Exclude IRPF Input #}
                 <div class="col-sm">
                     <div class="form-group form-check">
                         {% if fsc.excludeIrpf %}
@@ -72,6 +90,7 @@
                         <label for="checkboxirpf">{{ i18n.trans('exclude-irpf') }}</label>
                     </div>
                 </div>
+                {# Buttons #}
                 <div class="col-sm-auto">
                     <div class="btn-group" role="group">
                         <button type="submit" name="action" value="show" class="btn btn-primary">
