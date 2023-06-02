@@ -19,7 +19,7 @@
                 <h1 class="h2">
                     <i class="fas fa-book fa-fw"></i> {{ fsc.title }}
                 </h1>
-                <p>{{ i18n.trans('model-347-p') }}</p>
+                <p>{{ trans('model-347-p') }}</p>
             </div>
         </div>
         <form method="post" name="modelo347">
@@ -27,7 +27,7 @@
             <div class="form-row align-items-end">
                 <div class="col-sm">
                     <div class="form-group">
-                        {{ i18n.trans('exercise') }}
+                        {{ trans('exercise') }}
                         <select name="codejercicio" class="form-control" required onchange="this.form.submit()">
                             {% for exercise in fsc.allExercises() %}
                                 {% if exercise.codejercicio == fsc.codejercicio %}
@@ -42,13 +42,13 @@
                 {# Examine Input #}
                 <div class="col-sm">
                     <div class="form-group">
-                        {{ i18n.trans('examine') }}
+                        {{ trans('examine') }}
                         <select name="examine" class="form-control" required onchange="this.form.submit()">
                             {% for type in fsc.allExamine() %}
                                 {% if type == fsc.examine %}
-                                    <option value="{{ type }}" selected>{{ i18n.trans(type) }}</option>
+                                    <option value="{{ type }}" selected>{{ trans(type) }}</option>
                                 {% else %}
-                                    <option value="{{ type }}">{{ i18n.trans(type) }}</option>
+                                    <option value="{{ type }}">{{ trans(type) }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
@@ -57,7 +57,7 @@
                 {# Amount Input #}
                 <div class="col-sm">
                     <div class="form-group">
-                        {{ i18n.trans('amount') }}
+                        {{ trans('amount') }}
                         <input type="number" min="0" step="any" name="amount" value="{{ fsc.amount }}"
                                class="form-control" required/>
                     </div>
@@ -65,13 +65,13 @@
                 {# Grouping Type Input #}
                 <div class="col-sm">
                     <div class="form-group">
-                        {{ i18n.trans('grouping-type') }}
+                        {{ trans('grouping-type') }}
                         <select name="grouping" class="form-control" required onchange="this.form.submit()">
                             {% for groupby in fsc.allGroupBy() %}
                                 {% if groupby == fsc.grouping %}
-                                    <option value="{{ groupby }}" selected>{{ i18n.trans(groupby) }}</option>
+                                    <option value="{{ groupby }}" selected>{{ trans(groupby) }}</option>
                                 {% else %}
-                                    <option value="{{ groupby }}">{{ i18n.trans(groupby) }}</option>
+                                    <option value="{{ groupby }}">{{ trans(groupby) }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
@@ -87,25 +87,25 @@
                             <input type="checkbox" name="excludeirpf" value="1" id="checkboxirpf"
                                    class="form-check-input"/>
                         {% endif %}
-                        <label for="checkboxirpf">{{ i18n.trans('exclude-irpf') }}</label>
+                        <label for="checkboxirpf">{{ trans('exclude-irpf') }}</label>
                     </div>
                 </div>
                 {# Buttons #}
                 <div class="col-sm-auto">
                     <div class="btn-group" role="group">
                         <button type="submit" name="action" value="show" class="btn btn-primary">
-                            <i class="fas fa-eye fa-fw"></i> {{ i18n.trans('preview') }}
+                            <i class="fas fa-eye fa-fw"></i> {{ trans('preview') }}
                         </button>
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-download fa-fw"></i> {{ i18n.trans('download') }}
+                                <i class="fas fa-download fa-fw"></i> {{ trans('download') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <button type="submit" name="action" value="download-excel" class="dropdown-item">
-                                    <i class="fas fa-file-excel fa-fw mr-1"></i> {{ i18n.trans('spreadsheet-xls') }}
+                                    <i class="fas fa-file-excel fa-fw mr-1"></i> {{ trans('spreadsheet-xls') }}
                                 </button>
                                 <button type="submit" name="action" value="download-txt" class="dropdown-item">
-                                    <i class="far fa-file-alt fa-fw mr-1"></i> {{ i18n.trans('txt-for-treasury') }}
+                                    <i class="far fa-file-alt fa-fw mr-1"></i> {{ trans('txt-for-treasury') }}
                                 </button>
                             </div>
                         </div>
@@ -120,14 +120,14 @@
             <a class="nav-link {{ fsc.activetab == 'customers' ? 'active' : '' }}" onclick="activeTab('customers')"
                id="customers-tab" data-toggle="tab" href="#customers" role="tab" aria-controls="customers"
                aria-selected="true">
-                {{ i18n.trans('customers') }}
+                {{ trans('customers') }}
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link {{ fsc.activetab == 'suppliers' ? 'active' : '' }}" onclick="activeTab('suppliers')"
                id="suppliers-tab" data-toggle="tab" href="#suppliers" role="tab" aria-controls="suppliers"
                aria-selected="false">
-                {{ i18n.trans('suppliers') }}
+                {{ trans('suppliers') }}
             </a>
         </li>
     </ul>
@@ -151,16 +151,16 @@
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>{{ i18n.trans('cifnif') }}</th>
-                <th>{{ i18n.trans('customer') }}</th>
-                <th>{{ i18n.trans('zip-code') }}</th>
-                <th>{{ i18n.trans('city') }}</th>
-                <th>{{ i18n.trans('province') }}</th>
-                <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('total') }}</th>
+                <th>{{ trans('cifnif') }}</th>
+                <th>{{ trans('customer') }}</th>
+                <th>{{ trans('zip-code') }}</th>
+                <th>{{ trans('city') }}</th>
+                <th>{{ trans('province') }}</th>
+                <th class="text-right">{{ trans('first-trimester') }}</th>
+                <th class="text-right">{{ trans('second-trimester') }}</th>
+                <th class="text-right">{{ trans('third-trimester') }}</th>
+                <th class="text-right">{{ trans('fourth-trimester') }}</th>
+                <th class="text-right">{{ trans('total') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -196,16 +196,16 @@
         <table class="table table-hover">
             <thead>
             <tr>
-                <th>{{ i18n.trans('cifnif') }}</th>
-                <th>{{ i18n.trans('supplier') }}</th>
-                <th>{{ i18n.trans('zip-code') }}</th>
-                <th>{{ i18n.trans('city') }}</th>
-                <th>{{ i18n.trans('province') }}</th>
-                <th class="text-right">{{ i18n.trans('first-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('second-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('third-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('fourth-trimester') }}</th>
-                <th class="text-right">{{ i18n.trans('total') }}</th>
+                <th>{{ trans('cifnif') }}</th>
+                <th>{{ trans('supplier') }}</th>
+                <th>{{ trans('zip-code') }}</th>
+                <th>{{ trans('city') }}</th>
+                <th>{{ trans('province') }}</th>
+                <th class="text-right">{{ trans('first-trimester') }}</th>
+                <th class="text-right">{{ trans('second-trimester') }}</th>
+                <th class="text-right">{{ trans('third-trimester') }}</th>
+                <th class="text-right">{{ trans('fourth-trimester') }}</th>
+                <th class="text-right">{{ trans('total') }}</th>
             </tr>
             </thead>
             <tbody>

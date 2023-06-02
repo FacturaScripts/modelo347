@@ -59,7 +59,7 @@ class Modelo347 extends Controller
     public $excludeIrpf = false;
 
     /** @var string */
-    public $grouping = 'fiscal-number';
+    public $grouping = 'customer-supplier';
 
     /** @var array */
     public $suppliersData = [];
@@ -74,7 +74,7 @@ class Modelo347 extends Controller
 
     public function allGroupBy(): array
     {
-        return ['fiscal-number', 'code'];
+        return ['cifnif', 'customer-supplier'];
     }
 
     /**
@@ -117,8 +117,9 @@ class Modelo347 extends Controller
     protected function checkAddress(array $data, string $type): void
     {
         $context = [
-            '%type%' => $this->toolBox()->i18n()->trans($type),
             '%cifnif%' => $data['cifnif'],
+            '%name%' => $data['cliente'] ?? $data['proveedor'] ?? '',
+            '%type%' => $this->toolBox()->i18n()->trans($type),
         ];
 
         if (empty($data['provincia'])) {
@@ -286,13 +287,13 @@ class Modelo347 extends Controller
         return $this->dataBase->select($sql);
     }
 
-    protected function getCodeForTotal(array &$fiscalnumbers, string $code, string $idfiscal): string
+    protected function getCodeForTotal(array &$fiscalNumbers, string $code, string $idfiscal): string
     {
-        if ($this->grouping === 'fiscal-number') {
-            if (false === isset($fiscalnumbers[$idfiscal])) {
-                $fiscalnumbers[$idfiscal] = $code;
+        if ($this->grouping === 'cifnif') {
+            if (false === isset($fiscalNumbers[$idfiscal])) {
+                $fiscalNumbers[$idfiscal] = $code;
             }
-            return $fiscalnumbers[$idfiscal];
+            return $fiscalNumbers[$idfiscal];
         }
         return $code;
     }
@@ -300,7 +301,7 @@ class Modelo347 extends Controller
     protected function getCustomersDataAccounting(): array
     {
         $items = [];
-        $fiscalnumbers = [];
+        $fiscalNumbers = [];
 
         // buscamos las cuentas especiales de clientes de este ejercicio
         $cuentaModel = new Cuenta();
@@ -319,7 +320,7 @@ class Modelo347 extends Controller
                     continue;
                 }
 
-                $codcliente = $this->getCodeForTotal($fiscalnumbers, $cliente->codcliente, $cliente->cifnif);
+                $codcliente = $this->getCodeForTotal($fiscalNumbers, $cliente->codcliente, $cliente->cifnif);
                 if (isset($items[$codcliente])) {
                     $this->groupTotals($items[$codcliente], $row);
                     continue;
@@ -370,10 +371,10 @@ class Modelo347 extends Controller
 
         $sql .= " GROUP BY codcliente, cifnif, mes ORDER BY codcliente;";
 
-        $fiscalnumbers = [];
+        $fiscalNumbers = [];
         $items = [];
         foreach ($this->dataBase->select($sql) as $row) {
-            $codcliente = $this->getCodeForTotal($fiscalnumbers, $row['codcliente'], $row['cifnif']);
+            $codcliente = $this->getCodeForTotal($fiscalNumbers, $row['codcliente'], $row['cifnif']);
             if (isset($items[$codcliente])) {
                 $this->groupTotals($items[$codcliente], $row);
                 continue;
@@ -413,7 +414,7 @@ class Modelo347 extends Controller
     protected function getSuppliersDataAccounting(): array
     {
         $items = [];
-        $fiscalnumbers = [];
+        $fiscalNumbers = [];
 
         // buscamos las cuentas especiales de proveedores de este ejercicio
         $cuentaModel = new Cuenta();
@@ -432,7 +433,7 @@ class Modelo347 extends Controller
                     continue;
                 }
 
-                $codproveedor = $this->getCodeForTotal($fiscalnumbers, $proveedor->codproveedor, $proveedor->cifnif);
+                $codproveedor = $this->getCodeForTotal($fiscalNumbers, $proveedor->codproveedor, $proveedor->cifnif);
                 if (isset($items[$codproveedor])) {
                     $this->groupTotals($items[$codproveedor], $row);
                     continue;
@@ -484,10 +485,10 @@ class Modelo347 extends Controller
 
         $sql .= " GROUP BY codproveedor, cifnif, mes ORDER BY codproveedor;";
 
-        $fiscalnumbers = [];
+        $fiscalNumbers = [];
         $items = [];
         foreach ($this->dataBase->select($sql) as $row) {
-            $codproveedor = $this->getCodeForTotal($fiscalnumbers, $row['codproveedor'], $row['cifnif']);
+            $codproveedor = $this->getCodeForTotal($fiscalNumbers, $row['codproveedor'], $row['cifnif']);
             if (isset($items[$codproveedor])) {
                 $this->groupTotals($items[$codproveedor], $row);
                 continue;
