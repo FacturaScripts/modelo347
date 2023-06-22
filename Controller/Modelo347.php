@@ -367,21 +367,9 @@ class Modelo347 extends Controller
 
     protected function getCustomersDataInvoices(): array
     {
-        // Esto se puede simplificar con EXTRACT(MONTH FROM fecha) que es general para Mysql y Postgresql.
-        // Se puede unificar con cliente en una sola función. (tabla y nombre campo)
-        $where = " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) . " AND COALESCE(excluir347, false) = false";
-        $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codcliente, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli" . $where :
-            "SELECT codcliente, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli" . $where;
-
-        if ($this->excludeIrpf) {
-            $sql .= " AND irpf = 0";
-        }
-
-        $sql .= " GROUP BY codcliente, cifnif, mes ORDER BY codcliente;";
-
         $fiscalNumbers = [];
         $items = [];
+        $sql = $this->getInvoiceSql('facturascli', 'codcliente');
         foreach ($this->dataBase->select($sql) as $row) {
             $codcliente = $this->getCodeForTotal($fiscalNumbers, $row['codcliente'], $row['cifnif']);
             if (isset($items[$codcliente])) {
@@ -420,6 +408,38 @@ class Modelo347 extends Controller
         return $items;
     }
 
+    /**
+     * Devuelve el SQL para obtener los datos para el cálculo de los totales.
+     *
+     * @param string $tableName
+     * @param string $codeField
+     * @return string
+     */
+    protected function getInvoiceSql(string $tableName, string $codeField): string
+    {
+        $sql = 'SELECT ' . $codeField . ', cifnif, EXTRACT(MONTH FROM fecha) as mes, sum(total) as total'
+            . ' FROM ' . $tableName
+            . $this->getInvoiceSqlWhere();
+
+        if ($this->excludeIrpf) {
+            $sql .= ' AND irpf = 0';
+        }
+
+        $sql .= ' GROUP BY 1, 2, 3 ORDER BY 1;';
+        return $sql;
+    }
+
+    /**
+     * Devuelve la cláusula WHERE para filtrar los documentos.
+     *
+     * @return string
+     */
+    protected function getInvoiceSqlWhere(): string
+    {
+        return ' WHERE codejercicio = ' . $this->dataBase->var2str($this->codejercicio)
+            . ' AND COALESCE(excluir347, false) = false';
+    }
+    
     protected function getSuppliersDataAccounting(): array
     {
         $items = [];
@@ -480,21 +500,9 @@ class Modelo347 extends Controller
 
     protected function getSuppliersDataInvoices(): array
     {
-        // Esto se puede simplificar con EXTRACT(MONTH FROM fecha) que es general para Mysql y Postgresql.
-        // Se puede unificar con cliente en una sola función. (tabla y nombre campo)
-        $where = " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) . " AND COALESCE(excluir347, false) = false";
-        $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codproveedor, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov" . $where :
-            "SELECT codproveedor, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov" . $where;
-
-        if ($this->excludeIrpf) {
-            $sql .= " AND irpf = 0";
-        }
-
-        $sql .= " GROUP BY codproveedor, cifnif, mes ORDER BY codproveedor;";
-
         $fiscalNumbers = [];
         $items = [];
+        $sql = $this->getInvoiceSql('facturasprov', 'codproveedor');
         foreach ($this->dataBase->select($sql) as $row) {
             $codproveedor = $this->getCodeForTotal($fiscalNumbers, $row['codproveedor'], $row['cifnif']);
             if (isset($items[$codproveedor])) {
