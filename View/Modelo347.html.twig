@@ -176,20 +176,20 @@
                     <td>{{ row.codpostal }}</td>
                     <td>{{ row.ciudad | raw }}</td>
                     <td>{{ row.provincia | raw }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t1) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t2) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t3) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t4) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.total) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t1) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t2) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t3) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t4) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.total) }}</td>
                 </tr>
             {% endfor %}
             <tr class="table-warning">
                 <td colspan="5"></td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t1) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t2) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t3) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.t4) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.customersTotals.total) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.customersTotals.t1) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.customersTotals.t2) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.customersTotals.t3) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.customersTotals.t4) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.customersTotals.total) }}</td>
             </tr>
             </tbody>
         </table>
@@ -221,20 +221,20 @@
                     <td>{{ row.codpostal }}</td>
                     <td>{{ row.ciudad | raw }}</td>
                     <td>{{ row.provincia | raw }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t1) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t2) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t3) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.t4) }}</td>
-                    <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(row.total) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t1) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t2) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t3) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.t4) }}</td>
+                    <td class="text-right text-nowrap">{{ money(row.total) }}</td>
                 </tr>
             {% endfor %}
             <tr class="table-warning">
                 <td colspan="5"></td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t1) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t2) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t3) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.t4) }}</td>
-                <td class="text-right text-nowrap">{{ fsc.toolBox().coins().format(fsc.suppliersTotals.total) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.suppliersTotals.t1) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.suppliersTotals.t2) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.suppliersTotals.t3) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.suppliersTotals.t4) }}</td>
+                <td class="text-right text-nowrap">{{ money(fsc.suppliersTotals.total) }}</td>
             </tr>
             </tbody>
         </table>
