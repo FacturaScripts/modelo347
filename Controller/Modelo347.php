@@ -78,12 +78,22 @@ class Modelo347 extends Controller
     }
 
     /**
+     * @param int|null $idempresa
      * @return Ejercicio[]
      */
-    public function allExercises(): array
+    public function allExercises(?int $idempresa): array
     {
-        $ejercicio = new Ejercicio();
-        return $ejercicio->all([], ['nombre' => 'DESC']);
+        if (empty($idempresa)) {
+            return Ejercicios::all();
+        }
+
+        $list = [];
+        foreach (Ejercicios::all() as $ejercicio) {
+            if ($ejercicio->idempresa === $idempresa) {
+                $list[] = $ejercicio;
+            }
+        }
+        return $list;
     }
 
     public function getPageData(): array

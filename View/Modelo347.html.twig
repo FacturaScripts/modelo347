@@ -29,12 +29,16 @@
                     <div class="form-group">
                         {{ trans('exercise') }}
                         <select name="codejercicio" class="form-control" required onchange="this.form.submit()">
-                            {% for exercise in fsc.allExercises() %}
-                                {% if exercise.codejercicio == fsc.codejercicio %}
-                                    <option value="{{ exercise.codejercicio }}" selected>{{ exercise.nombre }}</option>
-                                {% else %}
-                                    <option value="{{ exercise.codejercicio }}">{{ exercise.nombre }}</option>
-                                {% endif %}
+                            {% for company in fsc.empresa.all() %}
+                                <optgroup label="{{ company.nombrecorto }}">
+                                    {% for exercise in fsc.allExercises(company.idempresa) %}
+                                        {% if exercise.codejercicio == fsc.codejercicio %}
+                                            <option value="{{ exercise.codejercicio }}" selected>{{ exercise.nombre }}</option>
+                                        {% else %}
+                                            <option value="{{ exercise.codejercicio }}">{{ exercise.nombre }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </optgroup>
                             {% endfor %}
                         </select>
                     </div>
@@ -97,7 +101,8 @@
                             <i class="fas fa-eye fa-fw"></i> {{ trans('preview') }}
                         </button>
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+                                    aria-expanded="false">
                                 <i class="fas fa-download fa-fw"></i> {{ trans('download') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">

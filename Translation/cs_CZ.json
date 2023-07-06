@@ -1,6 +1,6 @@
 {
-    "347-no-country": "La fattura del %type% con cif\/nif %cifnif% non contiene il paese ed è obbligatorio",
-    "347-no-province": "La fattura del %type% con cif\/nif %cifnif% non ha la provincia ed è obbligatorio",
+    "347-no-country": "La factura de %type% con cif\/nif %cifnif% no tiene país y es obligatorio",
+    "347-no-province": "La factura de %type% con cif\/nif %cifnif% no tiene provincia y es obligatorio",
     "company-admin-no-data": "La empresa %company% no tiene administrador y es obligatorio",
     "company-phone-no-data": "La empresa %company% no tiene teléfono y es obligatorio",
     "customer-supplier": "Cliente \/ proveedor",
