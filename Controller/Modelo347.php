@@ -369,11 +369,10 @@ class Modelo347 extends Controller
     {
         // Esto se puede simplificar con EXTRACT(MONTH FROM fecha) que es general para Mysql y Postgresql.
         // Se puede unificar con cliente en una sola función. (tabla y nombre campo)
+        $where = " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) . " AND COALESCE(excluir347, false) = false";
         $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codcliente, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli"
-            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codcliente, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli"
-            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
+            "SELECT codcliente, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturascli" . $where :
+            "SELECT codcliente, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturascli" . $where;
 
         if ($this->excludeIrpf) {
             $sql .= " AND irpf = 0";
@@ -483,11 +482,10 @@ class Modelo347 extends Controller
     {
         // Esto se puede simplificar con EXTRACT(MONTH FROM fecha) que es general para Mysql y Postgresql.
         // Se puede unificar con cliente en una sola función. (tabla y nombre campo)
+        $where = " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) . " AND COALESCE(excluir347, false) = false";
         $sql = strtolower(FS_DB_TYPE) == 'postgresql' ?
-            "SELECT codproveedor, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov"
-            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio) :
-            "SELECT codproveedor, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov"
-            . " WHERE codejercicio = " . $this->dataBase->var2str($this->codejercicio);
+            "SELECT codproveedor, cifnif, to_char(fecha,'FMMM') as mes, sum(total) as total FROM facturasprov" . $where :
+            "SELECT codproveedor, cifnif, DATE_FORMAT(fecha, '%m') as mes, sum(total) as total FROM facturasprov" . $where;
 
         if ($this->excludeIrpf) {
             $sql .= " AND irpf = 0";
