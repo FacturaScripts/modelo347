@@ -22,13 +22,15 @@ namespace FacturaScripts\Plugins\Modelo347;
 use FacturaScripts\Core\Base\AjaxForms\PurchasesHeaderHTML;
 use FacturaScripts\Core\Base\AjaxForms\SalesHeaderHTML;
 use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Dinamic\Model\FacturaCliente;
+use FacturaScripts\Dinamic\Model\FacturaProveedor;
 
 /**
  * Description of Init
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
-class Init extends InitClass
+final class Init extends InitClass
 {
     public function init()
     {
@@ -38,5 +40,7 @@ class Init extends InitClass
 
     public function update()
     {
+        new FacturaCliente();
+        new FacturaProveedor();
     }
 }
