@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace FacturaScripts\Plugins\Modelo347;
 
 use FacturaScripts\Core\Base\AjaxForms\PurchasesHeaderHTML;
@@ -29,7 +30,6 @@ use FacturaScripts\Core\Base\InitClass;
  */
 class Init extends InitClass
 {
-
     public function init()
     {
         PurchasesHeaderHTML::addMod(new Mod\PurchasesHeaderHTMLMod());
