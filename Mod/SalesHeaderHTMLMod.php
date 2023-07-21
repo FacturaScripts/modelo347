@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 namespace FacturaScripts\Plugins\Modelo347\Mod;
 
 use FacturaScripts\Core\Base\Contract\SalesModInterface;
@@ -31,11 +32,10 @@ use FacturaScripts\Core\Model\User;
  */
 class SalesHeaderHTMLMod implements SalesModInterface
 {
-
     public function apply(SalesDocument &$model, array $formData, User $user)
     {
         if (property_exists($model, 'excluir347')) {
-            $model->excluir347 = ($formData['excluir347'] === 'true') ? true : false;
+            $model->excluir347 = ($formData['excluir347'] ?? '') === 'true';
         }
     }
 
