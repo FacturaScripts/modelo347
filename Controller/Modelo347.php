@@ -72,11 +72,6 @@ class Modelo347 extends Controller
         return ['accounting', 'invoices'];
     }
 
-    public function allGroupBy(): array
-    {
-        return ['cifnif', 'customer-supplier'];
-    }
-
     /**
      * @param int|null $idempresa
      * @return Ejercicio[]
@@ -94,6 +89,11 @@ class Modelo347 extends Controller
             }
         }
         return $list;
+    }
+
+    public function allGroupBy(): array
+    {
+        return ['cifnif', 'customer-supplier'];
     }
 
     public function getPageData(): array
@@ -439,7 +439,7 @@ class Modelo347 extends Controller
         return ' WHERE codejercicio = ' . $this->dataBase->var2str($this->codejercicio)
             . ' AND COALESCE(excluir347, false) = false';
     }
-    
+
     protected function getSuppliersDataAccounting(): array
     {
         $items = [];
