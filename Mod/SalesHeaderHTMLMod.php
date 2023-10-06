@@ -29,6 +29,7 @@ use FacturaScripts\Core\Model\User;
  *   - excluir347: Allows the user to mark the invoice as excluded from the 347 calculation.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
+ * @author Carlos Garcia Gomez           <carlos@facturascripts.com>
  */
 class SalesHeaderHTMLMod implements SalesModInterface
 {
@@ -47,7 +48,17 @@ class SalesHeaderHTMLMod implements SalesModInterface
     {
     }
 
+    public function newBtnFields(): array
+    {
+        return [];
+    }
+
     public function newFields(): array
+    {
+        return [];
+    }
+
+    public function newModalFields(): array
     {
         return ['excluir347'];
     }
@@ -63,7 +74,7 @@ class SalesHeaderHTMLMod implements SalesModInterface
 
     private static function excluir347(Translator $i18n, SalesDocument $model): string
     {
-        if (false === property_exists($model, 'excluir347')) {
+        if (false === property_exists($model, 'excluir347') || empty($model->primaryColumnValue())) {
             return '';
         }
 
@@ -78,9 +89,7 @@ class SalesHeaderHTMLMod implements SalesModInterface
         $attributes = $model->editable ? 'name="excluir347" required=""' : 'disabled=""';
         return '<div class="col-sm-6">'
             . '<div class="form-group">' . $i18n->trans('exclude-347')
-            . '<select ' . $attributes . ' class="form-control"/>'
-            . implode('', $options)
-            . '</select>'
+            . '<select ' . $attributes . ' class="form-control"/>' . implode('', $options) . '</select>'
             . '</div>'
             . '</div>';
     }
