@@ -419,6 +419,7 @@ class Modelo347 extends Controller
     {
         $sql = 'SELECT ' . $codeField . ', cifnif, EXTRACT(MONTH FROM fecha) as mes, sum(total) as total'
             . ' FROM ' . $tableName
+            . ' INNER JOIN series ON ' . $tableName . '.codserie = series.codserie AND COALESCE(series.siniva, false) = false'
             . $this->getInvoiceSqlWhere();
 
         if ($this->excludeIrpf) {
