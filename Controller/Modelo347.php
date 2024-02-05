@@ -448,11 +448,12 @@ class Modelo347 extends Controller
         // buscamos las cuentas especiales de proveedores de este ejercicio
         $cuentaModel = new Cuenta();
         $where = [
-            new DataBaseWhere('codejercicio', $this->codejercicio),
-            new DataBaseWhere('codcuentaesp', 'PROVEE')
+            new DataBaseWhere('codejercicio', $this->codejercicio),          
+            new DataBaseWhere('codcuentaesp', 'PROVEE,ACREED', 'IN')
+        
         ];
-        foreach ($cuentaModel->all($where, [], 0, 0) as $cuenta) {
-            // consultamos las partidas de cada subcuenta hija
+            foreach ($cuentaModel->all($where, [], 0, 0) as $cuenta) {          
+                // consultamos las partidas de cada subcuenta hija
             foreach ($this->getAccountingInfo($cuenta, 'haber') as $row) {
                 // buscamos el proveedor de la subcuenta
                 $proveedor = new Proveedor();
