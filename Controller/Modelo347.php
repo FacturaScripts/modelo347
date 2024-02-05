@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Modelo347 plugin for FacturaScripts
- * Copyright (C) 2020-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2020-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\DataSrc\Ejercicios;
 use FacturaScripts\Core\DataSrc\Empresas;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\Export\XLSExport;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Cuenta;
@@ -129,15 +130,15 @@ class Modelo347 extends Controller
         $context = [
             '%cifnif%' => $data['cifnif'],
             '%name%' => $data['cliente'] ?? $data['proveedor'] ?? '',
-            '%type%' => $this->toolBox()->i18n()->trans($type),
+            '%type%' => Tools::lang()->trans($type),
         ];
 
         if (empty($data['provincia'])) {
-            $this->toolBox()->i18nLog()->warning('347-no-province', $context);
+            Tools::log()->warning('347-no-province', $context);
         }
 
         if (empty($data['codpais'])) {
-            $this->toolBox()->i18nLog()->warning('347-no-country', $context);
+            Tools::log()->warning('347-no-country', $context);
         }
     }
 
@@ -150,15 +151,15 @@ class Modelo347 extends Controller
         $companyModel = Empresas::get($exerciseModel->idempresa);
 
         if (empty($companyModel->administrador)) {
-            $this->toolBox()->i18nLog()->warning('company-admin-no-data', ['%company%' => $companyModel->nombre]);
+            Tools::log()->warning('company-admin-no-data', ['%company%' => $companyModel->nombre]);
         }
 
         if (empty($companyModel->telefono1)) {
-            $this->toolBox()->i18nLog()->warning('company-phone-no-data', ['%company%' => $companyModel->nombre]);
+            Tools::log()->warning('company-phone-no-data', ['%company%' => $companyModel->nombre]);
         }
 
         if (empty($this->customersData) && empty($this->suppliersData)) {
-            $this->toolBox()->i18nLog()->warning('347-no-data');
+            Tools::log()->warning('347-no-data');
         }
 
         foreach ($this->customersData as $data) {
@@ -199,8 +200,8 @@ class Modelo347 extends Controller
         $this->setTemplate(false);
 
         $xlsExport = new XLSExport();
-        $xlsExport->newDoc($this->toolBox()->i18n()->trans('model-347'), 0, '');
-        $i18n = $this->toolBox()->i18n();
+        $xlsExport->newDoc(Tools::lang()->trans('model-347'), 0, '');
+        $i18n = Tools::lang();
 
         // customers data
         if (false === empty($this->customersData)) {
@@ -255,9 +256,9 @@ class Modelo347 extends Controller
         }
 
         // creamos el archivo txt
-        $exportFile = FS_FOLDER . '/MyFiles/' . $this->toolBox()->i18n()->trans('model-347') . '.txt';
+        $exportFile = FS_FOLDER . '/MyFiles/modelo_347_' . $this->codejercicio . '.txt';
         if (false === file_put_contents($exportFile, Txt347Export::export($this->codejercicio, $this->customersData, $this->suppliersData))) {
-            $this->toolBox()->i18nLog()->error('cant-save-file', ['%fileName%' => $exportFile]);
+            Tools::log()->error('cant-save-file', ['%fileName%' => $exportFile]);
             return;
         }
 
@@ -450,7 +451,7 @@ class Modelo347 extends Controller
         $cuentaModel = new Cuenta();
         $where = [
             new DataBaseWhere('codejercicio', $this->codejercicio),
-            new DataBaseWhere('codcuentaesp', 'PROVEE')
+            new DataBaseWhere('codcuentaesp', 'PROVEE,ACREED', 'IN')
         ];
         foreach ($cuentaModel->all($where, [], 0, 0) as $cuenta) {
             // consultamos las partidas de cada subcuenta hija
@@ -557,7 +558,7 @@ class Modelo347 extends Controller
         $item['total'] += (float)$row['total'];
     }
 
-    protected function loadCustomersData()
+    protected function loadCustomersData(): void
     {
         $this->customersData = $this->examine === 'invoices' ?
             $this->getCustomersDataInvoices() :
@@ -592,7 +593,7 @@ class Modelo347 extends Controller
         }
     }
 
-    protected function loadSuppliersData()
+    protected function loadSuppliersData(): void
     {
         $this->suppliersData = $this->examine === 'invoices' ?
             $this->getSuppliersDataInvoices() :

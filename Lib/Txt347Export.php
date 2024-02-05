@@ -1,7 +1,7 @@
 <?php
 /**
  * This file is part of Modelo347 plugin for FacturaScripts
- * Copyright (C) 2020-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2020-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -45,8 +45,8 @@ class Txt347Export
     {
         self::$customersData = $customersData;
         self::$suppliersData = $suppliersData;
-        self::getExercise($codejercicio);
-        self::getCompany();
+        self::loadExercise($codejercicio);
+        self::loadCompany();
 
         $customerData = self::getCustomerData();
         $supplierData = self::getSupplierData();
@@ -86,7 +86,7 @@ class Txt347Export
         return str_pad($string, $length, $charter, $align);
     }
 
-    protected static function getCompany()
+    protected static function loadCompany(): void
     {
         self::$company = new Empresa();
         self::$company->loadFromCode(self::$exercise->idempresa);
@@ -100,14 +100,21 @@ class Txt347Export
             . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
             . self::formatString(self::$company->nombre, 40, ' ', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARANTE
             . 'T' // TIPO DE SOPORTE
-            . self::formatString(self::formatOnlyNumber(self::$company->telefono1), 9, '0', STR_PAD_RIGHT) . self::formatString(self::$company->administrador, 40, ' ', STR_PAD_LEFT) // PERSONA CON QUIÉN RELACIONARSE
+            . self::formatString(self::formatOnlyNumber(self::$company->telefono1), 9, '0', STR_PAD_RIGHT)
+            . self::formatString(self::$company->administrador, 40, ' ', STR_PAD_LEFT) // PERSONA CON QUIÉN RELACIONARSE
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN
-            . self::formatString('', 1, ' ', STR_PAD_LEFT) . self::formatString('', 1, ' ', STR_PAD_LEFT) // DECLARACIÓN COMPLEMENTARIA O SUSTITUTIVA
+            . self::formatString('', 1, ' ', STR_PAD_LEFT)
+            . self::formatString('', 1, ' ', STR_PAD_LEFT) // DECLARACIÓN COMPLEMENTARIA O SUSTITUTIVA
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN ANTERIOR
-            . self::formatString(empty(self::$customersData) ? count(self::$suppliersData) : count(self::$customersData), 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE PERSONAS Y ENTIDADES
-            . (self::$total < 0 ? 'N' : ' ') . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE TOTAL ANUAL DE LAS OPERACIONES
+            . self::formatString(empty(self::$customersData) ?
+                count(self::$suppliersData) :
+                count(self::$customersData), 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE PERSONAS Y ENTIDADES
+            . (self::$total < 0 ? 'N' : ' ')
+            . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
+            . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE TOTAL ANUAL DE LAS OPERACIONES
             . self::formatString('', 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE INMUEBLES
-            . (self::$total < 0 ? 'N' : ' ') . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE TOTAL DE LAS OPERACIONES DE ARRENDAMIENTO DE LOCALES DE NEGOCIO
+            . (self::$total < 0 ? 'N' : ' ')
+            . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE TOTAL DE LAS OPERACIONES DE ARRENDAMIENTO DE LOCALES DE NEGOCIO
             . self::formatString('', 205, ' ', STR_PAD_LEFT) // BLANCOS
             . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
             . self::formatString('', 88, ' ', STR_PAD_LEFT) // BLANCOS
@@ -132,19 +139,30 @@ class Txt347Export
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
                 . (empty(self::$customersData) ? 'A' : 'B') // CLAVE OPERACIÓN
-                . (self::$total < 0 ? 'N' : ' ') . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
+                . (self::$total < 0 ? 'N' : ' ')
+                . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . ' ' // OPERACIÓN SEGURO
                 . ' ' // ARRENDAMIENTO LOCAL NEGOCIO
                 . self::formatString('', 15, '0', STR_PAD_RIGHT) // IMPORTE PERCIBIDO EN METÁLICO
-                . (self::$total < 0 ? 'N' : ' ') . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
+                . (self::$total < 0 ? 'N' : ' ')
+                . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
                 . self::formatString('', 4, '0', STR_PAD_RIGHT) // EJERCICIO
-                . ($item['t1'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t1'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t1']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
+                . ($item['t1'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t1'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t1']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA PRIMER TRIMESTRE
-                . ($item['t2'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t2'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t2']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
+                . ($item['t2'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t2'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t2']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA SEGUNDO TRIMESTRE
-                . ($item['t3'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t3'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t3']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
+                . ($item['t3'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t3'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t3']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA TERCER TRIMESTRE
-                . ($item['t4'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t4'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t4']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
+                . ($item['t4'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t4'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t4']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA CUARTO TRIMESTRE
                 . self::formatString('', 17, ' ', STR_PAD_LEFT) // NIF OPERADOR COMUNITARIO
                 . ' ' // OPERACIONES RÉGIMEN ESPECIAL CRITERIO DE CAJA IVA
@@ -161,7 +179,7 @@ class Txt347Export
         return ((float)$number - (int)$number) * 100;
     }
 
-    protected static function getExercise(string $codejercicio)
+    protected static function loadExercise(string $codejercicio): void
     {
         self::$exercise = new Ejercicio();
         self::$exercise->loadFromCode($codejercicio);
@@ -380,19 +398,30 @@ class Txt347Export
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
                 . (empty(self::$customersData) ? 'A' : 'B') // CLAVE OPERACIÓN
-                . (self::$total < 0 ? 'N' : ' ') . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
+                . (self::$total < 0 ? 'N' : ' ')
+                . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . ' ' // OPERACIÓN SEGURO
                 . ' ' // ARRENDAMIENTO LOCAL NEGOCIO
                 . self::formatString('', 15, '0', STR_PAD_RIGHT) // IMPORTE PERCIBIDO EN METÁLICO
-                . (self::$total < 0 ? 'N' : ' ') . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
+                . (self::$total < 0 ? 'N' : ' ')
+                . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
                 . self::formatString('', 4, '0', STR_PAD_RIGHT) // EJERCICIO
-                . ($item['t1'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t1'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t1']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
+                . ($item['t1'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t1'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t1']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA PRIMER TRIMESTRE
-                . ($item['t2'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t2'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t2']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
+                . ($item['t2'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t2'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t2']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA SEGUNDO TRIMESTRE
-                . ($item['t3'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t3'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t3']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
+                . ($item['t3'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t3'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t3']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA TERCER TRIMESTRE
-                . ($item['t4'] < 0 ? 'N' : ' ') . self::formatString((int)$item['t4'], 13, '0', STR_PAD_LEFT) . self::formatString(self::getDecimal($item['t4']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
+                . ($item['t4'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['t4'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['t4']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
                 . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA CUARTO TRIMESTRE
                 . self::formatString('', 17, ' ', STR_PAD_LEFT) // NIF OPERADOR COMUNITARIO
                 . ' ' // OPERACIONES RÉGIMEN ESPECIAL CRITERIO DE CAJA IVA
@@ -404,7 +433,7 @@ class Txt347Export
         return $txt;
     }
 
-    protected static function limitString(string $string, int $length)
+    protected static function limitString(string $string, int $length): string
     {
         return substr($string, 0, $length);
     }

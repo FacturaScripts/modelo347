@@ -1,7 +1,7 @@
 {
-    "347-no-country": "La factura de %type% con cif\/nif %cifnif% no tiene país y es obligatorio",
-    "347-no-data": "Sin resultados",
-    "347-no-province": "La factura de %type% con cif\/nif %cifnif% no tiene provincia y es obligatorio",
+    "347-no-country": "Rechnung von %type% mit cif\/nif %cifnif% hat kein Land und ist obligatorisch",
+    "347-no-data": "Keine Ergebnisse",
+    "347-no-province": "Rechnung von %type% mit cif\/nif %cifnif% hat keine Provinz und ist obligatorisch",
     "company-admin-no-data": "La empresa %company% no tiene administrador y es obligatorio",
     "company-phone-no-data": "La empresa %company% no tiene teléfono y es obligatorio",
     "customer-supplier": "Cliente \/ proveedor",

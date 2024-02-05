@@ -142,16 +142,16 @@
     <div class="tab-content">
         <div class="tab-pane fade {{ fsc.activetab == 'customers' ? 'show active' : '' }}" id="customers"
              role="tabpanel" aria-labelledby="customers-tab">
-            {{ _self.customersData(fsc, i18n) }}
+            {{ _self.customersData(fsc) }}
         </div>
         <div class="tab-pane fade {{ fsc.activetab == 'suppliers' ? 'show active' : '' }}" id="suppliers"
              role="tabpanel" aria-labelledby="suppliers-tab">
-            {{ _self.suppliersData(fsc, i18n) }}
+            {{ _self.suppliersData(fsc) }}
         </div>
     </div>
 {% endblock %}
 
-{% macro customersData(fsc, i18n) %}
+{% macro customersData(fsc) %}
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -196,7 +196,7 @@
     </div>
 {% endmacro %}
 
-{% macro suppliersData(fsc, i18n) %}
+{% macro suppliersData(fsc) %}
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
