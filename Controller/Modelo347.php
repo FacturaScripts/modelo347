@@ -421,7 +421,7 @@ class Modelo347 extends Controller
         $sql = 'SELECT ' . $codeField . ', cifnif, EXTRACT(MONTH FROM fecha) as mes, sum(total) as total'
             . ' FROM ' . $tableName
             . ' INNER JOIN series ON ' . $tableName . '.codserie = series.codserie AND COALESCE(series.siniva, false) = false'
-            . $this->getInvoiceSqlWhere();
+            . $this->getInvoiceSqlWhere($tableName);
 
         if ($this->excludeIrpf) {
             $sql .= ' AND irpf = 0';
@@ -434,11 +434,12 @@ class Modelo347 extends Controller
     /**
      * Devuelve la cláusula WHERE para filtrar los documentos.
      *
+     * @param string $tableName
      * @return string
      */
-    protected function getInvoiceSqlWhere(): string
+    protected function getInvoiceSqlWhere(string $tableName): string
     {
-        return ' WHERE codejercicio = ' . $this->dataBase->var2str($this->codejercicio)
+        return ' WHERE ' . $tableName . '.codejercicio = ' . $this->dataBase->var2str($this->codejercicio)
             . ' AND COALESCE(excluir347, false) = false';
     }
 
