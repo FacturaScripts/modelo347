@@ -106,9 +106,7 @@ class Txt347Export
             . self::formatString('', 1, ' ', STR_PAD_LEFT)
             . self::formatString('', 1, ' ', STR_PAD_LEFT) // DECLARACIÓN COMPLEMENTARIA O SUSTITUTIVA
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN ANTERIOR
-            . self::formatString(empty(self::$customersData) ?
-                count(self::$suppliersData) :
-                count(self::$customersData), 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE PERSONAS Y ENTIDADES
+            . self::formatString(count(self::$customersData) + count(self::$suppliersData), 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE PERSONAS Y ENTIDADES
             . (self::$total < 0 ? 'N' : ' ')
             . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
             . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE TOTAL ANUAL DE LAS OPERACIONES
@@ -138,7 +136,7 @@ class Txt347Export
                 . 'D' // TIPO DE HOJA
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
-                . (empty(self::$customersData) ? 'A' : 'B') // CLAVE OPERACIÓN
+                . 'B' // CLAVE OPERACIÓN
                 . (self::$total < 0 ? 'N' : ' ')
                 . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
                 . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
@@ -397,7 +395,7 @@ class Txt347Export
                 . 'D' // TIPO DE HOJA
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
-                . (empty(self::$customersData) ? 'A' : 'B') // CLAVE OPERACIÓN
+                . 'A' // CLAVE OPERACIÓN
                 . (self::$total < 0 ? 'N' : ' ')
                 . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
                 . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES

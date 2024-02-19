@@ -249,14 +249,11 @@ class Modelo347 extends Controller
         $this->setTemplate(false);
 
         // cargamos la información que falte
-        if ($this->activetab === 'suppliers') {
-            $this->loadCustomersData();
-        } else {
-            $this->loadSuppliersData();
-        }
+        $this->loadCustomersData();
+        $this->loadSuppliersData();
 
         // creamos el archivo txt
-        $exportFile = FS_FOLDER . '/MyFiles/modelo_347_' . $this->codejercicio . '.txt';
+        $exportFile = FS_FOLDER . '/MyFiles/modelo_347_' . $this->codejercicio . '.347';
         if (false === file_put_contents($exportFile, Txt347Export::export($this->codejercicio, $this->customersData, $this->suppliersData))) {
             Tools::log()->error('cant-save-file', ['%fileName%' => $exportFile]);
             return;
