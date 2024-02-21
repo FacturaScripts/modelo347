@@ -116,14 +116,14 @@ class Txt347Export
             . self::formatString('', 205, ' ', STR_PAD_LEFT) // BLANCOS
             . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
             . self::formatString('', 88, ' ', STR_PAD_LEFT) // BLANCOS
-            . self::formatString('', 13, ' ', STR_PAD_LEFT); // SELLO ELECTRONICO
+            . self::formatString('', 13, ' ', STR_PAD_LEFT); // SELLO ELECTRÓNICO
     }
 
     protected static function getCustomerData(): string
     {
         $txt = '';
         foreach (self::$customersData as $item) {
-            self::$total += $item['total'];
+            self::$total += (float)$item['total'];
 
             $txt .= "\n"
                 . '2' // TIPO DE REGISTRO
@@ -137,13 +137,13 @@ class Txt347Export
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
                 . 'B' // CLAVE OPERACIÓN
-                . (self::$total < 0 ? 'N' : ' ')
-                . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
+                . ($item['total'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['total'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['total']), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . ' ' // OPERACIÓN SEGURO
                 . ' ' // ARRENDAMIENTO LOCAL NEGOCIO
                 . self::formatString('', 15, '0', STR_PAD_RIGHT) // IMPORTE PERCIBIDO EN METÁLICO
-                . (self::$total < 0 ? 'N' : ' ')
+                . ($item['total'] < 0 ? 'N' : ' ')
                 . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
                 . self::formatString('', 4, '0', STR_PAD_RIGHT) // EJERCICIO
                 . ($item['t1'] < 0 ? 'N' : ' ')
@@ -382,7 +382,7 @@ class Txt347Export
     {
         $txt = '';
         foreach (self::$suppliersData as $item) {
-            self::$total += $item['total'];
+            self::$total += (float)$item['total'];
 
             $txt .= "\n"
                 . '2' // TIPO DE REGISTRO
@@ -396,13 +396,13 @@ class Txt347Export
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
                 . 'A' // CLAVE OPERACIÓN
-                . (self::$total < 0 ? 'N' : ' ')
-                . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
+                . ($item['total'] < 0 ? 'N' : ' ')
+                . self::formatString((int)$item['total'], 13, '0', STR_PAD_LEFT)
+                . self::formatString(self::getDecimal($item['total']), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . ' ' // OPERACIÓN SEGURO
                 . ' ' // ARRENDAMIENTO LOCAL NEGOCIO
                 . self::formatString('', 15, '0', STR_PAD_RIGHT) // IMPORTE PERCIBIDO EN METÁLICO
-                . (self::$total < 0 ? 'N' : ' ')
+                . ($item['total'] < 0 ? 'N' : ' ')
                 . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
                 . self::formatString('', 4, '0', STR_PAD_RIGHT) // EJERCICIO
                 . ($item['t1'] < 0 ? 'N' : ' ')
