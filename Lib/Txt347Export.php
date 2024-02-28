@@ -174,7 +174,7 @@ class Txt347Export
 
     protected static function getDecimal($number): int
     {
-        return ((float)$number - (int)$number) * 100;
+        return (int)((float)$number - (int)$number) * 100;
     }
 
     protected static function loadExercise(string $codejercicio): void
