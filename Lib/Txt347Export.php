@@ -67,8 +67,8 @@ class Txt347Export
 
     protected static function formatAmount(float $amount, int $length, int $align): string
     {
-        $signed = ($amount < 0) ? 'N' : ' ';
-        $amount = intval(abs($amount) * 100);
+        $signed = ($amount < 0.00) ? 'N' : ' ';
+        $amount = intval(abs(round($amount, 2)) * 100);
         return $signed . self::formatString($amount, $length -1, '0', $align);
     }
 
