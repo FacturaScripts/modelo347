@@ -68,7 +68,9 @@ class Txt347Export
     protected static function formatAmount(float $amount, int $length, int $align): string
     {
         $signed = ($amount < 0.00) ? 'N' : ' ';
-        $amount = intval(abs(round($amount, 2)) * 100);
+        // forzamos al formato de 2 decimales sin signo y sin separador de decimales
+        // nota las funciones intval y cast de (int) no funcionan correctamente si no se hace el round() sin decimales
+        $amount = (int)round(abs($amount) * 100.00);
         return $signed . self::formatString($amount, $length -1, '0', $align);
     }
 
