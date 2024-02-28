@@ -98,7 +98,7 @@ class Txt347Export
             . '347' // MODELO DECLARACIÓN
             . date('Y', strtotime(self::$exercise->fechainicio)) // EJERCICIO
             . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
-            . self::formatString(self::$company->nombre, 40, ' ', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARANTE
+            . self::formatString(self::$company->nombre, 40, ' ', STR_PAD_RIGHT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARANTE
             . 'T' // TIPO DE SOPORTE
             . self::formatString(self::formatOnlyNumber(self::$company->telefono1), 9, '0', STR_PAD_RIGHT)
             . self::formatString(self::$company->administrador, 40, ' ', STR_PAD_LEFT) // PERSONA CON QUIÉN RELACIONARSE
@@ -132,7 +132,7 @@ class Txt347Export
                 . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
                 . self::checkCifNif($item) // NIF DEL DECLARADO
                 . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
-                . self::formatString($item['cliente'], 40, ' ', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
+                . self::formatString($item['cliente'], 40, ' ', STR_PAD_RIGHT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
                 . 'D' // TIPO DE HOJA
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
@@ -391,7 +391,7 @@ class Txt347Export
                 . self::formatString(self::$company->cifnif, 9, '0', STR_PAD_RIGHT) // NIF DEL DECLARANTE
                 . self::checkCifNif($item) // NIF DEL DECLARADO
                 . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
-                . self::formatString($item['proveedor'], 40, ' ', STR_PAD_LEFT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
+                . self::formatString($item['proveedor'], 40, ' ', STR_PAD_RIGHT) // APELLIDOS Y NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN DEL DECLARADO
                 . 'D' // TIPO DE HOJA
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
