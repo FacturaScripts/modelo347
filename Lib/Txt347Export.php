@@ -65,6 +65,15 @@ class Txt347Export
         return self::formatString($item['cifnif'], 9, '0', STR_PAD_RIGHT);
     }
 
+    protected static function formatAmount(float $amount, int $length, int $align): string
+    {
+        $signed = ($amount < 0.00) ? 'N' : ' ';
+        // forzamos al formato de 2 decimales sin signo y sin separador de decimales
+        // nota las funciones intval y cast de (int) no funcionan correctamente si no se hace el round() sin decimales
+        $amount = (int)round(abs($amount) * 100.00);
+        return $signed . self::formatString($amount, $length -1, '0', $align);
+    }
+
     protected static function formatOnlyNumber(string $number): string
     {
         // eliminamos cualquier carácter que no sea un número
@@ -107,12 +116,9 @@ class Txt347Export
             . self::formatString('', 1, ' ', STR_PAD_LEFT) // DECLARACIÓN COMPLEMENTARIA O SUSTITUTIVA
             . self::formatString('', 13, '0', STR_PAD_RIGHT) // NÚMERO IDENTIFICATIVO DE LA DECLARACIÓN ANTERIOR
             . self::formatString(count(self::$customersData) + count(self::$suppliersData), 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE PERSONAS Y ENTIDADES
-            . (self::$total < 0 ? 'N' : ' ')
-            . self::formatString((int)self::$total, 13, '0', STR_PAD_LEFT)
-            . self::formatString(self::getDecimal(self::$total), 2, '0', STR_PAD_LEFT) // IMPORTE TOTAL ANUAL DE LAS OPERACIONES
+            . self::formatAmount(self::$total, 16, STR_PAD_LEFT) // IMPORTE TOTAL ANUAL DE LAS OPERACIONES
             . self::formatString('', 9, '0', STR_PAD_RIGHT) // NÚMERO TOTAL DE INMUEBLES
-            . (self::$total < 0 ? 'N' : ' ')
-            . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE TOTAL DE LAS OPERACIONES DE ARRENDAMIENTO DE LOCALES DE NEGOCIO
+            . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE TOTAL ANUAL DE LAS OPERACIONES DE ARRENDAMIENTO DE LOCALES DE NEGOCIO
             . self::formatString('', 205, ' ', STR_PAD_LEFT) // BLANCOS
             . self::formatString('', 9, ' ', STR_PAD_RIGHT) // NIF DEL REPRESENTANTE LEGAL
             . self::formatString('', 88, ' ', STR_PAD_LEFT) // BLANCOS
