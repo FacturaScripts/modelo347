@@ -143,31 +143,20 @@ class Txt347Export
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
                 . 'B' // CLAVE OPERACIÓN
-                . ($item['total'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['total'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['total']), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
+                . self::formatAmount($item['total'], 16, STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . ' ' // OPERACIÓN SEGURO
                 . ' ' // ARRENDAMIENTO LOCAL NEGOCIO
                 . self::formatString('', 15, '0', STR_PAD_RIGHT) // IMPORTE PERCIBIDO EN METÁLICO
-                . ($item['total'] < 0.00 ? 'N' : ' ')
-                . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
                 . self::formatString('', 4, '0', STR_PAD_RIGHT) // EJERCICIO
-                . ($item['t1'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t1'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t1']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA PRIMER TRIMESTRE
-                . ($item['t2'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t2'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t2']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA SEGUNDO TRIMESTRE
-                . ($item['t3'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t3'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t3']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA TERCER TRIMESTRE
-                . ($item['t4'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t4'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t4']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA CUARTO TRIMESTRE
+                . self::formatAmount($item['t1'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA PRIMER TRIMESTRE
+                . self::formatAmount($item['t2'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA SEGUNDO TRIMESTRE
+                . self::formatAmount($item['t3'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA TERCER TRIMESTRE
+                . self::formatAmount($item['t4'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA CUARTO TRIMESTRE
                 . self::formatString('', 17, ' ', STR_PAD_LEFT) // NIF OPERADOR COMUNITARIO
                 . ' ' // OPERACIONES RÉGIMEN ESPECIAL CRITERIO DE CAJA IVA
                 . ' ' // OPERACIÓN CON INVERSIÓN DEL SUJETO PASIVO
@@ -180,7 +169,7 @@ class Txt347Export
 
     protected static function getDecimal($number): int
     {
-        return (int)((float)$number - (int)$number) * 100;
+        return ((float)$number - (int)$number) * 100;
     }
 
     protected static function loadExercise(string $codejercicio): void
@@ -402,31 +391,20 @@ class Txt347Export
                 . self::getProvincia($item['provincia']) . self::getPais($item['codpais']) // CÓDIGO PROVINCIA/PAIS
                 . ' ' // BLANCOS
                 . 'A' // CLAVE OPERACIÓN
-                . ($item['total'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['total'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['total']), 2, '0', STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
+                . self::formatAmount($item['total'], 16, STR_PAD_LEFT) // IMPORTE ANUAL DE LAS OPERACIONES
                 . ' ' // OPERACIÓN SEGURO
                 . ' ' // ARRENDAMIENTO LOCAL NEGOCIO
                 . self::formatString('', 15, '0', STR_PAD_RIGHT) // IMPORTE PERCIBIDO EN METÁLICO
-                . ($item['total'] < 0.00 ? 'N' : ' ')
-                . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE ANUAL PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA
                 . self::formatString('', 4, '0', STR_PAD_RIGHT) // EJERCICIO
-                . ($item['t1'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t1'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t1']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA PRIMER TRIMESTRE
-                . ($item['t2'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t2'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t2']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA SEGUNDO TRIMESTRE
-                . ($item['t3'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t3'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t3']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA TERCER TRIMESTRE
-                . ($item['t4'] < 0.00 ? 'N' : ' ')
-                . self::formatString((int)$item['t4'], 13, '0', STR_PAD_LEFT)
-                . self::formatString(self::getDecimal($item['t4']), 2, '0', STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
-                . ' ' . self::formatString('', 15, '0', STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA CUARTO TRIMESTRE
+                . self::formatAmount($item['t1'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES PRIMER TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA PRIMER TRIMESTRE
+                . self::formatAmount($item['t2'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES SEGUNDO TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA SEGUNDO TRIMESTRE
+                . self::formatAmount($item['t3'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES TERCER TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA TERCER TRIMESTRE
+                . self::formatAmount($item['t4'], 16, STR_PAD_LEFT) // IMPORTE DE LAS OPERACIONES CUARTO TRIMESTRE
+                . self::formatAmount(0.00, 16, STR_PAD_LEFT) // IMPORTE PERCIBIDO POR TRANSMISIONES DE INMUEBLES SUJETAS A IVA CUARTO TRIMESTRE
                 . self::formatString('', 17, ' ', STR_PAD_LEFT) // NIF OPERADOR COMUNITARIO
                 . ' ' // OPERACIONES RÉGIMEN ESPECIAL CRITERIO DE CAJA IVA
                 . ' ' // OPERACIÓN CON INVERSIÓN DEL SUJETO PASIVO
