@@ -421,7 +421,7 @@ class Modelo347 extends Controller
             . $this->getInvoiceSqlWhere($tableName);
 
         if ($this->excludeIrpf) {
-            $sql .= ' AND irpf = 0';
+            $sql .= ' AND ' . $tableName . '.irpf = 0';
         }
 
         $sql .= ' GROUP BY 1, 2, 3 ORDER BY 1;';
