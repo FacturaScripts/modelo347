@@ -1,14 +1,14 @@
 {
-    "347-no-country": "La factura de %type% con cif\/nif %cifnif% no tiene país y es obligatorio",
-    "347-no-data": "Sin resultados",
-    "347-no-province": "La factura de %type% con cif\/nif %cifnif% no tiene provincia y es obligatorio",
-    "company-admin-no-data": "La empresa %company% no tiene administrador y es obligatorio",
-    "company-phone-no-data": "La empresa %company% no tiene teléfono y es obligatorio",
-    "customer-supplier": "Cliente \/ proveedor",
+    "347-no-country": "Faktura %type% s identifikačním číslem %cifnif% nemá zemi a je povinná",
+    "347-no-data": "Bez výsledků",
+    "347-no-province": "Faktura %type% s identifikačním číslem %cifnif% nemá provincii a je povinná",
+    "company-admin-no-data": "Společnost %company% nemá žádného administrátora a je povinný",
+    "company-phone-no-data": "Společnost %company% nemá žádný telefon a je povinný",
+    "customer-supplier": "Zákazník \/ dodavatel",
     "examine": "Examinar",
-    "exclude-347": "Excluir del 347",
+    "exclude-347": "Vyloučit z 347",
     "exclude-irpf": "Excluir IRPF",
     "model-347": "Modelo 347",
     "model-347-p": "El Modelo 347 es una declaración anual informativa de operaciones con terceras personas. Los empresarios y profesionales están obligados a la presentación del Modelo 347 siempre que hayan realizado operaciones con terceros por importe superior a 3.005,06 € durante el año natural (se puede cambiar la cantidad), computando de forma separada las entregas y las adquisiciones de bienes y servicios.",
-    "txt-for-treasury": "TXT para hacienda"
+    "txt-for-treasury": "TXT pro pokladnu"
 }

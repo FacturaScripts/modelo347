@@ -2,13 +2,13 @@
     "347-no-country": "La facture de %type% avec CIF\/NIF %cifnif% n'a pas de pays et est obligatoire",
     "347-no-data": "Aucun résultat",
     "347-no-province": "La facture de %type% avec CIF\/NIF %cifnif% n'a pas de province et est obligatoire",
-    "company-admin-no-data": "La empresa %company% no tiene administrador y es obligatorio",
-    "company-phone-no-data": "La empresa %company% no tiene teléfono y es obligatorio",
-    "customer-supplier": "Cliente \/ proveedor",
+    "company-admin-no-data": "L'entreprise %company% n'a pas d'administrateur et c'est obligatoire",
+    "company-phone-no-data": "L'entreprise %company% n'a pas de téléphone et c'est obligatoire",
+    "customer-supplier": "Client \/ fournisseur",
     "examine": "Examiner",
-    "exclude-347": "Excluir del 347",
+    "exclude-347": "Exclure du 347",
     "exclude-irpf": "Exclure IRPP",
     "model-347": "Formulaire 347",
     "model-347-p": "Le formulaire 347 est une déclaration annuelle informative des transactions avec des tiers. Les entrepreneurs et les professionnels sont tenus de remplir le formulaire 347 lorsqu'ils ont effectué des transactions avec des tiers pour un montant supérieur à 3 005,06 € au cours de l'année civile (le montant peut être modifié), en calculant séparément les livraisons et les acquisitions de biens et de services.",
-    "txt-for-treasury": "TXT para hacienda"
+    "txt-for-treasury": "TXT pour les autorités fiscales"
 }

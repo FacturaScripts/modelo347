@@ -2,13 +2,13 @@
     "347-no-country": "Rechnung von %type% mit cif\/nif %cifnif% hat kein Land und ist obligatorisch",
     "347-no-data": "Keine Ergebnisse",
     "347-no-province": "Rechnung von %type% mit cif\/nif %cifnif% hat keine Provinz und ist obligatorisch",
-    "company-admin-no-data": "La empresa %company% no tiene administrador y es obligatorio",
-    "company-phone-no-data": "La empresa %company% no tiene teléfono y es obligatorio",
-    "customer-supplier": "Cliente \/ proveedor",
+    "company-admin-no-data": "Das Unternehmen %company% hat keinen Administrator und ist obligatorisch",
+    "company-phone-no-data": "Das Unternehmen %company% hat keine Telefonnummer und ist obligatorisch",
+    "customer-supplier": "Kunde \/ Lieferant",
     "examine": "Examinar",
     "exclude-347": "Excluir del 347",
     "exclude-irpf": "Excluir IRPF",
     "model-347": "Modelo 347",
-    "model-347-p": "El Modelo 347 es una declaración anual informativa de operaciones con terceras personas. Los empresarios y profesionales están obligados a la presentación del Modelo 347 siempre que hayan realizado operaciones con terceros por importe superior a 3.005,06 € durante el año natural (se puede cambiar la cantidad), computando de forma separada las entregas y las adquisiciones de bienes y servicios.",
+    "model-347-p": "Das Modell 347 ist eine jährliche Informationsmeldung über Geschäfte mit Drittpersonen. Unternehmer und Fachleute sind verpflichtet, das Modell 347 vorzulegen, wenn sie Geschäfte mit Dritten in Höhe von mehr als 3.005,06 € im Kalenderjahr getätigt haben (der Betrag kann geändert werden), wobei Lieferungen und Erwerb von Waren und Dienstleistungen getrennt berechnet werden.",
     "txt-for-treasury": "TXT para hacienda"
 }
