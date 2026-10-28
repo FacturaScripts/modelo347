@@ -83,20 +83,39 @@ class Txt347Export
         return strtoupper($pais->codiso ?? '') === 'ES';
     }
 
+    /**
+     * NIF del operador comunitario (17 caracteres): las dos primeras letras de su NIF-IVA y el número. Solo para
+     * los de otros Estados miembros; el resto, en blanco. El prefijo coincide con el código ISO salvo en Grecia
+     * (EL en lugar de GR) y del número se quitan los dos. El Reino Unido no es de la UE desde el 31/01/2020,
+     * aunque el core aún lo incluya en Paises::MIEMBROS_UE (PR NeoRazorX/facturascripts#2059).
+     */
     protected static function getNifOperadorComunitario(array $item): string
     {
         $codpais = $item['codpais'] ?? '';
-        if (false === self::isSpanish($codpais) && !empty($item['cifnif']) && Paises::miembroUE($codpais)) {
-            $pais = Paises::get($codpais);
-            $countryCode = self::formatString($pais->codiso ?? '', 2, ' ', STR_PAD_RIGHT);
-            $vat = strtoupper(preg_replace('/[^A-Z0-9]/', '', $item['cifnif']));
-            $iso = strtoupper($pais->codiso ?? '');
-            if (!empty($iso) && str_starts_with($vat, $iso)) {
-                $vat = substr($vat, strlen($iso));
+        $pais = Paises::get($codpais);
+        $iso = strtoupper($pais->codiso ?? '');
+        if (false === self::isSpanish($codpais) && !empty($item['cifnif']) && Paises::miembroUE($codpais) && $iso !== 'GB') {
+            $prefix = self::vatPrefix($iso);
+            $countryCode = self::formatString($prefix, 2, ' ', STR_PAD_RIGHT);
+            $vat = preg_replace('/[^A-Z0-9]/', '', strtoupper($item['cifnif']));
+            foreach (array_unique([$prefix, $iso]) as $start) {
+                if (!empty($start) && str_starts_with($vat, $start)) {
+                    $vat = substr($vat, strlen($start));
+                    break;
+                }
             }
             return $countryCode . self::formatString($vat, 15, ' ', STR_PAD_RIGHT);
         }
         return self::formatString('', 17, ' ', STR_PAD_RIGHT);
+    }
+
+    /**
+     * Prefijo del NIF-IVA a partir del código ISO del país: EL para Grecia (GR) y el propio código para el resto.
+     * Cuando el core tenga Vies::vatPrefix() (PR NeoRazorX/facturascripts#2059) se podrá usar ese.
+     */
+    protected static function vatPrefix(string $iso): string
+    {
+        return $iso === 'GR' ? 'EL' : $iso;
     }
 
     public static function formatAmount(float $amount, int $length, int $align): string

@@ -24,6 +24,7 @@ use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 final class Txt347ExportTest extends TestCase
 {
@@ -211,6 +212,29 @@ final class Txt347ExportTest extends TestCase
     // -------------------------------------------------------------------------
     // export() — tests de integración
     // -------------------------------------------------------------------------
+
+    public function testNifOperadorComunitario(): void
+    {
+        // el código de país son las dos primeras letras del NIF-IVA: EL para Grecia, no su código ISO (GR)
+        foreach (['EL123456789', 'GR123456789', '123456789', 'el-123 456 789'] as $cifnif) {
+            $this->assertSame('EL123456789      ', $this->nifOperadorComunitario('GRC', $cifnif), "NIF del operador griego incorrecto para {$cifnif}");
+        }
+
+        // el resto de países de la UE, con su código ISO, también si el NIF viene en minúsculas
+        $this->assertSame('DE123456789      ', $this->nifOperadorComunitario('DEU', 'de123456789'));
+
+        // ni los de España ni los de fuera de la UE (el Reino Unido salió el 31/01/2020) son operadores comunitarios
+        $this->assertSame(str_repeat(' ', 17), $this->nifOperadorComunitario('ESP', 'B12345678'));
+        $this->assertSame(str_repeat(' ', 17), $this->nifOperadorComunitario('GBR', 'GB123456789'));
+        $this->assertSame(str_repeat(' ', 17), $this->nifOperadorComunitario('USA', '123456789'));
+    }
+
+    private function nifOperadorComunitario(string $codpais, string $cifnif): string
+    {
+        $method = new ReflectionMethod(Txt347Export::class, 'getNifOperadorComunitario');
+        $method->setAccessible(true);
+        return $method->invoke(null, ['codpais' => $codpais, 'cifnif' => $cifnif]);
+    }
 
     private function getFirstExercise(): ?Ejercicio
     {
