@@ -22,7 +22,11 @@ namespace FacturaScripts\Test\Plugins\Extension\Table;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Dinamic\Model\FacturaProveedor;
+use FacturaScripts\Dinamic\Model\PagoCliente;
+use FacturaScripts\Dinamic\Model\PagoProveedor;
 use FacturaScripts\Dinamic\Model\Proveedor;
+use FacturaScripts\Dinamic\Model\ReciboCliente;
+use FacturaScripts\Dinamic\Model\ReciboProveedor;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
 use PHPUnit\Framework\TestCase;
@@ -41,6 +45,13 @@ final class FacturasTest extends TestCase
         self::setDefaultSettings();
         self::installAccountingPlan();
         self::removeTaxRegularization();
+
+        // creamos las tablas de recibos y pagos antes de guardar facturas: al guardarlas, el core genera los
+        // recibos dentro de una transacción y no se pueden crear tablas dentro de ella
+        new ReciboCliente();
+        new ReciboProveedor();
+        new PagoCliente();
+        new PagoProveedor();
     }
 
     public function testExistsPropertyFacturaCliente(): void
