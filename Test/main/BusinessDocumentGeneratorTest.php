@@ -24,8 +24,14 @@ use FacturaScripts\Core\Model\Base\BusinessDocument;
 use FacturaScripts\Dinamic\Lib\BusinessDocumentGenerator;
 use FacturaScripts\Dinamic\Model\AlbaranProveedor;
 use FacturaScripts\Dinamic\Model\Cliente;
+use FacturaScripts\Dinamic\Model\FacturaCliente;
+use FacturaScripts\Dinamic\Model\FacturaProveedor;
+use FacturaScripts\Dinamic\Model\PagoCliente;
+use FacturaScripts\Dinamic\Model\PagoProveedor;
 use FacturaScripts\Dinamic\Model\PedidoCliente;
 use FacturaScripts\Dinamic\Model\Proveedor;
+use FacturaScripts\Dinamic\Model\ReciboCliente;
+use FacturaScripts\Dinamic\Model\ReciboProveedor;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
 use PHPUnit\Framework\TestCase;
@@ -45,11 +51,37 @@ final class BusinessDocumentGeneratorTest extends TestCase
     /** @var array Registros creados en cada test, en orden de borrado. */
     private array $created = [];
 
+    /**
+     * Prepara la configuración y la contabilidad por defecto y crea las tablas que se usan en los tests.
+     */
     public static function setUpBeforeClass(): void
     {
         self::setDefaultSettings();
         self::installAccountingPlan();
         self::removeTaxRegularization();
+
+        // creamos las tablas antes de guardar o borrar documentos: el core guarda y borra las facturas
+        // (y sus recibos) dentro de una transacción y no se pueden crear tablas dentro de ella
+        new PedidoCliente();
+        new AlbaranProveedor();
+        new FacturaCliente();
+        new FacturaProveedor();
+        new ReciboCliente();
+        new ReciboProveedor();
+        new PagoCliente();
+        new PagoProveedor();
+    }
+
+    /**
+     * El valor indicado expresamente en las propiedades de la generación prevalece sobre la ficha.
+     */
+    public function testExplicitPropertyIsRespected(): void
+    {
+        $customer = $this->createCustomer(true);
+        $order = $this->createDocument(new PedidoCliente(), $customer);
+
+        $invoice = $this->generate($order, 'FacturaCliente', ['excluir347' => false]);
+        $this->assertFalse($invoice->excluir347, 'explicit-property-must-be-respected');
     }
 
     /**
@@ -77,18 +109,6 @@ final class BusinessDocumentGeneratorTest extends TestCase
     }
 
     /**
-     * El valor indicado expresamente en las propiedades de la generación prevalece sobre la ficha.
-     */
-    public function testExplicitPropertyIsRespected(): void
-    {
-        $customer = $this->createCustomer(true);
-        $order = $this->createDocument(new PedidoCliente(), $customer);
-
-        $invoice = $this->generate($order, 'FacturaCliente', ['excluir347' => false]);
-        $this->assertFalse($invoice->excluir347, 'explicit-property-must-be-respected');
-    }
-
-    /**
      * Factura de proveedor generada desde un albarán de un proveedor excluido del 347.
      */
     public function testInvoiceFromSupplierDeliveryNoteInheritsExclusion(): void
@@ -98,23 +118,6 @@ final class BusinessDocumentGeneratorTest extends TestCase
 
         $invoice = $this->generate($deliveryNote, 'FacturaProveedor');
         $this->assertTrue($invoice->excluir347, 'invoice-must-inherit-excluir347');
-    }
-
-    protected function tearDown(): void
-    {
-        // borramos en orden inverso de creación; cada borrado aislado para no dejar restos
-        foreach (array_reverse($this->created) as $item) {
-            try {
-                if ($item->exists()) {
-                    $item->delete();
-                }
-            } catch (Throwable $e) {
-                // ignoramos el error para seguir limpiando el resto
-            }
-        }
-        $this->created = [];
-
-        $this->logErrors();
     }
 
     /**
@@ -134,25 +137,6 @@ final class BusinessDocumentGeneratorTest extends TestCase
         $this->created[] = $customer;
         $this->created[] = $customer->getDefaultAddress();
         return $customer;
-    }
-
-    /**
-     * Crea un proveedor con el valor de excluir347 indicado.
-     *
-     * @param bool $exclude
-     *
-     * @return Proveedor
-     */
-    private function createSupplier(bool $exclude): Proveedor
-    {
-        $supplier = new Proveedor();
-        $supplier->cifnif = 'B' . mt_rand(1, 999999);
-        $supplier->nombre = 'Test 347 ' . mt_rand(1, 99999);
-        $supplier->excluir347 = $exclude;
-        $this->assertTrue($supplier->save(), 'cant-create-supplier');
-        $this->created[] = $supplier;
-        $this->created[] = $supplier->getDefaultAddress();
-        return $supplier;
     }
 
     /**
@@ -178,6 +162,25 @@ final class BusinessDocumentGeneratorTest extends TestCase
     }
 
     /**
+     * Crea un proveedor con el valor de excluir347 indicado.
+     *
+     * @param bool $exclude
+     *
+     * @return Proveedor
+     */
+    private function createSupplier(bool $exclude): Proveedor
+    {
+        $supplier = new Proveedor();
+        $supplier->cifnif = 'B' . mt_rand(1, 999999);
+        $supplier->nombre = 'Test 347 ' . mt_rand(1, 99999);
+        $supplier->excluir347 = $exclude;
+        $this->assertTrue($supplier->save(), 'cant-create-supplier');
+        $this->created[] = $supplier;
+        $this->created[] = $supplier->getDefaultAddress();
+        return $supplier;
+    }
+
+    /**
      * Genera el documento de destino y lo devuelve recargado de la base de datos.
      *
      * @param BusinessDocument $prototype
@@ -195,5 +198,25 @@ final class BusinessDocumentGeneratorTest extends TestCase
         $this->created[] = $newDoc;
         $this->assertTrue($newDoc->reload(), 'cant-reload-' . $newClass);
         return $newDoc;
+    }
+
+    /**
+     * Borra los registros creados en el test y muestra los errores registrados.
+     */
+    protected function tearDown(): void
+    {
+        // borramos en orden inverso de creación; cada borrado aislado para no dejar restos
+        foreach (array_reverse($this->created) as $item) {
+            try {
+                if ($item->exists()) {
+                    $item->delete();
+                }
+            } catch (Throwable $e) {
+                // ignoramos el error para seguir limpiando el resto
+            }
+        }
+        $this->created = [];
+
+        $this->logErrors();
     }
 }
