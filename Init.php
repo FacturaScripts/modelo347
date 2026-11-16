@@ -33,9 +33,13 @@ use FacturaScripts\Dinamic\Model\FacturaProveedor;
  */
 final class Init extends InitClass
 {
+    /**
+     * Carga las extensiones, mods y workers del plugin.
+     */
     public function init(): void
     {
         // extensiones
+        $this->loadExtension(new Extension\Lib\BusinessDocumentGenerator());
         $this->loadExtension(new Extension\Model\Cliente());
         $this->loadExtension(new Extension\Model\FacturaCliente());
         $this->loadExtension(new Extension\Model\FacturaProveedor());
