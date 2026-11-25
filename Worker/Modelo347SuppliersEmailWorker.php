@@ -19,34 +19,41 @@
 
 namespace FacturaScripts\Plugins\Modelo347\Worker;
 
+use FacturaScripts\Core\DataSrc\Ejercicios;
 use FacturaScripts\Core\Model\WorkEvent;
 use FacturaScripts\Core\Template\WorkerClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Validator;
-use FacturaScripts\Dinamic\Lib\Email\NewMail;
-use FacturaScripts\Dinamic\Lib\Email\TableBlock;
-use FacturaScripts\Dinamic\Lib\Email\TextBlock;
-use FacturaScripts\Dinamic\Lib\Email\TitleBlock;
+use FacturaScripts\Dinamic\Lib\Email\MailNotifier;
+use FacturaScripts\Dinamic\Model\EmailNotification;
 
 /**
+ * Envía a los proveedores la carta informativa del modelo 347 mediante su notificación por email.
+ *
  * @author Esteban Sánchez Martínez <esteban@factura.city>
  */
 class Modelo347SuppliersEmailWorker extends WorkerClass
 {
+    /** Nombre de la notificación por email de la carta. */
+    const NOTIFICATION = 'modelo347-suppliers';
+
+    /**
+     * Envía la carta a cada destinatario de los datos del evento.
+     * El valor del evento es el código del ejercicio y sus parámetros son
+     * 'data' (filas con email, name, cifnif, t1..t4 y total) y 'amount' (importe mínimo).
+     */
     public function run(WorkEvent $event): bool
     {
-        $codejercicio = $event->value;
         $data = $event->param('data');
-
-        if (empty($data)) {
+        if (empty($data) || false === $this->isNotificationEnabled()) {
             return $this->done();
         }
 
         $sent = 0;
         $noEmail = 0;
 
-        $i18n = Tools::lang();
         $amount = Tools::money((float)$event->param('amount'));
+        $year = Ejercicios::get($event->value)->year();
 
         foreach ($data as $row) {
             $email = $row['email'] ?? '';
@@ -59,32 +66,20 @@ class Modelo347SuppliersEmailWorker extends WorkerClass
                 continue;
             }
 
-            $contactInfo = $i18n->trans('347-email-cifnif-line', ['%cifnif%' => $row['cifnif'] ?? ''])
-                . "\n"
-                . $i18n->trans('347-email-name-line', ['%name%' => $row['name'] ?? '']);
-
-            $header = [$i18n->trans('concept'), $i18n->trans('amount')];
-            $rows = [
-                [$i18n->trans('first-trimester'), Tools::money((float)$row['t1'])],
-                [$i18n->trans('second-trimester'), Tools::money((float)$row['t2'])],
-                [$i18n->trans('third-trimester'), Tools::money((float)$row['t3'])],
-                [$i18n->trans('fourth-trimester'), Tools::money((float)$row['t4'])],
-                [$i18n->trans('total'), Tools::money((float)$row['total'])],
+            $params = [
+                'amount' => $amount,
+                'cifnif' => $row['cifnif'] ?? '',
+                'email' => $email,
+                'name' => $row['name'] ?? '',
+                't1' => Tools::money((float)$row['t1']),
+                't2' => Tools::money((float)$row['t2']),
+                't3' => Tools::money((float)$row['t3']),
+                't4' => Tools::money((float)$row['t4']),
+                'total' => Tools::money((float)$row['total']),
+                'year' => $year,
             ];
 
-            $mail = NewMail::create()
-                ->to($email, $row['name'] ?? '')
-                ->subject($i18n->trans('347-email-subject', ['%year%' => $codejercicio]))
-                ->addMainBlock(new TitleBlock($i18n->trans('347-email-title'), 'h3'))
-                ->addMainBlock(new TextBlock($i18n->trans('347-email-greeting')))
-                ->addMainBlock(new TextBlock($i18n->trans('347-email-intro', ['%year%' => $codejercicio, '%amount%' => $amount])))
-                ->addMainBlock(new TextBlock($i18n->trans('347-email-included')))
-                ->addMainBlock(new TextBlock($contactInfo))
-                ->addMainBlock(new TextBlock($i18n->trans('347-email-amounts-title')))
-                ->addMainBlock(new TableBlock($header, $rows))
-                ->addMainBlock(new TextBlock($i18n->trans('347-email-footer')));
-
-            if ($mail->send()) {
+            if (MailNotifier::send(self::NOTIFICATION, $email, $row['name'] ?? '', $params)) {
                 $sent++;
             }
         }
@@ -92,5 +87,24 @@ class Modelo347SuppliersEmailWorker extends WorkerClass
         Tools::log()->info('347-emails-sent', ['%sent%' => $sent, '%noEmail%' => $noEmail]);
 
         return $this->done();
+    }
+
+    /**
+     * Indica si la notificación existe y está activada; si no, lo registra en el log.
+     */
+    protected function isNotificationEnabled(): bool
+    {
+        $notification = new EmailNotification();
+        if (false === $notification->load(self::NOTIFICATION)) {
+            Tools::log()->warning('email-notification-not-exists', ['%name%' => self::NOTIFICATION]);
+            return false;
+        }
+
+        if (false === $notification->enabled) {
+            Tools::log()->warning('email-notification-disabled', ['%name%' => self::NOTIFICATION]);
+            return false;
+        }
+
+        return true;
     }
 }
