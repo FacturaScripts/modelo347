@@ -125,19 +125,7 @@ class Modelo347 extends Controller
         $action = $this->request->request->get('action', '');
 
         $this->defaultAction();
-        switch ($action) {
-            case 'download-excel':
-                $this->downloadExcelAction();
-                break;
-
-            case 'download-txt':
-                $this->downloadTxtAction();
-                break;
-
-            case 'send-emails':
-                $this->sendEmailsAction();
-                break;
-        }
+        $this->execAction($action);
     }
 
     protected function sendEmailsAction(): void
@@ -253,28 +241,7 @@ class Modelo347 extends Controller
 
     protected function defaultAction(): void
     {
-        // buscamos el primer ejercicio abierto, para tenerlo como predeterminado
-        $codejercicio = null;
-        $exerciseModel = new Ejercicio();
-        foreach ($exerciseModel->all([], ['fechainicio' => 'DESC'], 0, 0) as $exe) {
-            if ($exe->isOpened()) {
-                $codejercicio = $exe->codejercicio;
-                break;
-            }
-        }
-
-        $this->amount = (float)$this->request->request->get('amount', $this->amount);
-        $this->codejercicio = $this->request->request->get('codejercicio', $codejercicio);
-        $this->examine = $this->request->request->get('examine', $this->examine);
-        $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
-        $this->grouping = $this->request->request->get('grouping', $this->grouping);
-        $this->justificante = preg_replace('/[^0-9]/', '', $this->request->request->get('justificante', ''));
-        $this->declarationType = $this->request->request->get('declarationtype', '');
-        if (!in_array($this->declarationType, ['C', 'S'])) {
-            $this->declarationType = '';
-        }
-        $this->justificanteAnterior = preg_replace('/[^0-9]/', '', $this->request->request->get('justificanteanterior', ''));
-
+        $this->loadFilters();
         $this->loadCustomersData();
         $this->loadSuppliersData();
 
@@ -349,6 +316,28 @@ class Modelo347 extends Controller
             ->header('Pragma', 'no-cache')
             ->header('Expires', '0')
             ->setContent($content);
+    }
+
+    /**
+     * Ejecuta la acción solicitada tras cargar los datos.
+     *
+     * @param string $action
+     */
+    protected function execAction(string $action): void
+    {
+        switch ($action) {
+            case 'download-excel':
+                $this->downloadExcelAction();
+                break;
+
+            case 'download-txt':
+                $this->downloadTxtAction();
+                break;
+
+            case 'send-emails':
+                $this->sendEmailsAction();
+                break;
+        }
     }
 
     protected function getAccountingInfo(Cuenta $cuenta, string $column): array
@@ -671,6 +660,34 @@ class Modelo347 extends Controller
             $this->customersTotals['t4'] += $row['t4'];
             $this->customersTotals['total'] += $row['total'];
         }
+    }
+
+    /**
+     * Lee de la petición los filtros de cálculo y de la declaración.
+     * Si no se indica ejercicio, usa el primer ejercicio abierto.
+     */
+    protected function loadFilters(): void
+    {
+        $codejercicio = null;
+        $exerciseModel = new Ejercicio();
+        foreach ($exerciseModel->all([], ['fechainicio' => 'DESC'], 0, 0) as $exe) {
+            if ($exe->isOpened()) {
+                $codejercicio = $exe->codejercicio;
+                break;
+            }
+        }
+
+        $this->amount = (float)$this->request->request->get('amount', $this->amount);
+        $this->codejercicio = $this->request->request->get('codejercicio', $codejercicio);
+        $this->examine = $this->request->request->get('examine', $this->examine);
+        $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
+        $this->grouping = $this->request->request->get('grouping', $this->grouping);
+        $this->justificante = preg_replace('/[^0-9]/', '', $this->request->request->get('justificante', ''));
+        $this->declarationType = $this->request->request->get('declarationtype', '');
+        if (!in_array($this->declarationType, ['C', 'S'])) {
+            $this->declarationType = '';
+        }
+        $this->justificanteAnterior = preg_replace('/[^0-9]/', '', $this->request->request->get('justificanteanterior', ''));
     }
 
     protected function loadSuppliersData(): void

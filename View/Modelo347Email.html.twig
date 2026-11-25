@@ -1,0 +1,125 @@
+{#
+    Selección de destinatarios de la carta del modelo 347.
+    Las listas las pinta y gestiona Assets/JS/Modelo347Email.js a partir del JSON 'm347-recipients'.
+#}
+{% extends "Master/MenuBghTemplate.html.twig" %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        {# destinatarios pendientes en color de texto normal; Bootstrap los atenúa por ser clicables #}
+        #m347-email .list-group-item-action:not(.active):not(.list-group-item-success) {
+            color: var(--bs-dark);
+        }
+    </style>
+{% endblock %}
+
+{% block bodyHeaderOptions %}
+    {{ parent() }}
+    <div class="container-fluid">
+        <form method="post" name="modelo347email" id="m347-email-form" action="{{ fsc.url() }}">
+            {{ formToken() }}
+            <input type="hidden" name="activetab" value="{{ fsc.type }}">
+            <input type="hidden" name="amount" value="{{ fsc.amount }}">
+            <input type="hidden" name="codejercicio" value="{{ fsc.codejercicio }}">
+            <input type="hidden" name="declarationtype" value="{{ fsc.declarationType }}">
+            <input type="hidden" name="examine" value="{{ fsc.examine }}">
+            {% if fsc.excludeIrpf %}
+                <input type="hidden" name="excludeirpf" value="1">
+            {% endif %}
+            <input type="hidden" name="grouping" value="{{ fsc.grouping }}">
+            <input type="hidden" name="justificante" value="{{ fsc.justificante }}">
+            <input type="hidden" name="justificanteanterior" value="{{ fsc.justificanteAnterior }}">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="h2">
+                        <i class="fa-solid fa-envelope fa-fw"></i> {{ fsc.title }}
+                    </h1>
+                    <p>{{ trans(fsc.type) }} · {{ trans('exercise') }} {{ fsc.codejercicio }} · {{ trans('amount') }} {{ money(fsc.amount) }}</p>
+                </div>
+                <button type="submit" formaction="Modelo347" class="btn btn-secondary">
+                    <i class="fa-solid fa-arrow-left fa-fw me-1"></i> {{ trans('347-return') }}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block body %}
+    {% if fsc.permissions.allowExport %}
+        <div class="container-fluid mb-3" id="m347-email"
+             data-url="{{ fsc.url() }}" data-sent="{{ trans('sent') }}" data-empty="{{ trans('no-data') }}">
+            <script type="application/json" id="m347-recipients">{{ fsc.recipients | json_encode | raw }}</script>
+            {{ _self.notificationCard(fsc) }}
+            <div id="m347-result" class="alert d-none" role="alert"></div>
+            <div class="row g-3">
+                <div class="col-md">
+                    {{ _self.listCard('m347-left', trans('347-included'), true) }}
+                </div>
+                <div class="col-md-auto d-flex flex-md-column justify-content-center gap-2">
+                    <button type="button" class="btn btn-outline-primary" id="m347-add" title="{{ trans('add') }}">
+                        <i class="fa-solid fa-angle-right fa-fw"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="m347-add-all" title="{{ trans('347-add-all') }}">
+                        <i class="fa-solid fa-angles-right fa-fw"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="m347-remove" title="{{ trans('remove') }}">
+                        <i class="fa-solid fa-angle-left fa-fw"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="m347-remove-all" title="{{ trans('347-remove-all') }}">
+                        <i class="fa-solid fa-angles-left fa-fw"></i>
+                    </button>
+                </div>
+                <div class="col-md">
+                    {{ _self.listCard('m347-right', trans('347-selected'), false) }}
+                    <div class="text-end mt-2">
+                        <button type="button" class="btn btn-success" id="m347-send" disabled>
+                            <span class="spinner-border spinner-border-sm me-1 d-none" id="m347-send-spinner" aria-hidden="true"></span>
+                            <i class="fa-solid fa-paper-plane fa-fw me-1"></i> {{ trans('send') }}
+                            <span class="badge bg-light text-dark ms-1" id="m347-send-count">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% macro listCard(id, title, withSearch) %}
+    <div class="card shadow-sm h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-bold">{{ title }}</span>
+            <span class="badge bg-secondary" id="{{ id }}-count">0</span>
+        </div>
+        {% if withSearch %}
+            <div class="card-body pb-0">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fa-solid fa-magnifying-glass fa-fw"></i></span>
+                    <input type="text" class="form-control" id="m347-search" autocomplete="off"
+                           placeholder="{{ trans('search') }}" title="{{ trans('347-search-help') }}">
+                    <button type="button" class="btn btn-outline-secondary" id="m347-search-clear" title="{{ trans('clear') }}">
+                        <i class="fa-solid fa-xmark fa-fw"></i>
+                    </button>
+                </div>
+                <small class="text-muted">{{ trans('347-search-help') }}</small>
+            </div>
+        {% endif %}
+        <div class="card-body">
+            <div class="list-group overflow-auto" id="{{ id }}" style="height: 50vh; user-select: none;"></div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro notificationCard(fsc) %}
+    <div class="card shadow-sm mt-3 mb-3">
+        <div class="card-header fw-bold d-flex justify-content-between align-items-center" role="button"
+             data-bs-toggle="collapse" data-bs-target="#m347-letter" aria-expanded="false" aria-controls="m347-letter">
+            <span><i class="fa-solid fa-envelope-open-text fa-fw me-1"></i> {{ trans('347-letter-preview') }}</span>
+            <span><i class="fa-solid fa-chevron-down fa-fw"></i></span>
+        </div>
+        <div class="card-body collapse" id="m347-letter">
+            <p class="mb-2"><span class="text-muted">{{ trans('subject') }}:</span> {{ fsc.getNotificationSubject() | raw }}</p>
+            <div class="border rounded p-3 bg-light" style="white-space: pre-line;">{{ fsc.getNotificationBody() | raw }}</div>
+        </div>
+    </div>
+{% endmacro %}
