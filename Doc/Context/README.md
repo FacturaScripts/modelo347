@@ -16,6 +16,15 @@ en el mismo trabajo que cambia el código.
 - [`05-emails.md`](05-emails.md): notificaciones, cola de trabajos, escalonado y envío selectivo.
 - [`06-evolucion.md`](06-evolucion.md): etapas del plugin según el historial git.
 
+## Normativa
+
+- [`Normativa/`](Normativa/): documentación **oficial** del modelo 347 (AEAT y BOE), descargada con la skill
+  `download-modelo347` (`.agents/skills/`). Contiene `actual/` (diseño de registro, novedades de la campaña,
+  especificaciones del portal de desarrolladores, normativa del BOE en `actual/normativa/`), `paginas/` (texto de la
+  ayuda técnica, instrucciones, plazos y normativa de la Sede), `historico/` (versiones sustituidas), `manifest.json` y
+  [`CHANGELOG.md`](Normativa/CHANGELOG.md) (qué se bajó, versiones vigentes, alertas y lo que queda por descargar a
+  mano). Contrasta con ella cualquier decisión sobre claves, campos o plazos; para refrescarla, ejecuta la skill.
+
 ## Decisiones
 
 - [`0001-fichero-iso-8859-1.md`](Decisiones/0001-fichero-iso-8859-1.md): por qué el TXT va en ISO-8859-1 y sin escribirse en disco.

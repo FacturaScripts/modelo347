@@ -3,6 +3,10 @@ Plugin **Modelo347** para FacturaScripts: Permite obtener los datos necesarios p
 Antes de tocar nada lee [`Doc/Context/README.md`](Doc/Context/README.md): es el índice del contexto (temas y
 decisiones) y dice qué archivo abrir para cada tema; no hace falta leerlo todo.
 
+Toda decisión sobre el diseño del fichero del modelo 347, claves de operación, plazos o cálculo se contrasta con la
+documentación oficial de [`Doc/Context/Normativa`](Doc/Context/Normativa/CHANGELOG.md). Para actualizarla usa la skill
+`download-modelo347` (en `.agents/skills/`; Claude Code la lee por `.claude/skills`).
+
 ## Documentación
 
 | Ruta | Para quién | Qué guarda |

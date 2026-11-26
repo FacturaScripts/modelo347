@@ -1,0 +1,1466 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes" ?>
+<ERROR>
+	<CODIGO COD="00000" TIPO="I">
+		<IDIOMA>
+			<DESC>No existen errores.</DESC>
+			<Error_Warning>I</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10000" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe de las operaciones primer trimestre</DESC>
+			<campoError>T2_IMP_1T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10001" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe percibido por transmisiones de inmuebles sujetas a IVA primer trimestre</DESC>
+			<campoError>T2_IMP_1T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10002" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe de las operaciones segundo trimestre</DESC>
+			<campoError>T2_IMP_2T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10003" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe percibido por transmisiones de inmuebles sujetas a IVA segundo trimestre</DESC>
+			<campoError>T2_IMP_2T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10004" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe de las operaciones tercer trimestre</DESC>
+			<campoError>T2_IMP_3T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10005" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe percibido por transmisiones de inmuebles sujetas a IVA tercer trimestre</DESC>
+			<campoError>T2_IMP_3T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10006" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe de las operaciones cuarto trimestre</DESC>
+			<campoError>T2_IMP_4T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10007" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe percibido por transmisiones de inmuebles sujetas a IVA cuarto trimestre</DESC>
+			<campoError>T2_IMP_4T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10008" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en importe anual de las operaciones devengadas conforme al criterio de caja del IVA.</DESC>
+			<campoError>T2_IMPORTE_IVA_CAJA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10009" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Número total de personas y entidades</DESC>
+			<campoError>T1_TOTAL_PERSONAS_ENTIDADES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10010" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe total anual de las operaciones</DESC>
+			<campoError>T1_TOTAL_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10011" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Número total de inmuebles</DESC>
+			<campoError>T1_TOTAL_INMUEBLES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10012" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe total de operaciones de arrendamiento de locales de negocio</DESC>
+			<campoError>T1_TOTAL_OPERACIONES_ARRENDAMIENTO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10200" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe de la operación. Inmuebles</DESC>
+			<campoError>T3_INM_OPERACION</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10201" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Modelo.</DESC>
+			<campoError>T1_MODELO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10300" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe percibido en metálico</DESC>
+			<campoError>T2_IMP_PERCIBIDO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10301" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Ejercicio</DESC>
+			<campoError>T1_EJERCICIO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10401" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF Declarante.</DESC>
+			<campoError>T1_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10401B" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF Declarante</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10402" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe total anual de las operaciones</DESC>
+			<campoError>T1_TOTAL_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10403" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF del declarante es obligatorio.</DESC>
+			<campoError>T1_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10450" TIPO="E">
+		<IDIOMA>
+			<DESC>Si los campos Importe trimestral de las operaciones tienen contenido el NIF del declarante a consignar no puede ser el de una comunidad de propietarios (H).</DESC>
+			<campoError>T1_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10451" TIPO="E">
+		<IDIOMA>
+			<DESC>Si los campos Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA tienen contenido el NIF del declarante a consignar no puede ser el de una comunidad de propietarios (H).</DESC>
+			<campoError>T1_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10480" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en NIF del representante legal</DESC>
+			<campoError>T2_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10499" TIPO="E">
+		<IDIOMA>
+			<DESC>La declaración debe contener al menos un registro correcto en la relación de declarados.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10501" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Apellidos y nombre, razón social o denominación del declarante.</DESC>
+			<campoError>T1_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10503" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Apellidos y nombre, razón social o denominación del declarante.</DESC>
+			<campoError>T1_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10521" TIPO="W">
+		<IDIOMA>
+			<DESC>Se han realizado presentaciones previas para este modelo, ejercicio y periodo, por una vía distinta al formulario. No podrá realizar la presentación de la declaración por esta vía.</DESC>
+			<Error_Warning>W</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10522" TIPO="E">
+		<IDIOMA>
+			<DESC>Se han realizado presentaciones previas para este modelo, ejercicio y periodo, por una vía distinta al formulario. No podrá realizar la presentación de la declaración por esta vía.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10525" TIPO="W">
+		<IDIOMA>
+			<DESC>La declaración presentada que se utilizó como origen de esta declaración ha cambiado. Debería revisar los datos de la declaración presentada.</DESC>
+			<Error_Warning>W</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10528" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Número identificativo de la declaración.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10529" TIPO="I">
+		<IDIOMA>
+			<DESC>Campo actualizado 'Nº identificativo de la declaración'</DESC>
+			<Error_Warning>I</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10530" TIPO="E">
+		<IDIOMA>
+			<DESC>Presentación abortada por el usuario</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10601" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Tipo de Soporte.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10701" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Teléfono de contacto.</DESC>
+			<campoError>T1_RELACION_TLF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10703" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Teléfono de contacto</DESC>
+			<campoError>T1_RELACION_TLF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10801" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Apellidos y Nombre de la persona con quien relacionarse.</DESC>
+			<campoError>T1_RELACION_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="10803" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Apellidos y Nombre de la persona con quien relacionarse.</DESC>
+			<campoError>T1_RELACION_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="11202" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Número Identificativo declaración anterior.</DESC>
+			<campoError>T1_JUSTIFICANTE_ANTERIOR</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="11311" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Número total de personas y entidades</DESC>
+			<campoError>T1_TOTAL_PERSONAS_ENTIDADES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="11511" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Número total de inmuebles</DESC>
+			<campoError>T1_TOTAL_INMUEBLES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="11612" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe total de operaciones de arrendamiento de locales de negocio</DESC>
+			<campoError>T1_TOTAL_OPERACIONES_ARRENDAMIENTO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="11801" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF Representante Legal.</DESC>
+			<campoError>T1_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="11802" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en NIF Representante legal.</DESC>
+			<campoError>T1_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="11804" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF del representante legal no puede coincidir  con el NIF del declarante.</DESC>
+			<campoError>T1_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="17231" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en El declarante está adscrito a la Delegación Central de Grandes Contribuyentes o a alguna de las Unidades de Gestión de Grandes Empresas de la AEAT</DESC>
+			<campoError>T1_GRANCONTRIBUYENTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="17232" TIPO="E">
+		<IDIOMA>
+			<DESC>Esta declaración no se puede presentar por predeclaración</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20201" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Modelo.</DESC>
+			<campoError>T2_MODELO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20301" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Ejercicio.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20500" TIPO="E">
+		<IDIOMA>
+			<DESC>Registro de declarado sin registro tipo declarante.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20501" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF del Declarado.</DESC>
+			<campoError>T2_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20502" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF del Declarado no puede coincidir con el NIF del Declarante.</DESC>
+			<campoError>T2_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20503" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en NIF del Declarado.</DESC>
+			<campoError>T2_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20504" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en NIF del Arrendatario porque no puede coincidir con el NIF del Declarante</DESC>
+			<campoError>T3_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20601" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF Representante legal.</DESC>
+			<campoError>T2_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20601B" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF Representante legal</DESC>
+			<campoError>T3_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20602" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en NIF Representante legal.</DESC>
+			<campoError>T2_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20603" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en NIF del Declarado o NIF Representante legal.</DESC>
+			<campoError>T2_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20608" TIPO="E">
+		<IDIOMA>
+			<DESC>Si Importe anual percibido por transmisiones de inmuebles sujetas a IVA tiene contenido, la clave de operación a consignar sólo puede ser: B.</DESC>
+			<campoError>T2_CLAVE_CODIGO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20701" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Apellidos y nombre, razón social o denominación del declarado.</DESC>
+			<campoError>T2_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20703" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Apellidos y nombre, razón social o denominación del declarado.</DESC>
+			<campoError>T2_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20801B" TIPO="E">
+		<IDIOMA>
+			<DESC>Caracteres no válidos en Tipo Hoja.</DESC>
+			<campoError>T2_TIPO_HOJA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20901" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Código Provincia.</DESC>
+			<campoError>T2_CODPROVINCIA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20903" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Código Provincia.</DESC>
+			<campoError>T2_CODPROVINCIA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="20904" TIPO="E">
+		<IDIOMA>
+			<DESC>Con NIF operador comunitario, si se cumplimenta el campo Código Provincia éste no podrá ser distinto de 99.</DESC>
+			<campoError>T2_CODPROVINCIA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21001" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Código País.</DESC>
+			<campoError>T2_PAIS</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21002" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Código País.</DESC>
+			<campoError>T2_PAIS</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21003" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Código País.</DESC>
+			<campoError>T2_PAIS</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21004" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Código País. No coincide con el país consignado en NIF operador comunitario.</DESC>
+			<campoError>T2_PAIS</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21101" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Clave Operación.</DESC>
+			<campoError>T2_CLAVE_CODIGO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21103" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Clave Operación.</DESC>
+			<campoError>T2_CLAVE_CODIGO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21104" TIPO="E">
+		<IDIOMA>
+			<DESC>Si Inversión del sujeto pasivo tiene contenido la clave de operación a consignar no puede ser: B, C, E o F.</DESC>
+			<campoError>T2_CLAVE_CODIGO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21105" TIPO="E">
+		<IDIOMA>
+			<DESC>Si los campos Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA tienen contenido, la clave de operación a consignar sólo puede ser: B.</DESC>
+			<campoError>T2_CLAVE_CODIGO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21106" TIPO="E">
+		<IDIOMA>
+			<DESC>Si el campo Importe percibido en metálico tiene contenido, la clave de operación a consignar no puede ser: A, D, E, o G.</DESC>
+			<campoError>T2_CLAVE_CODIGO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21200" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe anual de las operaciones</DESC>
+			<campoError>T2_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21201" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Importe Anual de las Operaciones.</DESC>
+			<campoError>T2_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21202" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe Anual de las Operaciones.</DESC>
+			<campoError>T2_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21203" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Importe Anual de las Operaciones.</DESC>
+			<campoError>T2_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21205" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Importe anual de las operaciones y/o Importe anual de las operaciones devengadas conforme al criterio de caja del IVA.</DESC>
+			<campoError>T2_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21206" TIPO="E">
+		<IDIOMA>
+			<DESC>No coincide sumatorio de importe anual de las operaciones de los registros tipo 2 con el indicado.</DESC>
+			<campoError>T2_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21305" TIPO="E">
+		<IDIOMA>
+			<DESC>Si los campos Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA tienen contenido no puede seleccionar  operación de seguro.</DESC>
+			<campoError>T2_OPERACION_SEGURO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21402" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Arrendamiento Local.</DESC>
+			<campoError>T2_ARRENDAMIENTO_LOCAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21504" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en  importe anual de las operaciones y/o importe anual de las operaciones devengadas conforme al criterio de caja del IVA</DESC>
+			<campoError>T2_OPERACIONES</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21405" TIPO="E">
+		<IDIOMA>
+			<DESC>Si los campos Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA tienen contenido no puede seleccionar  arrendamiento de local de negocio.</DESC>
+			<campoError>T2_ARRENDAMIENTO_LOCAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21501" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Importe Percibido en Metálico. Debe ser mayor de 6000 Euros.</DESC>
+			<campoError>T2_IMP_PERCIBIDO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21502" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe Percibido en Metálico.</DESC>
+			<campoError>T2_IMP_PERCIBIDO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21601" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Importe Anual Percibido por Transmisiones de Inmuebles Sujetas a IVA.</DESC>
+			<campoError>T2_IMP_PERCIBIDO_TRANSM</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21602" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe Anual Percibido por Transmisiones de Inmuebles Sujetas a IVA.</DESC>
+			<campoError>T2_IMP_PERCIBIDO_TRANSM</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21603" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido excesivo en Importe anual percibido por transmisiones de inmuebles sujetas a IVA</DESC>
+			<campoError>T2_IMP_PERCIBIDO_TRANSM</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21901" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Ejercicio.</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21903" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Ejercicio.</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21904" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto. Este campo no puede ser anterior al año 2008 ni posterior al ejercicio de la declaración</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21905" TIPO="E">
+		<IDIOMA>
+			<DESC>Si los campos Importe trimestral de las operaciones tienen contenido el ejercicio a consignar no puede ser inferior al de la declaración.</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21906" TIPO="E">
+		<IDIOMA>
+			<DESC>Si los campos Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA tienen contenido, el ejercicio a consignar no puede ser inferior al de la declaración.</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21907" TIPO="E">
+		<IDIOMA>
+			<DESC>Si el campo Importe anual de las operaciones tiene contenido el ejercicio a consignar no puede ser inferior al de la declaración.</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21908" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto. Este campo no puede ser anterior al año 2014 si ha cumplimentado Operación con bienes vinculados o destinados a vincularse al régimen de depósito distinto del aduanero</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="21909" TIPO="E">
+		<IDIOMA>
+			<DESC>Si el campo Importe anual percibido por transmisiones inmuebles sujetas a IVA tiene contenido, el ejercicio a consignar no puede ser inferior al de la declaración</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22601" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF del Arrendatario. Inmueble.</DESC>
+			<campoError>T3_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22602" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en NIF del Arrendatario porque no puede coincidir con el NIF del Declarante.</DESC>
+			<campoError>T3_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22604" TIPO="E">
+		<IDIOMA>
+			<DESC>Existe algún NIF de Inmueble obligatorio sin contenido.</DESC>
+			<campoError>T1_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22701" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF Representante legal. Inmueble.</DESC>
+			<campoError>T3_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22702" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en NIF Representante legal. Inmueble.</DESC>
+			<campoError>T3_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22703A" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en NIF Representante Legal. Inmueble</DESC>
+			<campoError>T3_NIF_REPRESENTANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22704" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF del representante legal no puede coincidir  con el NIF del declarado.</DESC>
+			<campoError>T2_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22800" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF del representante legal no puede coincidir  con el NIF del arrendatario.</DESC>
+			<campoError>T3_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22801" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Apellidos y nombre. Inmueble.</DESC>
+			<campoError>T3_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22803" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Apellidos y nombre, razón social o denominación del arrendatario.</DESC>
+			<campoError>T3_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="22903" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Importe de la Operación. Inmueble.</DESC>
+			<campoError>T3_INM_OPERACION</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23001" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Situación del Inmueble.</DESC>
+			<campoError>T3_INM_SITUC</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23003" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Situación del Inmueble.</DESC>
+			<campoError>T3_INM_SITUC</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23101" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Referencia Catastral Inmueble.</DESC>
+			<campoError>T3_INM_REFERENCIA_CATASTRAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23102" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Referencia Catastral Inmueble.</DESC>
+			<campoError>T3_INM_REFERENCIA_CATASTRAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23103" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Referencia Catastral Inmueble.</DESC>
+			<campoError>T3_INM_REFERENCIA_CATASTRAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23201" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Tipo de vía. Inmueble.</DESC>
+			<campoError>T3_INM_SG</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23203" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Tipo de vía. Inmueble.</DESC>
+			<campoError>T3_INM_SG</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="23403" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Nombre Vía Pública Inmueble.</DESC>
+			<campoError>T3_INM_VIA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24502" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Municipio Inmueble.</DESC>
+			<campoError>T3_INM_MUNICIPIO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24503" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Municipio Inmueble.</DESC>
+			<campoError>T3_INM_MUNICIPIO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24601" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Código Municipio. Inmueble.</DESC>
+			<campoError>T3_INM_COD_MUNICIPIO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24602" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Código Municipio. Inmueble.</DESC>
+			<campoError>T3_INM_COD_MUNICIPIO</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24701" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Código Provincia Inmueble.</DESC>
+			<campoError>T3_INM_CODPROVINCIA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24702" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Código Provincia Inmueble.</DESC>
+			<campoError>T3_INM_CODPROVINCIA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24703" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Código Provincia Inmueble.</DESC>
+			<campoError>T3_INM_CODPROVINCIA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24801" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Código Postal. Inmueble.</DESC>
+			<campoError>T3_INM_CODPOSTAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24802" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Código Postal. Inmueble.</DESC>
+			<campoError>T3_INM_CODPOSTAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="24803" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Código Postal. Inmueble.</DESC>
+			<campoError>T3_INM_CODPOSTAL</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25002" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en  Importe trimestral de las operaciones(1T).</DESC>
+			<campoError>T2_IMP_1T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25102" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA(1T).</DESC>
+			<campoError>T2_IMP_1T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25202" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en  Importe trimestral de las operaciones(2T).</DESC>
+			<campoError>T2_IMP_2T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25302" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA(2T).</DESC>
+			<campoError>T2_IMP_2T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25402" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en  Importe trimestral de las operaciones(3T).</DESC>
+			<campoError>T2_IMP_3T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25502" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA(3T).</DESC>
+			<campoError>T2_IMP_3T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25602" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en  Importe trimestral de las operaciones(4T).</DESC>
+			<campoError>T2_IMP_4T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="25702" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe trimestral percibido por transmisiones de inmuebles sujetas a IVA(4T).</DESC>
+			<campoError>T2_IMP_4T_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27101" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en NIF operador comunitario.</DESC>
+			<campoError>T2_NIF_IVA_PAIS</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27102" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en NIF operador comunitario(Código País).</DESC>
+			<campoError>T2_NIF_IVA_PAIS</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27103" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en NIF operador comunitario.</DESC>
+			<campoError>T2_NIF_IVA_PAIS</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27106" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en algún Importe Trimestral de las Operaciones.</DESC>
+			<campoError>T2_IMP_1T</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en NIF operador comunitario(Número).</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202A" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Alemania debe ser 9 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202B" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Austria debe ser 9 caracteres alfanuméricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202C" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Bélgica debe ser 10 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202D" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Dinamarca debe ser 8 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202E" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Finlandia debe ser 8 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202F" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Francia debe ser 11 caracteres alfanuméricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202G" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Grecia debe ser 9 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202H" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Gran Bretaña debe ser 5, 9 o 12 caracteres alfanuméricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202HH" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Irlanda del Norte debe ser 5, 9 o 12 caracteres alfanuméricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202I" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Paises Bajos debe ser 12 caracteres alfanuméricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202II" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Croacia debe ser 11 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202J" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Italia debe ser 11 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202K" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Irlanda debe ser 8 o 9 caracteres alfanuméricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202L" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Luxemburgo debe ser 8 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202M" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Portugal debe ser 9 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202N" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Suecia debe ser 12 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202R" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Hungría debe ser 8 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202O" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Chipre debe ser 9 caracteres alfanuméricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202P" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Eslovenia debe ser 8 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202Q" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Estonia debe ser 9 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202S" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Letonia debe ser 11 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202T" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Lituania debe ser 9 o 12 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202U" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Malta debe ser 8 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202V" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Polonia debe ser 10 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202W" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Chequia debe ser 8, 9 o 10 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202X" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Eslovaquia debe ser 10 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202Y" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Bulgaria debe ser 9 o 10 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27202Z" TIPO="E">
+		<IDIOMA>
+			<DESC>NIF operador comunitario de Rumanía debe ser 2 a 10 caracteres numéricos</DESC>
+			<campoError>T2_NIF_IVA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27302" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Operación Iva De Caja.</DESC>
+			<campoError>T2_OPER_IVA_CAJA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27304" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto. Este campo no puede ser anterior al año 2014 si se trata de operaciones devengadas conforme al criterio de caja del IVA</DESC>
+			<campoError>T2_EJERCICIO_IMP</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27402" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Operación Con Inversión Del Sujeto Pasivo.</DESC>
+			<campoError>T2_OPER_INVERSION</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27502" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Operación régimen de depósito distinto del aduanero.</DESC>
+			<campoError>T2_OPER_REGIMEN</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27602" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido improcedente en Importe anual de las operaciones devengadas conforme al criterio de caja del IVA.</DESC>
+			<campoError>T2_IMPORTE_IVA_CAJA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="27603" TIPO="E">
+		<IDIOMA>
+			<DESC>Falta contenido en Importe anual de las operaciones devengadas conforme al criterio de caja del IVA.</DESC>
+			<campoError>T2_IMPORTE_IVA_CAJA</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="35000" TIPO="E">
+		<IDIOMA>
+			<DESC>Registro tipo declarante debe ser único.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="50000" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Importe Anual Percibido por Transmisiones de Inmuebles Sujetas a IVA.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="80127" TIPO="E">
+		<IDIOMA>
+			<DESC>Valor en el campo 'desde' no puede ser superior al valor 'hasta'.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="90001" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF con el que se identificó no coincide con el NIF del contribuyente del fichero</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="90002" TIPO="E">
+		<IDIOMA>
+			<DESC>El nombre con el que se identificó no coincide con el nombre del contribuyente del fichero</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="90012" TIPO="E">
+		<IDIOMA>
+			<DESC>No coincide NIF Declarante registro tipo 2 con NIF Declarante registro tipo 1.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="91401" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en Firmante.</DESC>
+			<campoError>T1_PRESENTACION_FIRMANTE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="95000" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en 'NIF del declarante'.</DESC>
+			<campoError>T1_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="95001" TIPO="E">
+		<IDIOMA>
+			<DESC>Contenido incorrecto en 'Apellidos y nombre o razón social del declarante'.</DESC>
+			<campoError>T1_NOMBRE</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="95126" TIPO="H">
+		<IDIOMA>
+			<DESC>NIF no coincidente con el de la identificación por PIN.</DESC>
+			<Error_Warning>H</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="95127" TIPO="H">
+		<IDIOMA>
+			<DESC>NOMBRE no coincidente con el de la identificación por PIN.</DESC>
+			<Error_Warning>H</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="99994" TIPO="A">
+		<IDIOMA>
+			<DESC>El fichero se rechazó, no se importó ningún registro</DESC>
+			<Error_Warning>A</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="99995" TIPO="A">
+		<IDIOMA>
+			<DESC>No se mostrarán todos los errores debido a que superó el máximo de errores a visualizar</DESC>
+			<Error_Warning>A</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="99996" TIPO="B">
+		<IDIOMA>
+			<DESC>La importación se realizó correctamente. No existen errores.</DESC>
+			<Error_Warning>B</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="AUTORIZADOCON" TIPO="E">
+		<IDIOMA>
+			<DESC>Usted no cumple las condiciones para realizar este trámite en representación del obligado tributario</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EII01" TIPO="E">
+		<IDIOMA>
+			<DESC>El declarante seleccionado tiene más de 49999 registros.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EII02" TIPO="E">
+		<IDIOMA>
+			<DESC>Desbordamiento en el calculo de los campos Total Operaciones o Total Operaciones Arrendamiento. No se puede Imprimir.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EII03" TIPO="E">
+		<IDIOMA>
+			<DESC>Desbordamiento en el calculo de los campos Total Operaciones o Total Operaciones Arrendamiento. No se puede Exportar..</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EII04" TIPO="E">
+		<IDIOMA>
+			<DESC>Desbordamiento en el calculo de los campos Total Operaciones o Total Operaciones Arrendamiento o Importe Anual de las Operaciones o Importe Anual Percibido por Transmisiones de Inmuebles Sujeas a IVA. No se puede realizar una Presentación sin certificado (PIN 24 horas).</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EII05" TIPO="E">
+		<IDIOMA>
+			<DESC>Desbordamiento en el calculo de los campos Total Operaciones o Total Operaciones Arrendamiento o Importe Anual de las Operaciones o Importe Anual Percibido por Transmisiones de Inmuebles Sujeas a IVA.  No se puede realizar una Presentación con certificado electrónico reconocido.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EII06" TIPO="E">
+		<IDIOMA>
+			<DESC>Desbordamiento en el calculo de los campos Total Operaciones o Total Operaciones Arrendamiento o Importe Anual de las Operaciones o Importe Anual Percibido por Transmisiones de Inmuebles Sujeas a IVA. No se puede obtener una Predeclaración.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EMALEMP" TIPO="E">
+		<IDIOMA>
+			<DESC>Error fichero vacio.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EPP01" TIPO="E">
+		<IDIOMA>
+			<DESC>Será obligatoria la presentación con certificado electrónico reconocido cuando alguno de los declarantes seleccionados sea: .....</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EPP02" TIPO="E">
+		<IDIOMA>
+			<DESC>La modalidad de predeclaración sólo se podrá utilizar para la comunidades de propietarios en régimen de propiedad horizontal cuando no estén adscritas a la DGGC o UGGE (DRI) de la Agencia Estatal de Administración Tributaria, y siempre que no supere los 15 registros en su relación de declarados e inmuebles.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="EPP03" TIPO="E">
+		<IDIOMA>
+			<DESC>La presentación PIN 24 horas sólo se podrá realizar por las personas físicas cuando no estén adscritas a la DCGC o UGGE (DRI) de la Agencia Estatal de Administración Tributaria.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="ERRIMPT2" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF del declarante no coincide con el del fichero</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="ESS03" TIPO="E">
+		<IDIOMA>
+			<DESC>No se puede realizar la obtención en Soporte porque no ha cumplimentado los datos del Presentador.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="IDT10013" TIPO="E">
+		<IDIOMA>
+			<DESC>Declarado no identificado</DESC>
+			<campoError>T2_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="IDT10014" TIPO="E">
+		<IDIOMA>
+			<DESC>Arrendatario no identificado</DESC>
+			<campoError>T3_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="IDT50137" TIPO="E">
+		<IDIOMA>
+			<DESC>El NIF del declarante no está identificado.</DESC>
+			<campoError>T1_NIF</campoError>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="MSG.AGREGAR_O_BORRAR1" TIPO="E">
+		<IDIOMA>
+			<DESC>A - Borrar todos los registros de Declarados e Inmuebles e importar.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="MSG.AGREGAR_O_BORRAR2" TIPO="E">
+		<IDIOMA>
+			<DESC>B - Agregar registros de Declarados e Inmuebles a la declaración actual.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="NOEXPEDIENTE" TIPO="E">
+		<IDIOMA>
+			<DESC>El declarante no tiene ninguna declaración del ejercicio anterior.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="NOIDENTIFICADO" TIPO="E">
+		<IDIOMA>
+			<DESC>El declarante no está identificado.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="NUEVO COD ERROR" TIPO="E">
+		<IDIOMA>
+			<DESC>35001</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="OVERFLOW_MOTOR" TIPO="E">
+		<IDIOMA>
+			<DESC>La partida supera el máximo permitido.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="PREDEC.ITEM1" TIPO="E">
+		<IDIOMA>
+			<DESC>IMPORTANTE: la declaración no se podrá confirmar presencialmente ni en oficinas de la Agencia Tributaria ni en oficinas de las entidades colaboradoras.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="PREDEC.ITEM2" TIPO="E">
+		<IDIOMA>
+			<DESC>Para la presentación efectiva de esta declaración debe realizar los siguientes pasos:</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="PREDEC.ITEM3" TIPO="E">
+		<IDIOMA>
+			<DESC>1. Enviar la predeclaración. Obtendrá un archivo en formato PDF</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="PREDEC.ITEM4" TIPO="E">
+		<IDIOMA>
+			<DESC>2. Confirmar la presentación de la declaración siguiendo las instrucciones que aparecerán en la primera página del archivo PDF generado en el paso anterior.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="SEC9" TIPO="E">
+		<IDIOMA>
+			<DESC>Registro de Inmuebles sin relación con ninguno de Declarados.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+	<CODIGO COD="SESERR" TIPO="E">
+		<IDIOMA>
+			<DESC>El fichero no pertenece a este modelo y/o ejercicio.</DESC>
+			<Error_Warning>E</Error_Warning>
+		</IDIOMA>
+	</CODIGO>
+</ERROR>
