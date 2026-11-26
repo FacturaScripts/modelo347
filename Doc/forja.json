@@ -11,7 +11,25 @@
             "keywords": "Modelo 347, Hacienda, declaración anual, operaciones con terceros, AEAT, plugin Modelo347",
             "controllers": "Modelo347",
             "visibility": true,
-            "idpublication": 1977
+            "idpublication": 1977,
+            "assets": {
+                "Assets/como-hacer-el-modelo-347/01-parametros.png": {
+                    "url": "/MyFiles/2026/11/8533_forja_kgaqgfzczk_01_parametros.png?myft=9f4c78a30b155592223f9150b0a0d1f484a01ceef7c9baad77a71894ddd34097",
+                    "sha256": "f4ad3977bb9e8c22c236df954c597d2234eca5994f184c2924fd8c23215f23ea"
+                },
+                "Assets/como-hacer-el-modelo-347/02-resultado.png": {
+                    "url": "/MyFiles/2026/11/8534_forja_ydu9f2flhs_02_resultado.png?myft=a5f4af8ffa53a3cc57c9e3c4961bebbd32f0bf0a0a86eabda3ff465f34a17341",
+                    "sha256": "f93b6b517256f3519b892e17ae37fd01498248af45fedba88403c78c20354613"
+                },
+                "Assets/como-hacer-el-modelo-347/03-descargar.png": {
+                    "url": "/MyFiles/2026/11/8535_forja_gyjskquxq4_03_descargar.png?myft=4294e7eb54956311ae6a2cc9443c55b4403f5c01a027dae99680dfe10a9e6116",
+                    "sha256": "93fd2185ca5fdac080ef98bf6c0536faba2f14c2e9841ba807ed124228af6e1e"
+                },
+                "Assets/como-hacer-el-modelo-347/04-declaracion-complementaria.png": {
+                    "url": "/MyFiles/2026/11/8536_forja_ed9dsopzwo_04_declaracion_complementaria.png?myft=d2961a35cd7f39920c36e9308b645b372a7c820c04987bc9a607b34efac64b4e",
+                    "sha256": "c41b55521973eb66da6eec3abe1f4a72d4b740f62aa2459d331761a8c5d92c7a"
+                }
+            }
         },
         "informe-de-clientes-y-proveedores-por-importe.md": {
             "title": "Cómo obtener un informe de clientes/proveedores que han operado más de X euros",
@@ -25,7 +43,21 @@
             "controllers": "Modelo347",
             "visibility": true,
             "youtubeid": "5QVvZEUzHaA",
-            "idpublication": 2852
+            "idpublication": 2852,
+            "assets": {
+                "Assets/informe-de-clientes-y-proveedores-por-importe/01-importe-minimo.png": {
+                    "url": "/MyFiles/2026/11/8537_forja_6jqfxo84je_01_importe_minimo.png?myft=58941162c7529d905c1b3c6e12c970b766a693cf1ba61300adf87067c0cacf38",
+                    "sha256": "9887fe71ca6501df5e08e234146c1e66023748e7752532bd7231be6b375eebf4"
+                },
+                "Assets/informe-de-clientes-y-proveedores-por-importe/02-listado-completo.png": {
+                    "url": "/MyFiles/2026/11/8538_forja_eeojafwi78_02_listado_completo.png?myft=254355b074d7bc098943e57876e77a2e77a493173cc1f70cfb61001cd6de80c5",
+                    "sha256": "290986e0062220d7307ae49d3e2851dc5c586b465908bce48ca98223b3a03ebd"
+                },
+                "Assets/informe-de-clientes-y-proveedores-por-importe/03-descargar-excel.png": {
+                    "url": "/MyFiles/2026/11/8539_forja_zurco6h9o9_03_descargar_excel.png?myft=d62d09155f271a9944897b4efb77f53864226cbe63e1801712744c50b8235c3d",
+                    "sha256": "928c0fae751d88576e671b99ee4535fb08c65c681614d68d5197c93d08991931"
+                }
+            }
         },
         "enviar-la-carta-del-modelo-347-por-email.md": {
             "title": "Cómo enviar la carta del Modelo 347 por email",
@@ -37,7 +69,18 @@
             "color": "success",
             "keywords": "Modelo 347, email, carta, clientes, proveedores, notificación, envío selectivo",
             "controllers": "Modelo347,Modelo347Email",
-            "visibility": true
+            "visibility": true,
+            "idpublication": 5115,
+            "assets": {
+                "Assets/enviar-la-carta-del-modelo-347-por-email/01-botones-de-envio.png": {
+                    "url": "/MyFiles/2026/11/8540_forja_wa6kwb7oid_01_botones_de_envio.png?myft=0a9d9e89853abf11a9b79fc8e06d7196b8b57a10f74c89f1bb5765c4974e5cb9",
+                    "sha256": "2a658bfe2922bfba55f7a2e5120afb67a736d0603df31d3beecefefaa061a5d8"
+                },
+                "Assets/enviar-la-carta-del-modelo-347-por-email/02-confirmar-envio.png": {
+                    "url": "/MyFiles/2026/11/8541_forja_dsgutrntna_02_confirmar_envio.png?myft=07e5b81e828817ca49845347aa1dca25c00307614b92e2d234749388a8769db8",
+                    "sha256": "becee5ad80c9a8b14354ac4f2e44a31f751024fb768de5081f03e50de9077d64"
+                }
+            }
         },
         "excluir-clientes-o-facturas-del-modelo-347.md": {
             "title": "Cómo excluir clientes, proveedores o facturas del Modelo 347",
@@ -49,7 +92,18 @@
             "color": "warning",
             "keywords": "Modelo 347, excluir, cliente, proveedor, factura, excluir del 347",
             "controllers": "Modelo347,EditCliente,EditProveedor,EditFacturaCliente,EditFacturaProveedor",
-            "visibility": true
+            "visibility": true,
+            "idpublication": 5116,
+            "assets": {
+                "Assets/excluir-clientes-o-facturas-del-modelo-347/01-cliente-excluir-347.png": {
+                    "url": "/MyFiles/2026/11/8542_forja_dtre0eojlo_01_cliente_excluir_347.png?myft=2d90fd2df5f1d0774e3a8c95628b581f9449333c292c6cab8bec66951263ca01",
+                    "sha256": "86bab1b6f1ff5e37a88e4cf2551accfad02c0f3154155eb48db61c35283f73fc"
+                },
+                "Assets/excluir-clientes-o-facturas-del-modelo-347/02-factura-detalle.png": {
+                    "url": "/MyFiles/2026/11/8543_forja_t2cmxcjbdp_02_factura_detalle.png?myft=e632ed552b203a98bfbaa596eb20088ee29da955e66aaae98a9c768541627f2c",
+                    "sha256": "cb4f360a23c07b56286a8cd40b610302fed1b7977218cff81af3b5afe762a25e"
+                }
+            }
         }
     },
     "Dev": {
@@ -62,7 +116,8 @@
             "color": "info",
             "keywords": "api, rest, modelo 347, operaciones con terceros, token, curl, mcp",
             "controllers": "ApiModelo347",
-            "visibility": true
+            "visibility": true,
+            "idpublication": 5117
         }
     }
 }
