@@ -79,8 +79,8 @@ final class Modelo347EmailTest extends TestCase
     }
 
     /**
-     * Comprueba que se encola un evento por destinatario con el año del ejercicio y que un segundo envío
-     * no se encola mientras el primero siga pendiente.
+     * Comprueba que se encola un evento por destinatario, escalonado en el tiempo y con el año del
+     * ejercicio, y que un segundo envío no se encola mientras el primero siga pendiente.
      */
     public function testQueue(): void
     {
@@ -113,6 +113,14 @@ final class Modelo347EmailTest extends TestCase
         $this->assertEquals('2025', $events[0]->param('year'));
         $this->assertEquals($exercise->idempresa, $events[0]->param('idempresa'));
         $this->assertEquals('dos@example.com', $events[1]->param('email'));
+
+        // los emails se programan escalonados: el primero ya y el segundo SEND_INTERVAL segundos después
+        $first = strtotime($events[0]->creation_date);
+        $this->assertLessThanOrEqual(time() + 1, $first);
+        $this->assertEquals(Modelo347Email::SEND_INTERVAL, strtotime($events[1]->creation_date) - $first);
+
+        // un nuevo envío empezaría a continuación del último email pendiente
+        $this->assertGreaterThanOrEqual(2 * Modelo347Email::SEND_INTERVAL - 1, Modelo347Email::firstDelay());
 
         // segundo envío con el primero pendiente: no se encola nada
         $result2 = Modelo347Email::queue($exercise, 3005.06, $data, Modelo347Email::TYPE_SUPPLIERS);

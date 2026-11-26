@@ -36,6 +36,10 @@ use FacturaScripts\Dinamic\Model\Empresa;
  * con un destinatario por evento. El asunto y el cuerpo salen de las notificaciones por email
  * modelo347-customers y modelo347-suppliers. El remitente es la empresa del ejercicio.
  *
+ * Lib/Modelo347Email programa cada email unos segundos después del anterior, pero el cron ejecuta
+ * seguidos todos los eventos que ya han vencido. Por eso, dentro de un mismo proceso, el worker deja al
+ * menos MIN_GAP_MS milisegundos entre dos envíos; un envío suelto no espera nada.
+ *
  * También procesa los eventos de versiones anteriores, que llevaban todos los destinatarios en el
  * parámetro 'data'.
  *
@@ -43,6 +47,12 @@ use FacturaScripts\Dinamic\Model\Empresa;
  */
 class Modelo347EmailWorker extends WorkerClass
 {
+    /** Milisegundos mínimos entre dos envíos del mismo proceso. */
+    const MIN_GAP_MS = 500;
+
+    /** @var float|null Momento (microtime) del último envío de este proceso. */
+    private static $lastSend = null;
+
     public function run(WorkEvent $event): bool
     {
         $type = $event->name === Modelo347Email::EVENT_SUPPLIERS ?
@@ -126,7 +136,10 @@ class Modelo347EmailWorker extends WorkerClass
             $mail->fromName = $company->nombrecorto;
         }
 
-        if ($mail->send()) {
+        $this->waitForGap();
+        $sent = $mail->send();
+        self::$lastSend = microtime(true);
+        if ($sent) {
             return true;
         }
 
@@ -135,5 +148,21 @@ class Modelo347EmailWorker extends WorkerClass
             '%email%' => $email,
         ]);
         return false;
+    }
+
+    /**
+     * Espera, si hace falta, hasta que hayan pasado MIN_GAP_MS milisegundos desde el último envío de
+     * este proceso, para no mandar los emails en ráfaga cuando el cron procesa muchos eventos seguidos.
+     */
+    protected function waitForGap(): void
+    {
+        if (null === self::$lastSend) {
+            return;
+        }
+
+        $remaining = self::MIN_GAP_MS * 1000 - (int)((microtime(true) - self::$lastSend) * 1000000);
+        if ($remaining > 0) {
+            usleep($remaining);
+        }
     }
 }

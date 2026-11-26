@@ -41,6 +41,10 @@ use FacturaScripts\Dinamic\Model\Proveedor;
  * que ya lo habían recibido. Antes de encolar se comprueba que no quede pendiente un envío anterior del
  * mismo ejercicio y tipo, para que pulsar dos veces «Enviar» no duplique los emails.
  *
+ * Los eventos no se programan todos para el mismo momento: cada uno sale SEND_INTERVAL segundos después
+ * del anterior, a continuación del último email del 347 que siga pendiente (de clientes o proveedores),
+ * para no saturar el servidor de correo ni que el del destinatario lo bloquee por envío masivo.
+ *
  * @author Daniel Fernández Giménez <contacto@danielfg.es>
  */
 class Modelo347Email
@@ -56,6 +60,9 @@ class Modelo347Email
 
     /** Notificación por email de la carta a proveedores. */
     const NOTIFICATION_SUPPLIERS = 'modelo347-suppliers';
+
+    /** Segundos entre la hora programada de un email y la del siguiente. */
+    const SEND_INTERVAL = 2;
 
     /** Tipo de tercero: clientes. */
     const TYPE_CUSTOMERS = 'customers';
@@ -119,6 +126,27 @@ class Modelo347Email
             Where::eq('done', false),
         ];
         return WorkEvent::count($where) > 0;
+    }
+
+    /**
+     * Devuelve dentro de cuántos segundos debe programarse el primer email de un nuevo envío: justo a
+     * continuación del último email del 347 que siga pendiente (de clientes o de proveedores, porque
+     * comparten servidor de correo), o 0 si no queda ninguno pendiente o ya ha pasado su hora.
+     *
+     * @return int
+     */
+    public static function firstDelay(): int
+    {
+        $where = [
+            Where::in('name', [self::EVENT_CUSTOMERS, self::EVENT_SUPPLIERS]),
+            Where::eq('done', false),
+        ];
+        foreach (WorkEvent::all($where, ['creation_date' => 'DESC'], 0, 1) as $last) {
+            $delay = strtotime($last->creation_date) - time();
+            return $delay < 0 ? 0 : $delay + self::SEND_INTERVAL;
+        }
+
+        return 0;
     }
 
     /**
@@ -201,6 +229,9 @@ class Modelo347Email
      * Encola un email por cada destinatario ya preparado con recipients(), sin más comprobaciones.
      * Lo usan queue() y el envío selectivo de Controller/Modelo347Email.
      *
+     * Cada email se programa SEND_INTERVAL segundos después del anterior, empezando tras el último
+     * pendiente (firstDelay()), para repartir el envío en el tiempo.
+     *
      * @param Ejercicio $exercise ejercicio declarado.
      * @param float     $amount importe mínimo del modelo, que se menciona en el texto del email.
      * @param array     $recipients destinatarios con email (clave 'recipients' de recipients()).
@@ -216,9 +247,11 @@ class Modelo347Email
         ];
 
         $queued = 0;
+        $delay = self::firstDelay();
         foreach ($recipients as $recipient) {
-            if (WorkQueue::send(self::eventName($type), $exercise->codejercicio, array_merge($params, $recipient))) {
+            if (WorkQueue::sendFuture($delay, self::eventName($type), $exercise->codejercicio, array_merge($params, $recipient))) {
                 $queued++;
+                $delay += self::SEND_INTERVAL;
             }
         }
         return $queued;

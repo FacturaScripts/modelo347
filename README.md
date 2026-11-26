@@ -12,6 +12,8 @@ El botón «Enviar Email» de la pantalla (requiere permiso de modificación y e
 
 El asunto y el texto del email salen de las notificaciones por email `modelo347-customers` y `modelo347-suppliers`, que el plugin crea al instalarse y que el usuario puede personalizar con las etiquetas `{name}`, `{cifnif}`, `{email}`, `{year}`, `{amount}`, `{t1}`..`{t4}`, `{total}` y `{deadline}`. Si la notificación no existe o está desactivada no se encola nada.
 
+Para no saturar el servidor de correo, los emails no salen todos a la vez: cada uno se programa en la cola `Lib/Modelo347Email::SEND_INTERVAL` segundos (2) después del anterior, a continuación del último email del 347 que siga pendiente. Como el cron ejecuta seguidos todos los eventos ya vencidos, el worker deja además al menos `Modelo347EmailWorker::MIN_GAP_MS` milisegundos (500) entre dos envíos del mismo proceso.
+
 El botón «Seleccionar» abre `Controller/Modelo347Email`, donde se eligen en dos columnas con buscador los clientes o proveedores concretos a los que enviar el email, con una vista previa de la notificación.
 
 ## Issues / Feedback
