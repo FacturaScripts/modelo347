@@ -1,0 +1,68 @@
+{
+    "User": {
+        "como-hacer-el-modelo-347.md": {
+            "title": "Cómo generar y presentar el Modelo 347",
+            "title_short": "Realizar el Modelo 347",
+            "permalink": "como-hacer-el-modelo-347",
+            "ordernum": 1,
+            "imageurl": "Doc/Assets/como-hacer-el-modelo-347/02-resultado.png",
+            "icon": "fa-solid fa-book",
+            "color": "primary",
+            "keywords": "Modelo 347, Hacienda, declaración anual, operaciones con terceros, AEAT, plugin Modelo347",
+            "controllers": "Modelo347",
+            "visibility": true,
+            "idpublication": 1977
+        },
+        "informe-de-clientes-y-proveedores-por-importe.md": {
+            "title": "Cómo obtener un informe de clientes/proveedores que han operado más de X euros",
+            "title_short": "Informe de clientes/proveedores que han operado más de X",
+            "permalink": "como-obtener-un-informe-de-clientes-que-han-comprado-mas-de-x-euros",
+            "parent": "como-hacer-el-modelo-347.md",
+            "ordernum": 10,
+            "icon": "fa-solid fa-chart-bar",
+            "color": "info",
+            "keywords": "Modelo 347, informe, clientes, proveedores, importe, Excel",
+            "controllers": "Modelo347",
+            "visibility": true,
+            "youtubeid": "5QVvZEUzHaA",
+            "idpublication": 2852
+        },
+        "enviar-la-carta-del-modelo-347-por-email.md": {
+            "title": "Cómo enviar la carta del Modelo 347 por email",
+            "title_short": "Enviar la carta del 347",
+            "permalink": "enviar-la-carta-del-modelo-347-por-email",
+            "parent": "como-hacer-el-modelo-347.md",
+            "ordernum": 20,
+            "icon": "fa-solid fa-envelope",
+            "color": "success",
+            "keywords": "Modelo 347, email, carta, clientes, proveedores, notificación, envío selectivo",
+            "controllers": "Modelo347,Modelo347Email",
+            "visibility": true
+        },
+        "excluir-clientes-o-facturas-del-modelo-347.md": {
+            "title": "Cómo excluir clientes, proveedores o facturas del Modelo 347",
+            "title_short": "Excluir del 347",
+            "permalink": "excluir-clientes-o-facturas-del-modelo-347",
+            "parent": "como-hacer-el-modelo-347.md",
+            "ordernum": 30,
+            "icon": "fa-solid fa-ban",
+            "color": "warning",
+            "keywords": "Modelo 347, excluir, cliente, proveedor, factura, excluir del 347",
+            "controllers": "Modelo347,EditCliente,EditProveedor,EditFacturaCliente,EditFacturaProveedor",
+            "visibility": true
+        }
+    },
+    "Dev": {
+        "api-modelo-347.md": {
+            "title": "API REST del modelo 347",
+            "title_short": "API modelo 347",
+            "permalink": "api-modelo-347",
+            "ordernum": 10,
+            "icon": "fa-solid fa-plug",
+            "color": "info",
+            "keywords": "api, rest, modelo 347, operaciones con terceros, token, curl, mcp",
+            "controllers": "ApiModelo347",
+            "visibility": true
+        }
+    }
+}
