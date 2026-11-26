@@ -19,14 +19,14 @@
 
 namespace FacturaScripts\Test\Plugins;
 
-use FacturaScripts\Dinamic\Lib\Txt347Export;
+use FacturaScripts\Dinamic\Lib\Modelo347File;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 
-final class Txt347ExportTest extends TestCase
+final class Modelo347FileTest extends TestCase
 {
     use LogErrorsTrait;
     use DefaultSettingsTrait;
@@ -42,7 +42,7 @@ final class Txt347ExportTest extends TestCase
 
     public function testFormatAmountPositive(): void
     {
-        $result = Txt347Export::formatAmount(1234.56, 16, STR_PAD_LEFT);
+        $result = Modelo347File::formatAmount(1234.56, 16, STR_PAD_LEFT);
         $this->assertEquals(16, strlen($result));
         $this->assertEquals(' ', $result[0]);
         $this->assertStringEndsWith('123456', $result);
@@ -50,7 +50,7 @@ final class Txt347ExportTest extends TestCase
 
     public function testFormatAmountNegative(): void
     {
-        $result = Txt347Export::formatAmount(-1234.56, 16, STR_PAD_LEFT);
+        $result = Modelo347File::formatAmount(-1234.56, 16, STR_PAD_LEFT);
         $this->assertEquals(16, strlen($result));
         $this->assertEquals('N', $result[0]);
         $this->assertStringEndsWith('123456', $result);
@@ -58,7 +58,7 @@ final class Txt347ExportTest extends TestCase
 
     public function testFormatAmountZero(): void
     {
-        $result = Txt347Export::formatAmount(0.0, 16, STR_PAD_LEFT);
+        $result = Modelo347File::formatAmount(0.0, 16, STR_PAD_LEFT);
         $this->assertEquals(16, strlen($result));
         $this->assertEquals(' 000000000000000', $result);
     }
@@ -66,14 +66,14 @@ final class Txt347ExportTest extends TestCase
     public function testFormatAmountRoundsToCents(): void
     {
         // 1000.01 → 100001 centavos
-        $result = Txt347Export::formatAmount(1000.01, 16, STR_PAD_LEFT);
+        $result = Modelo347File::formatAmount(1000.01, 16, STR_PAD_LEFT);
         $this->assertStringEndsWith('100001', $result);
     }
 
     public function testFormatAmountAlwaysCorrectLength(): void
     {
         foreach ([0.0, 1.0, -1.5, 99999.99, -99999.99] as $amount) {
-            $result = Txt347Export::formatAmount($amount, 16, STR_PAD_LEFT);
+            $result = Modelo347File::formatAmount($amount, 16, STR_PAD_LEFT);
             $this->assertEquals(16, strlen($result), "formatAmount($amount) debe retornar 16 caracteres");
         }
     }
@@ -84,40 +84,40 @@ final class Txt347ExportTest extends TestCase
 
     public function testFormatStringPadsRight(): void
     {
-        $result = Txt347Export::formatString('hola', 10, ' ', STR_PAD_RIGHT);
+        $result = Modelo347File::formatString('hola', 10, ' ', STR_PAD_RIGHT);
         $this->assertEquals('HOLA      ', $result);
         $this->assertEquals(10, strlen($result));
     }
 
     public function testFormatStringPadsLeft(): void
     {
-        $result = Txt347Export::formatString('42', 9, '0', STR_PAD_LEFT);
+        $result = Modelo347File::formatString('42', 9, '0', STR_PAD_LEFT);
         $this->assertEquals('000000042', $result);
     }
 
     public function testFormatStringTruncates(): void
     {
-        $result = Txt347Export::formatString('abcdefghij', 5, ' ', STR_PAD_RIGHT);
+        $result = Modelo347File::formatString('abcdefghij', 5, ' ', STR_PAD_RIGHT);
         $this->assertEquals('ABCDE', $result);
         $this->assertEquals(5, strlen($result));
     }
 
     public function testFormatStringEmpty(): void
     {
-        $result = Txt347Export::formatString('', 9, ' ', STR_PAD_RIGHT);
+        $result = Modelo347File::formatString('', 9, ' ', STR_PAD_RIGHT);
         $this->assertEquals('         ', $result);
         $this->assertEquals(9, strlen($result));
     }
 
     public function testFormatStringRemovesAccents(): void
     {
-        $result = Txt347Export::formatString('café résumé', 15, ' ', STR_PAD_RIGHT);
+        $result = Modelo347File::formatString('café résumé', 15, ' ', STR_PAD_RIGHT);
         $this->assertStringStartsWith('CAFE RESUME', $result);
     }
 
     public function testFormatStringPreservesEnye(): void
     {
-        $result = Txt347Export::formatString('España', 10, ' ', STR_PAD_RIGHT);
+        $result = Modelo347File::formatString('España', 10, ' ', STR_PAD_RIGHT);
         $this->assertStringContainsString('Ñ', $result);
     }
 
@@ -127,10 +127,10 @@ final class Txt347ExportTest extends TestCase
 
     public function testFormatOnlyNumberStripsNonDigits(): void
     {
-        $this->assertEquals('915551234', Txt347Export::formatOnlyNumber('91 555 12 34'));
-        $this->assertEquals('123', Txt347Export::formatOnlyNumber('abc-123'));
-        $this->assertEquals('', Txt347Export::formatOnlyNumber(''));
-        $this->assertEquals('', Txt347Export::formatOnlyNumber('abc'));
+        $this->assertEquals('915551234', Modelo347File::formatOnlyNumber('91 555 12 34'));
+        $this->assertEquals('123', Modelo347File::formatOnlyNumber('abc-123'));
+        $this->assertEquals('', Modelo347File::formatOnlyNumber(''));
+        $this->assertEquals('', Modelo347File::formatOnlyNumber('abc'));
     }
 
     // -------------------------------------------------------------------------
@@ -139,42 +139,42 @@ final class Txt347ExportTest extends TestCase
 
     public function testGetProvinciaKnownProvinces(): void
     {
-        $this->assertEquals('28', Txt347Export::getProvincia('Madrid'));
-        $this->assertEquals('08', Txt347Export::getProvincia('Barcelona'));
-        $this->assertEquals('46', Txt347Export::getProvincia('Valencia'));
-        $this->assertEquals('41', Txt347Export::getProvincia('Sevilla'));
-        $this->assertEquals('15', Txt347Export::getProvincia('A Coruña'));
-        $this->assertEquals('51', Txt347Export::getProvincia('Ceuta'));
-        $this->assertEquals('52', Txt347Export::getProvincia('Melilla'));
+        $this->assertEquals('28', Modelo347File::getProvincia('Madrid'));
+        $this->assertEquals('08', Modelo347File::getProvincia('Barcelona'));
+        $this->assertEquals('46', Modelo347File::getProvincia('Valencia'));
+        $this->assertEquals('41', Modelo347File::getProvincia('Sevilla'));
+        $this->assertEquals('15', Modelo347File::getProvincia('A Coruña'));
+        $this->assertEquals('51', Modelo347File::getProvincia('Ceuta'));
+        $this->assertEquals('52', Modelo347File::getProvincia('Melilla'));
     }
 
     public function testGetProvinciaWithAccents(): void
     {
-        $this->assertEquals('29', Txt347Export::getProvincia('Málaga'));
-        $this->assertEquals('04', Txt347Export::getProvincia('Almería'));
-        $this->assertEquals('14', Txt347Export::getProvincia('Córdoba'));
-        $this->assertEquals('01', Txt347Export::getProvincia('Álava'));
+        $this->assertEquals('29', Modelo347File::getProvincia('Málaga'));
+        $this->assertEquals('04', Modelo347File::getProvincia('Almería'));
+        $this->assertEquals('14', Modelo347File::getProvincia('Córdoba'));
+        $this->assertEquals('01', Modelo347File::getProvincia('Álava'));
     }
 
     public function testGetProvinciaCaseInsensitive(): void
     {
-        $this->assertEquals('28', Txt347Export::getProvincia('MADRID'));
-        $this->assertEquals('08', Txt347Export::getProvincia('barcelona'));
-        $this->assertEquals('41', Txt347Export::getProvincia('SEVILLA'));
+        $this->assertEquals('28', Modelo347File::getProvincia('MADRID'));
+        $this->assertEquals('08', Modelo347File::getProvincia('barcelona'));
+        $this->assertEquals('41', Modelo347File::getProvincia('SEVILLA'));
     }
 
     public function testGetProvinciaUnknownReturns99(): void
     {
-        $this->assertEquals('99', Txt347Export::getProvincia('Unknown'));
-        $this->assertEquals('99', Txt347Export::getProvincia(null));
-        $this->assertEquals('99', Txt347Export::getProvincia(''));
+        $this->assertEquals('99', Modelo347File::getProvincia('Unknown'));
+        $this->assertEquals('99', Modelo347File::getProvincia(null));
+        $this->assertEquals('99', Modelo347File::getProvincia(''));
     }
 
     public function testGetProvinciaAlwaysReturnsTwoChars(): void
     {
         $provinces = ['Madrid', 'Barcelona', 'Valencia', null, '', 'Unknown', 'Sevilla', 'Tenerife'];
         foreach ($provinces as $provincia) {
-            $result = Txt347Export::getProvincia($provincia);
+            $result = Modelo347File::getProvincia($provincia);
             $this->assertEquals(2, strlen($result), "getProvincia('$provincia') debe retornar 2 caracteres");
         }
     }
@@ -185,32 +185,32 @@ final class Txt347ExportTest extends TestCase
 
     public function testSanitizeRemovesAccents(): void
     {
-        $this->assertEquals('cafe', Txt347Export::sanitize('café'));
-        $this->assertEquals('aeiou', Txt347Export::sanitize('áéíóú'));
-        $this->assertEquals('AEIOU', Txt347Export::sanitize('ÁÉÍÓÚ'));
+        $this->assertEquals('cafe', Modelo347File::sanitize('café'));
+        $this->assertEquals('aeiou', Modelo347File::sanitize('áéíóú'));
+        $this->assertEquals('AEIOU', Modelo347File::sanitize('ÁÉÍÓÚ'));
     }
 
     public function testSanitizePreservesEnye(): void
     {
-        $result = Txt347Export::sanitize('España');
+        $result = Modelo347File::sanitize('España');
         $this->assertStringContainsString('ñ', $result);
 
-        $result2 = Txt347Export::sanitize('SEÑOR');
+        $result2 = Modelo347File::sanitize('SEÑOR');
         $this->assertStringContainsString('Ñ', $result2);
     }
 
     public function testSanitizeNull(): void
     {
-        $this->assertEquals('', Txt347Export::sanitize(null));
+        $this->assertEquals('', Modelo347File::sanitize(null));
     }
 
     public function testSanitizeEmpty(): void
     {
-        $this->assertEquals('', Txt347Export::sanitize(''));
+        $this->assertEquals('', Modelo347File::sanitize(''));
     }
 
     // -------------------------------------------------------------------------
-    // export() — tests de integración
+    // generate() — tests de integración
     // -------------------------------------------------------------------------
 
     public function testNifOperadorComunitario(): void
@@ -231,7 +231,7 @@ final class Txt347ExportTest extends TestCase
 
     private function nifOperadorComunitario(string $codpais, string $cifnif): string
     {
-        $method = new ReflectionMethod(Txt347Export::class, 'getNifOperadorComunitario');
+        $method = new ReflectionMethod(Modelo347File::class, 'getNifOperadorComunitario');
         $method->setAccessible(true);
         return $method->invoke(null, ['codpais' => $codpais, 'cifnif' => $cifnif]);
     }
@@ -280,7 +280,7 @@ final class Txt347ExportTest extends TestCase
             $this->markTestSkipped('No hay ejercicios disponibles');
         }
 
-        $result = Txt347Export::export(
+        $result = Modelo347File::generate(
             $exercise->codejercicio,
             [$this->sampleCustomer()],
             [$this->sampleSupplier()]
@@ -300,7 +300,7 @@ final class Txt347ExportTest extends TestCase
             $this->markTestSkipped('No hay ejercicios disponibles');
         }
 
-        $result = Txt347Export::export(
+        $result = Modelo347File::generate(
             $exercise->codejercicio,
             [$this->sampleCustomer()],
             [$this->sampleSupplier()]
@@ -322,7 +322,7 @@ final class Txt347ExportTest extends TestCase
             $this->markTestSkipped('No hay ejercicios disponibles');
         }
 
-        $result = Txt347Export::export($exercise->codejercicio, [$this->sampleCustomer()], []);
+        $result = Modelo347File::generate($exercise->codejercicio, [$this->sampleCustomer()], []);
         $lines = explode("\n", $result);
 
         // Posición tipo hoja: 1+3+4+9+9+9+40 = 75 (índice base 0)
@@ -336,7 +336,7 @@ final class Txt347ExportTest extends TestCase
             $this->markTestSkipped('No hay ejercicios disponibles');
         }
 
-        $result = Txt347Export::export(
+        $result = Modelo347File::generate(
             $exercise->codejercicio,
             [$this->sampleCustomer()],
             [$this->sampleSupplier()]
@@ -356,15 +356,15 @@ final class Txt347ExportTest extends TestCase
         }
 
         // Primera exportación con 1000€
-        $result1 = Txt347Export::export($exercise->codejercicio, [$this->sampleCustomer()], []);
+        $result1 = Modelo347File::generate($exercise->codejercicio, [$this->sampleCustomer()], []);
         $lines1 = explode("\n", $result1);
 
         // Segunda exportación con los mismos datos: el total NO debe duplicarse
-        $result2 = Txt347Export::export($exercise->codejercicio, [$this->sampleCustomer()], []);
+        $result2 = Modelo347File::generate($exercise->codejercicio, [$this->sampleCustomer()], []);
         $lines2 = explode("\n", $result2);
 
         // El registro tipo 1 (empresa) debe ser idéntico en ambas exportaciones
-        $this->assertEquals($lines1[0], $lines2[0], 'El total no debe acumularse entre llamadas a export()');
+        $this->assertEquals($lines1[0], $lines2[0], 'El total no debe acumularse entre llamadas a generate()');
     }
 
     public function testExportEmptyData(): void
@@ -374,14 +374,14 @@ final class Txt347ExportTest extends TestCase
             $this->markTestSkipped('No hay ejercicios disponibles');
         }
 
-        $result = Txt347Export::export($exercise->codejercicio, [], []);
+        $result = Modelo347File::generate($exercise->codejercicio, [], []);
         $lines = explode("\n", $result);
         $this->assertCount(1, $lines, 'Con datos vacíos solo debe haber un registro tipo 1');
         $this->assertEquals(500, strlen($lines[0]));
     }
 
     // -------------------------------------------------------------------------
-    // export() — codificación ISO-8859-1
+    // generate() — codificación ISO-8859-1
     // -------------------------------------------------------------------------
 
     public function testExportEncodingIsISO88591(): void
@@ -394,7 +394,7 @@ final class Txt347ExportTest extends TestCase
         $customer = $this->sampleCustomer();
         $customer['cliente'] = 'Empresa Española SL';
 
-        $result = Txt347Export::export($exercise->codejercicio, [$customer], []);
+        $result = Modelo347File::generate($exercise->codejercicio, [$customer], []);
 
         // El contenido no debe ser UTF-8 válido (la Ñ en ISO-8859-1 rompe la secuencia UTF-8)
         $this->assertFalse(

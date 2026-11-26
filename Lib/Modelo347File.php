@@ -25,7 +25,12 @@ use FacturaScripts\Dinamic\Lib\Vies;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Dinamic\Model\Empresa;
 
-class Txt347Export
+/**
+ * Genera el fichero de presentación del modelo 347 (declaración anual de operaciones con terceras personas)
+ * según el diseño de registro de la AEAT: un registro de declarante (tipo 1) seguido de un registro por
+ * cliente y por proveedor declarado (tipo 2), en ISO-8859-1.
+ */
+class Modelo347File
 {
     /** @var Empresa */
     protected static $company;
@@ -51,7 +56,19 @@ class Txt347Export
     /** @var float */
     protected static $total = 0.0;
 
-    public static function export(string $codejercicio, array $customersData, array $suppliersData, string $justificante = '', string $declarationType = '', string $justificanteAnterior = ''): string
+    /**
+     * Devuelve el contenido del fichero del modelo 347 en ISO-8859-1.
+     *
+     * @param string $codejercicio ejercicio declarado (determina la empresa y el año)
+     * @param array $customersData clientes que superan el importe, de Modelo347::$customersData
+     * @param array $suppliersData proveedores que superan el importe, de Modelo347::$suppliersData
+     * @param string $justificante número de justificante; si está vacío se genera
+     * @param string $declarationType tipo de declaración: '' (normal), 'C' (complementaria) o 'S' (sustitutiva)
+     * @param string $justificanteAnterior justificante de la declaración anterior (complementaria o sustitutiva)
+     *
+     * @return string
+     */
+    public static function generate(string $codejercicio, array $customersData, array $suppliersData, string $justificante = '', string $declarationType = '', string $justificanteAnterior = ''): string
     {
         self::$total = 0.0;
         self::$customersData = $customersData;
