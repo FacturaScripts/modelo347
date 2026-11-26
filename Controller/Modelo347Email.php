@@ -44,6 +44,9 @@ class Modelo347Email extends Modelo347
     /** @var EmailNotification|null Notificación de la carta del tipo, si existe. */
     private $notification;
 
+    /** @var array Destinatarios con email preparados por Lib/Modelo347Email::recipients(), con sus importes. */
+    private $recipientsData = [];
+
     /**
      * Devuelve el cuerpo de la notificación en HTML, con el importe y el año sustituidos
      * y el resto de etiquetas resaltadas.
@@ -62,17 +65,21 @@ class Modelo347Email extends Modelo347
         return $this->notification ? $this->previewText(Tools::fixHtml((string)$this->notification->subject)) : '';
     }
 
+    /**
+     * Datos de la página: oculta del menú, pero dentro de Informes > Fiscalidad España.
+     *
+     * @return array
+     */
     public function getPageData(): array
     {
         $data = parent::getPageData();
+        $data['menu'] = 'reports';
+        $data['submenu'] = 'taxation-spain';
         $data['showonmenu'] = false;
         $data['title'] = '347-select-recipients';
         $data['icon'] = 'fa-solid fa-envelope';
         return $data;
     }
-
-    /** @var array Destinatarios con email preparados por Lib/Modelo347Email::recipients(), con sus importes. */
-    private $recipientsData = [];
 
     /**
      * Carga los filtros y los destinatarios del tipo indicado, solo si el usuario puede modificar.
@@ -147,27 +154,6 @@ class Modelo347Email extends Modelo347
     }
 
     /**
-     * Encola el envío de la carta a los destinatarios seleccionados y responde en JSON
-     * con los códigos enviados, el número de emails encolados y un token nuevo.
-     */
-    protected function sendSelectedAction(): void
-    {
-        $this->setTemplate(false);
-
-        $result = ['ok' => false, 'codes' => [], 'queued' => 0, 'message' => ''];
-        if (false === $this->permissions->allowUpdate) {
-            $result['message'] = Tools::trans('not-allowed-modify');
-        } elseif (false === $this->validateFormToken()) {
-            $result['message'] = Tools::trans('invalid-request');
-        } else {
-            $result = $this->queueSelected($this->request->request->getArray('codes'));
-        }
-
-        $result['token'] = $this->multiRequestProtection->newToken();
-        $this->response->json($result);
-    }
-
-    /**
      * Escapa el texto, sustituye el importe y el año y resalta el resto de etiquetas {campo}.
      *
      * @param string $text
@@ -224,5 +210,26 @@ class Modelo347Email extends Modelo347
             'queued' => $queued,
             'message' => Tools::trans('347-emails-queued-count', ['%count%' => $queued]),
         ];
+    }
+
+    /**
+     * Encola el envío de la carta a los destinatarios seleccionados y responde en JSON
+     * con los códigos enviados, el número de emails encolados y un token nuevo.
+     */
+    protected function sendSelectedAction(): void
+    {
+        $this->setTemplate(false);
+
+        $result = ['ok' => false, 'codes' => [], 'queued' => 0, 'message' => ''];
+        if (false === $this->permissions->allowUpdate) {
+            $result['message'] = Tools::trans('not-allowed-modify');
+        } elseif (false === $this->validateFormToken()) {
+            $result['message'] = Tools::trans('invalid-request');
+        } else {
+            $result = $this->queueSelected($this->request->request->getArray('codes'));
+        }
+
+        $result['token'] = $this->multiRequestProtection->newToken();
+        $this->response->json($result);
     }
 }

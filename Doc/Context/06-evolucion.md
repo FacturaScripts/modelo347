@@ -14,7 +14,7 @@ Etapas según el historial git (169 commits desde enero de 2020; no hay otras ra
 | Envío de emails | 2026-05 y 2026-11 | Primer envío (`699e59c`), notificaciones (`16da290`), selección de destinatarios (`94f8501`), reescritura (`5fa9821`) y escalonado (`55246e6`) |
 | Lib compartida y API | 2026-11-26 | Cálculo movido a `Lib/Modelo347`, `Txt347Export` renombrado a `Modelo347File`, endpoint de API (`58bcff6`) |
 
-Otros cambios: submenú «modelos fiscales» (`304702c`), prefijo VIES del core (`ac95298`, `2a15c22`), generador de documentos con herencia de `excluir347` (`354437f`).
+Otros cambios: submenú «modelos fiscales» (`304702c`), renombrado a «Fiscalidad España» (clave `taxation-spain`) al unificar el menú de informes con el resto de plugins fiscales, prefijo VIES del core (`ac95298`, `2a15c22`), generador de documentos con herencia de `excluir347` (`354437f`).
 
 Partes abandonadas: `Txt347Export` (ahora `Modelo347File`), `Worker/Modelo347CustomersEmailWorker` y `Worker/Modelo347SuppliersEmailWorker` (sustituidos por `Modelo347EmailWorker`); sus eventos antiguos siguen soportados.
 

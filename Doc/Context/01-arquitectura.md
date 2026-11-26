@@ -13,7 +13,7 @@ El plugin calcula el modelo 347 (operaciones con terceras personas) de la AEAT y
 | Fichero AEAT | `Lib/Modelo347File.php` | Genera el TXT de presentación (registros tipo 1 y 2, ISO-8859-1) |
 | Emails | `Lib/Modelo347Email.php` | Busca el email de cada tercero y encola un evento de la cola por destinatario, escalonado |
 | Worker | `Worker/Modelo347EmailWorker.php` | Envía un email por evento con la notificación `modelo347-customers` o `modelo347-suppliers` |
-| Pantalla | `Controller/Modelo347.php` | Filtros, tablas, Excel, TXT y envío completo de emails. Menú `reports` > `tax-models` |
+| Pantalla | `Controller/Modelo347.php` | Filtros, tablas, Excel, TXT y envío completo de emails. Menú `reports` > submenú `taxation-spain` (Fiscalidad España) |
 | Selección de destinatarios | `Controller/Modelo347Email.php` + `View/Modelo347Email.html.twig` + `Assets/JS/Modelo347Email.js` | Hereda de `Modelo347` y encola solo los terceros elegidos. Oculto del menú |
 | API | `Controller/ApiModelo347.php` | Solo `GET`; delega en `Lib/Modelo347Api` |
 | Campo `excluir347` | `Extension/Table/*.xml`, `Extension/Model/*`, `Extension/XMLView/*`, `Mod/*HeaderHTMLMod.php`, `Extension/Lib/BusinessDocumentGenerator.php` | Booleano en `clientes`, `proveedores`, `facturascli` y `facturasprov` para excluir del 347 |

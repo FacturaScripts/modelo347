@@ -9,7 +9,7 @@ Antes de presentar el modelo 347 es habitual avisar a cada cliente y proveedor d
 
 ## ✉️ Enviar a todos
 
-1. Entra en **menú Informes** → **Modelos fiscales** → **Modelo 347** y ajusta el ejercicio, el importe y la agrupación como para el cálculo.
+1. Entra en **menú Informes** → **Fiscalidad España** → **Modelo 347** y ajusta el ejercicio, el importe y la agrupación como para el cálculo.
 2. Pulsa **Enviar Email** (2).
 3. En la ventana, elige a quién enviar (1): **Clientes + Proveedores**, **Clientes** o **Proveedores**.
 4. Pulsa **Enviar** (2).

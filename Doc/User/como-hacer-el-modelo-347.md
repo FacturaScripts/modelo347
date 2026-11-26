@@ -12,7 +12,7 @@ Hay que declarar a cada cliente y proveedor con el que hayas operado por **más 
 
 ## 📋 Calcular el modelo
 
-1. Entra en **menú Informes** → **Modelos fiscales** → **Modelo 347**.
+1. Entra en **menú Informes** → **Fiscalidad España** → **Modelo 347**.
 2. Elige el **Ejercicio** (1) que quieres declarar.
 3. En **Examinar** (2) elige de dónde salen los importes: **Facturas** (lo habitual) o **Contabilidad**.
 4. En **Importe** (3) deja 3005,06 o escribe otro mínimo.

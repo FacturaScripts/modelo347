@@ -182,7 +182,7 @@ class Modelo347 extends Controller
     }
 
     /**
-     * Datos de la página: menú Informes, submenú de modelos fiscales.
+     * Datos de la página: menú Informes, submenú Fiscalidad España.
      *
      * @return array
      */
@@ -190,7 +190,7 @@ class Modelo347 extends Controller
     {
         $data = parent::getPageData();
         $data['menu'] = 'reports';
-        $data['submenu'] = 'tax-models';
+        $data['submenu'] = 'taxation-spain';
         $data['title'] = 'model-347';
         $data['icon'] = 'fa-solid fa-book';
         return $data;

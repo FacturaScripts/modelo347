@@ -42,5 +42,6 @@
     "347-selected": "Seleccionados",
     "347-email-retry": "No se ha podido enviar el email del Modelo 347 a %name% (%email%). Se volverá a intentar en %minutes% minutos.",
     "347-invalid-justificante": "El número de justificante debe tener 13 dígitos y empezar por 347.",
-    "347-previous-justificante-required": "Las declaraciones complementarias y sustitutivas necesitan el justificante de la declaración anterior: 13 dígitos que empiezan por 347."
+    "347-previous-justificante-required": "Las declaraciones complementarias y sustitutivas necesitan el justificante de la declaración anterior: 13 dígitos que empiezan por 347.",
+    "taxation-spain": "Fiscalidad España"
 }

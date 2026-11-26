@@ -2,7 +2,7 @@ La pantalla del modelo 347 no solo sirve para la declaración: también te da el
 
 ## 📋 Obtener el listado
 
-1. Entra en **menú Informes** → **Modelos fiscales** → **Modelo 347**.
+1. Entra en **menú Informes** → **Fiscalidad España** → **Modelo 347**.
 2. Elige el **Ejercicio** (1) del que quieres el informe.
 3. Cambia el **Importe** (2) por el mínimo que te interesa: por ejemplo 1000 para ver quién ha operado por más de 1.000 €, o 0 para ver a todos sin filtro.
 4. Pulsa **Previsualizar** (3).

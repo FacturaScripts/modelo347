@@ -22,7 +22,7 @@ A partir de ese momento, todas las facturas nuevas de ese cliente o proveedor se
 
 ## 🔎 Qué cambia en el modelo
 
-Las facturas marcadas con **Sí** no se suman en **Menú Informes** → **Modelos fiscales** → **Modelo 347**, ni en la previsualización ni en el Excel o el TXT. La exclusión se aplica con los dos orígenes de **Examinar**: con **Facturas** no se suma la factura y con **Contabilidad** no se suma su asiento.
+Las facturas marcadas con **Sí** no se suman en **Menú Informes** → **Fiscalidad España** → **Modelo 347**, ni en la previsualización ni en el Excel o el TXT. La exclusión se aplica con los dos orígenes de **Examinar**: con **Facturas** no se suma la factura y con **Contabilidad** no se suma su asiento.
 
 ## Ver también
 
