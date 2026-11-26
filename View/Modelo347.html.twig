@@ -154,6 +154,9 @@
                 {# Buttons #}
                 <div class="col-sm-auto">
                     {% if fsc.permissions.allowUpdate %}
+                    <button type="submit" formaction="Modelo347Email" class="btn btn-info mb-2 me-2">
+                        <i class="fa-solid fa-envelope fa-fw me-1"></i> {{ trans('select') }}
+                    </button>
                     <button type="button" class="btn btn-success mb-2 me-2" data-bs-toggle="modal"
                             data-bs-target="#emailConfirmModal">
                         <i class="fa-solid fa-envelope fa-fw me-1"></i> {{ trans('347-send-email') }}

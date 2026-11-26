@@ -134,19 +134,24 @@ class Modelo347 extends Controller
         $action = $this->request->request->get('action', '');
 
         $this->defaultAction();
-        switch ($action) {
-            case 'download-excel':
-                $this->downloadExcelAction();
-                break;
+        $this->execAction($action);
+    }
 
-            case 'download-txt':
-                $this->downloadTxtAction();
-                break;
-
-            case 'send-emails':
-                $this->sendEmailsAction();
-                break;
-        }
+    /**
+     * Calcula los clientes y proveedores a declarar con los filtros cargados y guarda sus datos y totales.
+     * El cálculo está en Lib/Modelo347, compartido con el endpoint de la API.
+     *
+     * @return Modelo347Lib cálculo ya ejecutado, para consultar sus avisos.
+     */
+    protected function calculate(): Modelo347Lib
+    {
+        $model347 = new Modelo347Lib($this->codejercicio, $this->amount, (string)$this->examine, (string)$this->grouping, $this->excludeIrpf);
+        $model347->calculate();
+        $this->customersData = $model347->customersData;
+        $this->customersTotals = $model347->customersTotals;
+        $this->suppliersData = $model347->suppliersData;
+        $this->suppliersTotals = $model347->suppliersTotals;
+        return $model347;
     }
 
     /**
@@ -167,36 +172,8 @@ class Modelo347 extends Controller
      */
     protected function defaultAction(): void
     {
-        // buscamos el primer ejercicio abierto, para tenerlo como predeterminado
-        $codejercicio = null;
-        $exerciseModel = new Ejercicio();
-        foreach ($exerciseModel->all([], ['fechainicio' => 'DESC'], 0, 0) as $exe) {
-            if ($exe->isOpened()) {
-                $codejercicio = $exe->codejercicio;
-                break;
-            }
-        }
-
-        $this->amount = (float)$this->request->request->get('amount', $this->amount);
-        $this->codejercicio = $this->request->request->get('codejercicio', $codejercicio);
-        $this->examine = $this->request->request->get('examine', $this->examine);
-        $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
-        $this->grouping = $this->request->request->get('grouping', $this->grouping);
-        $this->justificante = preg_replace('/[^0-9]/', '', $this->request->request->get('justificante', ''));
-        $this->declarationType = $this->request->request->get('declarationtype', '');
-        if (!in_array($this->declarationType, ['C', 'S'])) {
-            $this->declarationType = '';
-        }
-        $this->justificanteAnterior = preg_replace('/[^0-9]/', '', $this->request->request->get('justificanteanterior', ''));
-
-        // el cálculo está en Lib/Modelo347, compartido con el endpoint de la API
-        $model347 = new Modelo347Lib($this->codejercicio, $this->amount, (string)$this->examine, (string)$this->grouping, $this->excludeIrpf);
-        $model347->calculate();
-        $this->customersData = $model347->customersData;
-        $this->customersTotals = $model347->customersTotals;
-        $this->suppliersData = $model347->suppliersData;
-        $this->suppliersTotals = $model347->suppliersTotals;
-
+        $this->loadFilters();
+        $model347 = $this->calculate();
         $this->checkData($model347);
     }
 
@@ -267,6 +244,56 @@ class Modelo347 extends Controller
     }
 
     /**
+     * Ejecuta la acción solicitada tras cargar los datos.
+     *
+     * @param string $action
+     */
+    protected function execAction(string $action): void
+    {
+        switch ($action) {
+            case 'download-excel':
+                $this->downloadExcelAction();
+                break;
+
+            case 'download-txt':
+                $this->downloadTxtAction();
+                break;
+
+            case 'send-emails':
+                $this->sendEmailsAction();
+                break;
+        }
+    }
+
+    /**
+     * Lee de la petición los filtros de cálculo y de la declaración.
+     * Si no se indica ejercicio, usa el primer ejercicio abierto.
+     */
+    protected function loadFilters(): void
+    {
+        $codejercicio = null;
+        $exerciseModel = new Ejercicio();
+        foreach ($exerciseModel->all([], ['fechainicio' => 'DESC'], 0, 0) as $exe) {
+            if ($exe->isOpened()) {
+                $codejercicio = $exe->codejercicio;
+                break;
+            }
+        }
+
+        $this->amount = (float)$this->request->request->get('amount', $this->amount);
+        $this->codejercicio = $this->request->request->get('codejercicio', $codejercicio);
+        $this->examine = $this->request->request->get('examine', $this->examine);
+        $this->excludeIrpf = (bool)$this->request->request->get('excludeirpf', $this->excludeIrpf);
+        $this->grouping = $this->request->request->get('grouping', $this->grouping);
+        $this->justificante = preg_replace('/[^0-9]/', '', $this->request->request->get('justificante', ''));
+        $this->declarationType = $this->request->request->get('declarationtype', '');
+        if (!in_array($this->declarationType, ['C', 'S'])) {
+            $this->declarationType = '';
+        }
+        $this->justificanteAnterior = preg_replace('/[^0-9]/', '', $this->request->request->get('justificanteanterior', ''));
+    }
+
+    /**
      * Encola los emails del Modelo 347 a los clientes, proveedores o ambos y muestra al usuario cuántos
      * se han encolado, quiénes no tienen email y si había un envío anterior pendiente. Requiere permiso
      * de modificación y que el email esté configurado.
@@ -305,6 +332,10 @@ class Modelo347 extends Controller
             }
 
             $result = Modelo347Email::queue($exercise, $this->amount, $data, $type);
+            if ($result['status'] === 'disabled') {
+                // la Lib ya avisa de que la notificación no existe o está desactivada
+                continue;
+            }
             if ($result['status'] !== 'queued') {
                 Tools::log()->warning('347-emails-pending', ['%type%' => Tools::trans($type)]);
                 continue;

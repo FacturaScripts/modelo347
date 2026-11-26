@@ -23,18 +23,18 @@ use FacturaScripts\Core\Model\WorkEvent;
 use FacturaScripts\Core\Template\WorkerClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Validator;
+use FacturaScripts\Dinamic\Lib\Email\MailNotifier;
 use FacturaScripts\Dinamic\Lib\Email\NewMail;
-use FacturaScripts\Dinamic\Lib\Email\TableBlock;
-use FacturaScripts\Dinamic\Lib\Email\TextBlock;
-use FacturaScripts\Dinamic\Lib\Email\TitleBlock;
 use FacturaScripts\Dinamic\Lib\Modelo347Email;
 use FacturaScripts\Dinamic\Model\Ejercicio;
+use FacturaScripts\Dinamic\Model\EmailNotification;
 use FacturaScripts\Dinamic\Model\Empresa;
 
 /**
  * Envía el email del Modelo 347 a un cliente o proveedor con sus importes trimestrales. Atiende los
  * eventos Modelo347.SendCustomersEmails y Modelo347.SendSuppliersEmails, que encola Lib/Modelo347Email
- * con un destinatario por evento. El remitente es la empresa del ejercicio.
+ * con un destinatario por evento. El asunto y el cuerpo salen de las notificaciones por email
+ * modelo347-customers y modelo347-suppliers. El remitente es la empresa del ejercicio.
  *
  * También procesa los eventos de versiones anteriores, que llevaban todos los destinatarios en el
  * parámetro 'data'.
@@ -70,7 +70,8 @@ class Modelo347EmailWorker extends WorkerClass
     }
 
     /**
-     * Envía el email del Modelo 347 a un destinatario.
+     * Envía el email del Modelo 347 a un destinatario con la notificación por email del tipo. Los
+     * importes se formatean como moneda antes de sustituir las etiquetas {amount}, {t1}..{t4} y {total}.
      *
      * @param array  $params email, name, cifnif, t1-t4, total, amount, year e idempresa.
      * @param string $type 'customers' o 'suppliers'.
@@ -87,40 +88,36 @@ class Modelo347EmailWorker extends WorkerClass
             return false;
         }
 
-        $i18n = Tools::lang();
+        // la notificación guarda el asunto y el cuerpo que puede personalizar el usuario
+        $notification = new EmailNotification();
+        if (false === $notification->load(Modelo347Email::notificationName($type))) {
+            Tools::log()->warning('email-notification-not-exists', ['%name%' => Modelo347Email::notificationName($type)]);
+            return false;
+        }
+        if (false === (bool)$notification->enabled) {
+            Tools::log()->warning('email-notification-disabled', ['%name%' => Modelo347Email::notificationName($type)]);
+            return false;
+        }
+
         $year = (string)($params['year'] ?? '');
-        $amount = Tools::money((float)($params['amount'] ?? 0));
-
-        $contactInfo = $i18n->trans('347-email-cifnif-line', ['%cifnif%' => $params['cifnif'] ?? ''])
-            . "\n"
-            . $i18n->trans('347-email-name-line', ['%name%' => $params['name'] ?? '']);
-
-        $header = [$i18n->trans('concept'), $i18n->trans('amount')];
-        $rows = [
-            [$i18n->trans('first-trimester'), Tools::money((float)($params['t1'] ?? 0))],
-            [$i18n->trans('second-trimester'), Tools::money((float)($params['t2'] ?? 0))],
-            [$i18n->trans('third-trimester'), Tools::money((float)($params['t3'] ?? 0))],
-            [$i18n->trans('fourth-trimester'), Tools::money((float)($params['t4'] ?? 0))],
-            [$i18n->trans('total'), Tools::money((float)($params['total'] ?? 0))],
+        $values = [
+            'amount' => Tools::money((float)($params['amount'] ?? 0)),
+            'cifnif' => $params['cifnif'] ?? '',
+            'email' => $email,
+            'name' => $params['name'] ?? '',
+            't1' => Tools::money((float)($params['t1'] ?? 0)),
+            't2' => Tools::money((float)($params['t2'] ?? 0)),
+            't3' => Tools::money((float)($params['t3'] ?? 0)),
+            't4' => Tools::money((float)($params['t4'] ?? 0)),
+            'total' => Tools::money((float)($params['total'] ?? 0)),
+            'year' => $year,
+            // plazo de disconformidad: 20 de febrero del año siguiente al declarado
+            'deadline' => is_numeric($year) ? Tools::date(((int)$year + 1) . '-02-20') : '',
         ];
 
-        // el texto de introducción cambia según sea cliente o proveedor
-        $introKey = $type === Modelo347Email::TYPE_SUPPLIERS ? '347-email-intro-suppliers' : '347-email-intro';
-
-        // plazo de disconformidad: 20 de febrero del año siguiente al declarado
-        $deadline = is_numeric($year) ? Tools::date(((int)$year + 1) . '-02-20') : '';
-
-        $mail = NewMail::create()
-            ->to($email, $params['name'] ?? '')
-            ->subject($i18n->trans('347-email-subject', ['%year%' => $year]))
-            ->addMainBlock(new TitleBlock($i18n->trans('347-email-title'), 'h3'))
-            ->addMainBlock(new TextBlock($i18n->trans('347-email-greeting')))
-            ->addMainBlock(new TextBlock($i18n->trans($introKey, ['%year%' => $year, '%amount%' => $amount])))
-            ->addMainBlock(new TextBlock($i18n->trans('347-email-included')))
-            ->addMainBlock(new TextBlock($contactInfo))
-            ->addMainBlock(new TextBlock($i18n->trans('347-email-amounts-title')))
-            ->addMainBlock(new TableBlock($header, $rows))
-            ->addMainBlock(new TextBlock($i18n->trans('347-email-footer', ['%date%' => $deadline])));
+        $mail = NewMail::create()->to($email, $values['name']);
+        $mail->title = MailNotifier::getText((string)$notification->subject, $values);
+        $mail->text = MailNotifier::getText((string)$notification->body, $values);
 
         // el remitente es la empresa del ejercicio, no la predeterminada
         $company = new Empresa();
@@ -134,7 +131,7 @@ class Modelo347EmailWorker extends WorkerClass
         }
 
         Tools::log()->warning('347-email-not-sent', [
-            '%name%' => $params['name'] ?? '',
+            '%name%' => $values['name'],
             '%email%' => $email,
         ]);
         return false;

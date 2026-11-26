@@ -26,6 +26,7 @@ use FacturaScripts\Core\Where;
 use FacturaScripts\Dinamic\Lib\Modelo347Email;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Ejercicio;
+use FacturaScripts\Dinamic\Model\EmailNotification;
 use FacturaScripts\Dinamic\Model\Proveedor;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
@@ -122,6 +123,44 @@ final class Modelo347EmailTest extends TestCase
         $this->deleteTestEvents();
         $this->assertTrue($supplier1->delete());
         $this->assertTrue($supplier2->delete());
+    }
+
+    /**
+     * Comprueba que no se encola nada si la notificación por email del tipo está desactivada y que,
+     * al volver a activarla, se encola con normalidad.
+     */
+    public function testQueueNotificationDisabled(): void
+    {
+        $this->deleteTestEvents();
+
+        // la notificación la crea Init::update() al instalar el plugin
+        $notification = new EmailNotification();
+        $this->assertTrue($notification->load(Modelo347Email::NOTIFICATION_CUSTOMERS), 'notification-not-found');
+        $notification->enabled = false;
+        $this->assertTrue($notification->save(), 'notification-cant-save');
+
+        $customer = $this->getCustomer('cliente@example.com');
+        $data = [$customer->codcliente => $this->getRow('cliente', $customer->nombre, 4000)];
+
+        $exercise = new Ejercicio();
+        $exercise->codejercicio = self::TEST_EXERCISE;
+        $exercise->fechainicio = '01-01-2025';
+        $exercise->idempresa = (int)Tools::settings('default', 'idempresa');
+
+        $result = Modelo347Email::queue($exercise, 3005.06, $data, Modelo347Email::TYPE_CUSTOMERS);
+        $this->assertEquals('disabled', $result['status']);
+        $this->assertEquals(0, $result['queued']);
+        $this->assertCount(0, WorkEvent::all([Where::eq('value', self::TEST_EXERCISE)]));
+
+        // reactivamos la notificación: ahora sí se encola
+        $notification->enabled = true;
+        $this->assertTrue($notification->save(), 'notification-cant-save');
+        $result2 = Modelo347Email::queue($exercise, 3005.06, $data, Modelo347Email::TYPE_CUSTOMERS);
+        $this->assertEquals('queued', $result2['status']);
+        $this->assertEquals(1, $result2['queued']);
+
+        $this->deleteTestEvents();
+        $this->assertTrue($customer->delete());
     }
 
     /**

@@ -24,7 +24,9 @@ use FacturaScripts\Core\Kernel;
 use FacturaScripts\Core\Lib\AjaxForms\PurchasesHeaderHTML;
 use FacturaScripts\Core\Lib\AjaxForms\SalesHeaderHTML;
 use FacturaScripts\Core\Template\InitClass;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\WorkQueue;
+use FacturaScripts\Dinamic\Model\EmailNotification;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Dinamic\Model\FacturaProveedor;
 
@@ -65,9 +67,46 @@ final class Init extends InitClass
     {
     }
 
+    /**
+     * Crea las columnas del plugin y las notificaciones por email.
+     */
     public function update(): void
     {
         new FacturaCliente();
         new FacturaProveedor();
+
+        $this->createEmailNotifications();
+    }
+
+    /**
+     * Crea las notificaciones de la carta del modelo 347 para clientes y proveedores.
+     * Si ya existen, solo reescribe el asunto o el cuerpo vacíos o iguales a su clave de traducción.
+     */
+    private function createEmailNotifications(): void
+    {
+        foreach (['modelo347-customers', 'modelo347-suppliers'] as $name) {
+            $subjectKey = $name . '-subject';
+            $bodyKey = $name . '-body';
+
+            $notification = new EmailNotification();
+            if (false === $notification->load($name)) {
+                $notification->name = $name;
+                $notification->enabled = true;
+            }
+
+            $changed = false;
+            if (empty($notification->subject) || $notification->subject === $subjectKey) {
+                $notification->subject = Tools::trans($subjectKey);
+                $changed = true;
+            }
+            if (empty($notification->body) || $notification->body === $bodyKey) {
+                $notification->body = Tools::trans($bodyKey);
+                $changed = true;
+            }
+
+            if ($changed) {
+                $notification->save();
+            }
+        }
     }
 }

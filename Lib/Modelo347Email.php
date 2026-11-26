@@ -21,17 +21,21 @@ namespace FacturaScripts\Plugins\Modelo347\Lib;
 
 use FacturaScripts\Core\Kernel;
 use FacturaScripts\Core\Model\WorkEvent;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Validator;
 use FacturaScripts\Core\Where;
 use FacturaScripts\Core\WorkQueue;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Contacto;
 use FacturaScripts\Dinamic\Model\Ejercicio;
+use FacturaScripts\Dinamic\Model\EmailNotification;
 use FacturaScripts\Dinamic\Model\Proveedor;
 
 /**
  * Prepara y encola los emails del Modelo 347: busca el email de cada tercero declarado y crea un evento
- * de la cola de trabajos por destinatario, que envía Worker/Modelo347EmailWorker.
+ * de la cola de trabajos por destinatario, que envía Worker/Modelo347EmailWorker con la notificación por
+ * email del tipo (modelo347-customers o modelo347-suppliers), cuyo asunto y cuerpo puede personalizar el
+ * usuario.
  *
  * Un evento por destinatario evita que, si el proceso se corta a mitad, se repita el envío a todos los
  * que ya lo habían recibido. Antes de encolar se comprueba que no quede pendiente un envío anterior del
@@ -46,6 +50,12 @@ class Modelo347Email
 
     /** Evento de la cola para los emails a proveedores. */
     const EVENT_SUPPLIERS = 'Modelo347.SendSuppliersEmails';
+
+    /** Notificación por email de la carta a clientes. */
+    const NOTIFICATION_CUSTOMERS = 'modelo347-customers';
+
+    /** Notificación por email de la carta a proveedores. */
+    const NOTIFICATION_SUPPLIERS = 'modelo347-suppliers';
 
     /** Tipo de tercero: clientes. */
     const TYPE_CUSTOMERS = 'customers';
@@ -112,18 +122,59 @@ class Modelo347Email
     }
 
     /**
-     * Encola un email por destinatario para un tipo de tercero. No encola nada si ya hay un envío
-     * pendiente del mismo ejercicio y tipo, o si otro proceso está encolando a la vez.
+     * Indica si la notificación por email de un tipo de tercero existe y está activada. Si no, deja un
+     * aviso en el log.
+     *
+     * @param string $type 'customers' o 'suppliers'.
+     * @return bool
+     */
+    public static function isNotificationEnabled(string $type): bool
+    {
+        $name = self::notificationName($type);
+        $notification = new EmailNotification();
+        if (false === $notification->load($name)) {
+            Tools::log()->warning('email-notification-not-exists', ['%name%' => $name]);
+            return false;
+        }
+
+        if (false === (bool)$notification->enabled) {
+            Tools::log()->warning('email-notification-disabled', ['%name%' => $name]);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Devuelve el nombre de la notificación por email que corresponde a un tipo de tercero.
+     *
+     * @param string $type 'customers' o 'suppliers'.
+     * @return string
+     */
+    public static function notificationName(string $type): string
+    {
+        return $type === self::TYPE_SUPPLIERS ? self::NOTIFICATION_SUPPLIERS : self::NOTIFICATION_CUSTOMERS;
+    }
+
+    /**
+     * Encola un email por destinatario para un tipo de tercero. No encola nada si la notificación del
+     * tipo no existe o está desactivada, si ya hay un envío pendiente del mismo ejercicio y tipo, o si
+     * otro proceso está encolando a la vez.
      *
      * @param Ejercicio $exercise ejercicio declarado.
      * @param float     $amount importe mínimo del modelo, que se menciona en el texto del email.
      * @param array     $data filas del modelo (customersData o suppliersData).
      * @param string    $type 'customers' o 'suppliers'.
-     * @return array ['status' => 'queued'|'pending'|'locked', 'queued' => int, 'noEmail' => filas sin email]
+     * @return array ['status' => 'queued'|'pending'|'locked'|'disabled', 'queued' => int, 'noEmail' => filas sin email]
      */
     public static function queue(Ejercicio $exercise, float $amount, array $data, string $type): array
     {
         $result = ['status' => 'queued', 'queued' => 0, 'noEmail' => []];
+
+        if (false === self::isNotificationEnabled($type)) {
+            $result['status'] = 'disabled';
+            return $result;
+        }
 
         // bloqueamos para que dos peticiones simultáneas no encolen el mismo envío
         $lockName = 'modelo347-emails-' . $exercise->codejercicio . '-' . $type;
@@ -140,20 +191,37 @@ class Modelo347Email
 
         $recipients = self::recipients($data, $type);
         $result['noEmail'] = $recipients['noEmail'];
+        $result['queued'] = self::queueRecipients($exercise, $amount, $recipients['recipients'], $type);
 
+        Kernel::unlock($lockName);
+        return $result;
+    }
+
+    /**
+     * Encola un email por cada destinatario ya preparado con recipients(), sin más comprobaciones.
+     * Lo usan queue() y el envío selectivo de Controller/Modelo347Email.
+     *
+     * @param Ejercicio $exercise ejercicio declarado.
+     * @param float     $amount importe mínimo del modelo, que se menciona en el texto del email.
+     * @param array     $recipients destinatarios con email (clave 'recipients' de recipients()).
+     * @param string    $type 'customers' o 'suppliers'.
+     * @return int número de emails encolados.
+     */
+    public static function queueRecipients(Ejercicio $exercise, float $amount, array $recipients, string $type): int
+    {
         $params = [
             'amount' => $amount,
             'idempresa' => $exercise->idempresa,
             'year' => self::year($exercise),
         ];
-        foreach ($recipients['recipients'] as $recipient) {
+
+        $queued = 0;
+        foreach ($recipients as $recipient) {
             if (WorkQueue::send(self::eventName($type), $exercise->codejercicio, array_merge($params, $recipient))) {
-                $result['queued']++;
+                $queued++;
             }
         }
-
-        Kernel::unlock($lockName);
-        return $result;
+        return $queued;
     }
 
     /**

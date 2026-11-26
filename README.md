@@ -10,6 +10,10 @@ El plugin sigue la misma estructura que el resto de modelos fiscales: `Lib/Model
 ## Envío de emails
 El botón «Enviar Email» de la pantalla (requiere permiso de modificación y el email configurado) encola un email por cliente o proveedor con sus importes trimestrales; `Lib/Modelo347Email` prepara los destinatarios y `Worker/Modelo347EmailWorker` los envía en segundo plano. El email se toma de la ficha y, si no tiene, de la dirección predeterminada o de cualquier otra dirección del tercero. Dos terceros con el mismo email reciben cada uno el suyo. El año es el de la fecha de inicio del ejercicio, el remitente es la empresa del ejercicio y no se puede volver a enviar mientras quede un envío pendiente del mismo ejercicio y tipo.
 
+El asunto y el texto del email salen de las notificaciones por email `modelo347-customers` y `modelo347-suppliers`, que el plugin crea al instalarse y que el usuario puede personalizar con las etiquetas `{name}`, `{cifnif}`, `{email}`, `{year}`, `{amount}`, `{t1}`..`{t4}`, `{total}` y `{deadline}`. Si la notificación no existe o está desactivada no se encola nada.
+
+El botón «Seleccionar» abre `Controller/Modelo347Email`, donde se eligen en dos columnas con buscador los clientes o proveedores concretos a los que enviar el email, con una vista previa de la notificación.
+
 ## Issues / Feedback
 https://facturascripts.com/contacto
 
