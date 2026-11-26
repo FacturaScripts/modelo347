@@ -9,7 +9,9 @@
             document.forms['modelo347'].submit();
         }
 
-        function confirmSendEmails() {
+        function confirmSendEmails(button) {
+            // desactivamos el botón para que un doble clic no envíe el formulario dos veces
+            button.disabled = true;
             const sendtype = document.getElementById('emailSendType').value;
             const form = document.forms['modelo347'];
             const actionInput = document.createElement('input');
@@ -151,15 +153,15 @@
                 </div>
                 {# Buttons #}
                 <div class="col-sm-auto">
-                    {% if fsc.permissions.allowExport %}
-                        <button type="submit" formaction="Modelo347Email" class="btn btn-info mb-2 me-2">
-                            <i class="fa-solid fa-envelope fa-fw me-1"></i> {{ trans('select') }}
-                        </button>
-                    {% endif %}
+                    {% if fsc.permissions.allowUpdate %}
+                    <button type="submit" formaction="Modelo347Email" class="btn btn-info mb-2 me-2">
+                        <i class="fa-solid fa-envelope fa-fw me-1"></i> {{ trans('select') }}
+                    </button>
                     <button type="button" class="btn btn-success mb-2 me-2" data-bs-toggle="modal"
                             data-bs-target="#emailConfirmModal">
                         <i class="fa-solid fa-envelope fa-fw me-1"></i> {{ trans('347-send-email') }}
                     </button>
+                    {% endif %}
                     <div class="btn-group mb-2" role="group">
                         <button type="submit" name="action" value="show" class="btn btn-primary">
                             <i class="fa-solid fa-eye fa-fw me-1"></i> {{ trans('preview') }}
@@ -206,7 +208,7 @@
                     <button type="button" class="btn btn-secondary"
                             data-bs-dismiss="modal">{{ trans('cancel') }}</button>
                     <button type="button" class="btn btn-primary"
-                            onclick="confirmSendEmails()">{{ trans('send') }}</button>
+                            onclick="confirmSendEmails(this)">{{ trans('send') }}</button>
                 </div>
             </div>
         </div>

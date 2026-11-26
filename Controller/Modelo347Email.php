@@ -21,20 +21,21 @@ namespace FacturaScripts\Plugins\Modelo347\Controller;
 
 use FacturaScripts\Core\DataSrc\Ejercicios;
 use FacturaScripts\Core\Tools;
-use FacturaScripts\Core\WorkQueue;
-use FacturaScripts\Dinamic\Model\Cliente;
+use FacturaScripts\Dinamic\Lib\Email\NewMail;
+use FacturaScripts\Dinamic\Lib\Modelo347Email as Modelo347EmailLib;
+use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Dinamic\Model\EmailNotification;
-use FacturaScripts\Dinamic\Model\Proveedor;
 
 /**
  * Selección de los clientes o proveedores del modelo 347 a los que enviar la carta informativa por email.
- * Recibe los filtros de Modelo347 y el tipo (customers o suppliers) en 'activetab'.
+ * Recibe los filtros de Modelo347 y el tipo (customers o suppliers) en 'activetab'. El email de cada tercero
+ * se busca con Lib/Modelo347Email y se encola un evento por destinatario, como en el envío completo.
  *
  * @author Jose Antonio Cuello Principal <yopli2000@gmail.com>
  */
 class Modelo347Email extends Modelo347
 {
-    /** @var array Destinatarios con email del tipo: code, cifnif, name, email y total. */
+    /** @var array Destinatarios con email del tipo para la vista: code, cifnif, name, email y total. */
     public $recipients = [];
 
     /** @var string Tipo de destinatarios: customers o suppliers. */
@@ -70,8 +71,11 @@ class Modelo347Email extends Modelo347
         return $data;
     }
 
+    /** @var array Destinatarios con email preparados por Lib/Modelo347Email::recipients(), con sus importes. */
+    private $recipientsData = [];
+
     /**
-     * Carga los filtros y los destinatarios del tipo indicado, solo si el usuario puede exportar.
+     * Carga los filtros y los destinatarios del tipo indicado, solo si el usuario puede modificar.
      */
     protected function defaultAction(): void
     {
@@ -79,8 +83,8 @@ class Modelo347Email extends Modelo347
         $this->activetab = $this->type;
         $this->loadFilters();
 
-        if (false === $this->permissions->allowExport) {
-            Tools::log()->warning('access-denied');
+        if (false === $this->permissions->allowUpdate) {
+            Tools::log()->warning('not-allowed-modify');
             return;
         }
 
@@ -101,47 +105,11 @@ class Modelo347Email extends Modelo347
     }
 
     /**
-     * Devuelve las filas del evento de envío para los códigos indicados,
-     * con los importes recalculados y sin repetir email.
-     *
-     * @param string[] $codes
-     * @return array
-     */
-    protected function getEmailData(array $codes): array
-    {
-        $isCustomer = $this->type === 'customers';
-        $rows = $isCustomer ? $this->customersData : $this->suppliersData;
-        $nameField = $isCustomer ? 'cliente' : 'proveedor';
-
-        $data = [];
-        $sentEmails = [];
-        foreach ($this->recipients as $recipient) {
-            if (false === in_array($recipient['code'], $codes, true) || isset($sentEmails[$recipient['email']])) {
-                continue;
-            }
-
-            $sentEmails[$recipient['email']] = true;
-            $row = $rows[$recipient['code']];
-            $data[] = [
-                'email' => $recipient['email'],
-                'name' => $row[$nameField],
-                'cifnif' => $row['cifnif'],
-                't1' => $row['t1'],
-                't2' => $row['t2'],
-                't3' => $row['t3'],
-                't4' => $row['t4'],
-                'total' => $row['total'],
-            ];
-        }
-        return $data;
-    }
-
-    /**
      * Carga la notificación de la carta del tipo y avisa si no existe o está desactivada.
      */
     protected function loadNotification(): void
     {
-        $name = 'modelo347-' . $this->type;
+        $name = Modelo347EmailLib::notificationName($this->type);
         $notification = new EmailNotification();
         if (false === $notification->load($name)) {
             Tools::log()->warning('email-notification-not-exists', ['%name%' => $name]);
@@ -155,34 +123,23 @@ class Modelo347Email extends Modelo347
     }
 
     /**
-     * Calcula los datos del tipo y prepara la lista de destinatarios con email, ordenada por nombre.
+     * Calcula el modelo y prepara la lista de destinatarios con email del tipo, ordenada por nombre.
+     * El email se busca en la ficha y en las direcciones del tercero (Lib/Modelo347Email::findEmail()).
      */
     protected function loadRecipients(): void
     {
+        $this->calculate();
+        $rows = $this->type === 'customers' ? $this->customersData : $this->suppliersData;
+        $this->recipientsData = Modelo347EmailLib::recipients($rows, $this->type)['recipients'];
+
         $this->recipients = [];
-        if ($this->type === 'customers') {
-            $this->loadCustomersData();
-            $rows = $this->customersData;
-            $model = new Cliente();
-            $nameField = 'cliente';
-        } else {
-            $this->loadSuppliersData();
-            $rows = $this->suppliersData;
-            $model = new Proveedor();
-            $nameField = 'proveedor';
-        }
-
-        foreach ($rows as $code => $row) {
-            if (false === $model->load($code) || empty($model->email)) {
-                continue;
-            }
-
+        foreach ($this->recipientsData as $recipient) {
             $this->recipients[] = [
-                'code' => (string)$code,
-                'cifnif' => (string)$row['cifnif'],
-                'name' => Tools::fixHtml((string)$row[$nameField]),
-                'email' => $model->email,
-                'total' => Tools::money((float)$row['total']),
+                'code' => $recipient['code'],
+                'cifnif' => (string)$recipient['cifnif'],
+                'name' => Tools::fixHtml((string)$recipient['name']),
+                'email' => $recipient['email'],
+                'total' => Tools::money($recipient['total']),
             ];
         }
 
@@ -198,8 +155,8 @@ class Modelo347Email extends Modelo347
         $this->setTemplate(false);
 
         $result = ['ok' => false, 'codes' => [], 'queued' => 0, 'message' => ''];
-        if (false === $this->permissions->allowExport) {
-            $result['message'] = Tools::trans('access-denied');
+        if (false === $this->permissions->allowUpdate) {
+            $result['message'] = Tools::trans('not-allowed-modify');
         } elseif (false === $this->validateFormToken()) {
             $result['message'] = Tools::trans('invalid-request');
         } else {
@@ -228,28 +185,44 @@ class Modelo347Email extends Modelo347
     }
 
     /**
-     * Encola el evento de envío del tipo con los códigos seleccionados.
+     * Encola un email por cada destinatario seleccionado, con los importes recalculados en el servidor.
+     * Cada tercero recibe su propio email aunque comparta dirección con otro, porque sus importes son
+     * distintos.
      *
-     * @param array $codes
-     * @return array
+     * @param array $codes códigos de los clientes o proveedores seleccionados.
+     * @return array ['ok', 'codes' => códigos encolados, 'queued', 'message']
      */
     private function queueSelected(array $codes): array
     {
         $codes = array_map('strval', $codes);
-        $data = $this->getEmailData($codes);
-        if (empty($data)) {
+        $selected = array_values(array_filter(
+            $this->recipientsData,
+            fn(array $recipient) => in_array($recipient['code'], $codes, true)
+        ));
+        if (empty($selected)) {
             return ['ok' => false, 'codes' => [], 'queued' => 0, 'message' => Tools::trans('347-no-selected')];
         }
 
-        $event = $this->type === 'customers' ? 'Modelo347.SendCustomersEmails' : 'Modelo347.SendSuppliersEmails';
-        WorkQueue::send($event, $this->codejercicio, ['data' => $data, 'amount' => $this->amount]);
+        if (false === NewMail::create()->canSendMail()) {
+            return ['ok' => false, 'codes' => [], 'queued' => 0, 'message' => Tools::trans('email-not-configured')];
+        }
 
-        $validCodes = array_column($this->recipients, 'code');
+        $exercise = new Ejercicio();
+        if (false === $exercise->load($this->codejercicio)) {
+            return ['ok' => false, 'codes' => [], 'queued' => 0, 'message' => Tools::trans('exercise-not-found')];
+        }
+
+        if (false === Modelo347EmailLib::isNotificationEnabled($this->type)) {
+            $message = Tools::trans('email-notification-disabled', ['%name%' => Modelo347EmailLib::notificationName($this->type)]);
+            return ['ok' => false, 'codes' => [], 'queued' => 0, 'message' => $message];
+        }
+
+        $queued = Modelo347EmailLib::queueRecipients($exercise, $this->amount, $selected, $this->type);
         return [
-            'ok' => true,
-            'codes' => array_values(array_intersect($validCodes, $codes)),
-            'queued' => count($data),
-            'message' => Tools::trans('347-emails-queued-count', ['%count%' => count($data)]),
+            'ok' => $queued > 0,
+            'codes' => array_column($selected, 'code'),
+            'queued' => $queued,
+            'message' => Tools::trans('347-emails-queued-count', ['%count%' => $queued]),
         ];
     }
 }

@@ -19,6 +19,8 @@
 
 namespace FacturaScripts\Plugins\Modelo347;
 
+use FacturaScripts\Core\Controller\ApiRoot;
+use FacturaScripts\Core\Kernel;
 use FacturaScripts\Core\Lib\AjaxForms\PurchasesHeaderHTML;
 use FacturaScripts\Core\Lib\AjaxForms\SalesHeaderHTML;
 use FacturaScripts\Core\Template\InitClass;
@@ -52,8 +54,13 @@ final class Init extends InitClass
         SalesHeaderHTML::addMod(new Mod\SalesHeaderHTMLMod());
 
         // workers
-        WorkQueue::addWorker('Modelo347CustomersEmailWorker', 'Modelo347.SendCustomersEmails');
-        WorkQueue::addWorker('Modelo347SuppliersEmailWorker', 'Modelo347.SendSuppliersEmails');
+        // un único worker envía los emails a clientes y a proveedores, un destinatario por evento
+        WorkQueue::addWorker('Modelo347EmailWorker', 'Modelo347.SendCustomersEmails');
+        WorkQueue::addWorker('Modelo347EmailWorker', 'Modelo347.SendSuppliersEmails');
+
+        // endpoint de solo lectura de la API con los datos del modelo
+        Kernel::addRoute('/api/3/modelo347', 'ApiModelo347', -1);
+        ApiRoot::addCustomResource('modelo347');
     }
 
     public function uninstall(): void

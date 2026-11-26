@@ -46,7 +46,7 @@
 {% endblock %}
 
 {% block body %}
-    {% if fsc.permissions.allowExport %}
+    {% if fsc.permissions.allowUpdate %}
         <div class="container-fluid mb-3" id="m347-email"
              data-url="{{ fsc.url() }}" data-sent="{{ trans('sent') }}" data-empty="{{ trans('no-data') }}">
             <script type="application/json" id="m347-recipients">{{ fsc.recipients | json_encode | raw }}</script>
