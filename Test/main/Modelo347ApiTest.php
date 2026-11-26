@@ -60,6 +60,33 @@ final class Modelo347ApiTest extends TestCase
     }
 
     /**
+     * Comprueba que el cálculo por contabilidad deja fuera los asientos de las facturas excluidas del 347,
+     * igual que el cálculo por facturas.
+     */
+    public function testAccountingExcludesInvoices(): void
+    {
+        [$customer, $invoice] = $this->createCustomerInvoice(4000);
+        $this->assertTrue($invoice->reload(), 'cant-reload-invoice');
+        $this->assertNotEmpty($invoice->idasiento, 'la factura debe tener asiento');
+
+        // sin excluir, el cliente sale por los dos orígenes
+        $params = ['codejercicio' => $invoice->codejercicio, 'origen' => 'contabilidad'];
+        $result = Modelo347Api::build($params);
+        $this->assertEquals(200, $result['code']);
+        $this->assertNotNull($this->findRow($result['body']['detalle']['clientes'], $customer->codcliente));
+
+        // al excluir la factura, desaparece también del cálculo por contabilidad
+        $invoice->excluir347 = true;
+        $this->assertTrue($invoice->save(), 'cant-save-invoice');
+        $result = Modelo347Api::build($params);
+        $this->assertNull($this->findRow($result['body']['detalle']['clientes'], $customer->codcliente));
+        $result = Modelo347Api::build(['codejercicio' => $invoice->codejercicio]);
+        $this->assertNull($this->findRow($result['body']['detalle']['clientes'], $customer->codcliente));
+
+        $this->deleteCustomerInvoice($customer, $invoice);
+    }
+
+    /**
      * Comprueba los errores de empresa, ejercicio, año y parámetros propios.
      */
     public function testErrors(): void

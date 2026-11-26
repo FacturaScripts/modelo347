@@ -33,27 +33,67 @@ use FacturaScripts\Dinamic\Model\Empresa;
 class Modelo347File
 {
     /** @var Empresa */
+    /**
+     * Empresa declarante, la del ejercicio.
+     *
+     * @var Empresa
+     */
     protected static $company;
 
     /** @var array */
+    /**
+     * Clientes a declarar (filas de Modelo347::$customersData).
+     *
+     * @var array
+     */
     protected static $customersData;
 
     /** @var Ejercicio */
+    /**
+     * Ejercicio declarado; de él salen la empresa y el año.
+     *
+     * @var Ejercicio
+     */
     protected static $exercise;
 
     /** @var array */
+    /**
+     * Proveedores a declarar (filas de Modelo347::$suppliersData).
+     *
+     * @var array
+     */
     protected static $suppliersData;
 
     /** @var string */
+    /**
+     * Tipo de declaración: vacío (normal), 'C' (complementaria) o 'S' (sustitutiva).
+     *
+     * @var string
+     */
     protected static $declarationType = '';
 
     /** @var string */
+    /**
+     * Número de justificante indicado por el usuario; si está vacío se genera.
+     *
+     * @var string
+     */
     protected static $justificante = '';
 
     /** @var string */
+    /**
+     * Justificante de la declaración anterior, para las complementarias y sustitutivas.
+     *
+     * @var string
+     */
     protected static $justificanteAnterior = '';
 
     /** @var float */
+    /**
+     * Importe total anual de las operaciones, que se acumula al generar los registros de tipo 2.
+     *
+     * @var float
+     */
     protected static $total = 0.0;
 
     /**
@@ -86,6 +126,13 @@ class Modelo347File
         return mb_convert_encoding($companyData . $customerData . $supplierData, 'ISO-8859-1', 'UTF-8');
     }
 
+    /**
+     * Devuelve el NIF del declarado (9 posiciones): en blanco si el tercero no es español y, si lo es, el CIF/NIF con ceros a la izquierda.
+     *
+     * @param array $item fila del cliente o proveedor.
+     *
+     * @return string
+     */
     protected static function checkCifNif(array $item): string
     {
         if (false === self::isSpanish($item['codpais'] ?? '')) {
@@ -95,6 +142,13 @@ class Modelo347File
         return self::formatString($item['cifnif'], 9, '0', STR_PAD_LEFT);
     }
 
+    /**
+     * Indica si un país es España, comparando su código ISO de dos letras.
+     *
+     * @param string $codpais código de país del modelo (Alpha-3).
+     *
+     * @return bool
+     */
     protected static function isSpanish(string $codpais): bool
     {
         $pais = Paises::get($codpais);
@@ -126,6 +180,15 @@ class Modelo347File
         return self::formatString('', 17, ' ', STR_PAD_RIGHT);
     }
 
+    /**
+     * Formatea un importe para el fichero: primer carácter 'N' si es negativo (o blanco), seguido de los céntimos sin separador decimal y con ceros a la izquierda.
+     *
+     * @param float $amount importe a formatear.
+     * @param int   $length longitud total del campo, incluido el signo.
+     * @param int   $align  alineación del relleno (STR_PAD_LEFT o STR_PAD_RIGHT).
+     *
+     * @return string
+     */
     public static function formatAmount(float $amount, int $length, int $align): string
     {
         $signed = ($amount < 0.00) ? 'N' : ' ';
@@ -135,6 +198,13 @@ class Modelo347File
         return $signed . self::formatString($amount, $length - 1, '0', $align);
     }
 
+    /**
+     * Elimina de un texto todo lo que no sea un dígito.
+     *
+     * @param string|null $number texto original, por ejemplo un teléfono.
+     *
+     * @return string cadena vacía si no se indica.
+     */
     public static function formatOnlyNumber(?string $number): string
     {
         if (empty($number)) {
@@ -145,6 +215,16 @@ class Modelo347File
         return preg_replace('/[^0-9]/', '', $number);
     }
 
+    /**
+     * Prepara un texto para un campo de posición fija: sin acentos ni HTML, en mayúsculas, recortado por caracteres (no por bytes) y rellenado hasta la longitud indicada.
+     *
+     * @param string $string  texto original.
+     * @param int    $length  longitud del campo.
+     * @param string $charter carácter de relleno.
+     * @param int    $align   alineación del relleno (STR_PAD_LEFT o STR_PAD_RIGHT).
+     *
+     * @return string
+     */
     public static function formatString(string $string, int $length, string $charter, int $align): string
     {
         // eliminamos los acentos y caracteres especiales
@@ -171,15 +251,23 @@ class Modelo347File
         return $string;
     }
 
+    /**
+     * Carga la empresa del ejercicio declarado.
+     */
     protected static function loadCompany(): void
     {
         self::$company = new Empresa();
         self::$company->load(self::$exercise->idempresa);
     }
 
+    /**
+     * Devuelve el número de justificante de 13 posiciones: el indicado por el usuario o, si no hay, uno generado (modelo + año + secuencial), porque la AEAT rechaza el justificante a ceros en ficheros.
+     *
+     * @return string
+     */
     protected static function getJustificante(): string
     {
-        // Si el usuario ha proporcionado un justificante, lo usamos (ya validado en el controlador)
+        // si el usuario ha indicado un justificante, lo usamos: el controlador ya ha comprobado que tiene 13 dígitos y empieza por 347
         if (!empty(self::$justificante)) {
             return self::formatString(self::$justificante, 13, '0', STR_PAD_LEFT);
         }
@@ -190,6 +278,11 @@ class Modelo347File
         return '347' . $year . '000001';
     }
 
+    /**
+     * Construye el registro de tipo 1 (declarante).
+     *
+     * @return string
+     */
     protected static function getCompanyData(): string
     {
         return '1' // TIPO DE REGISTRO
@@ -214,6 +307,11 @@ class Modelo347File
             . self::formatString('', 13, ' ', STR_PAD_LEFT); // SELLO ELECTRÓNICO
     }
 
+    /**
+     * Construye los registros de tipo 2 (hoja D) de los clientes, con clave de operación 'B', y acumula su importe en el total.
+     *
+     * @return string cada registro va precedido de un salto de línea.
+     */
     protected static function getCustomerData(): string
     {
         $txt = '';
@@ -257,12 +355,24 @@ class Modelo347File
         return $txt;
     }
 
+    /**
+     * Carga el ejercicio declarado.
+     *
+     * @param string $codejercicio código del ejercicio.
+     */
     protected static function loadExercise(string $codejercicio): void
     {
         self::$exercise = new Ejercicio();
         self::$exercise->load($codejercicio);
     }
 
+    /**
+     * Devuelve el código de país del registro (2 posiciones): en blanco para España y el código ISO para el resto.
+     *
+     * @param string $codpais código de país del modelo.
+     *
+     * @return string
+     */
     protected static function getPais(string $codpais): string
     {
         $pais = Paises::get($codpais);
@@ -273,6 +383,13 @@ class Modelo347File
         return self::formatString('', 2, ' ', STR_PAD_LEFT);
     }
 
+    /**
+     * Traduce el nombre de una provincia española a su código de dos cifras.
+     *
+     * @param string|null $provincia nombre de la provincia, con o sin acentos.
+     *
+     * @return string '99' si está vacía o no se reconoce.
+     */
     public static function getProvincia(?string $provincia): string
     {
         if (empty($provincia)) {
@@ -465,6 +582,11 @@ class Modelo347File
         }
     }
 
+    /**
+     * Construye los registros de tipo 2 (hoja D) de los proveedores, con clave de operación 'A', y acumula su importe en el total.
+     *
+     * @return string cada registro va precedido de un salto de línea.
+     */
     protected static function getSupplierData(): string
     {
         $txt = '';
@@ -508,11 +630,26 @@ class Modelo347File
         return $txt;
     }
 
+    /**
+     * Recorta un texto a un número de caracteres (no de bytes).
+     *
+     * @param string $string texto original.
+     * @param int    $length máximo de caracteres.
+     *
+     * @return string
+     */
     protected static function limitString(string $string, int $length): string
     {
         return mb_substr($string, 0, $length, 'UTF-8');
     }
 
+    /**
+     * Quita el HTML y sustituye las letras acentuadas y otros caracteres especiales por su equivalente simple. La Ñ se conserva.
+     *
+     * @param string|null $txt texto original.
+     *
+     * @return string
+     */
     public static function sanitize(?string $txt): string
     {
         $changes = ['/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
@@ -521,7 +658,7 @@ class Modelo347File
             '/ò/' => 'o', '/ó/' => 'o', '/ô/' => 'o', '/õ/' => 'o', '/ö/' => 'o',
             '/ő/' => 'o', '/ø/' => 'o', '/ù/' => 'u', '/ú/' => 'u', '/û/' => 'u', '/ü/' => 'u',
             '/ű/' => 'u', '/ý/' => 'y', '/þ/' => 'th', '/ÿ/' => 'y',
-            '/&quot;/' => '-', '/´/' => '/\'/', '/€/' => 'EUR', '/º/' => '.',
+            '/&quot;/' => '-', '/&#39;/' => "'", '/´/' => "'", '/€/' => 'EUR', '/º/' => '.',
             '/À/' => 'A', '/Á/' => 'A', '/Â/' => 'A', '/Ä/' => 'A',
             '/Ç/' => 'C', '/È/' => 'E', '/É/' => 'E', '/Ê/' => 'E',
             '/Ë/' => 'E', '/Ì/' => 'I', '/Í/' => 'I', '/Î/' => 'I', '/Ï/' => 'I',

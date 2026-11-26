@@ -32,6 +32,12 @@ use FacturaScripts\Core\Tools;
  */
 class PurchasesHeaderHTMLMod implements PurchasesModInterface
 {
+    /**
+     * Guarda excluir347 del formulario en el documento, si tiene la columna.
+     *
+     * @param PurchaseDocument $model documento editado.
+     * @param array $formData datos enviados por el formulario.
+     */
     public function apply(PurchaseDocument &$model, array $formData): void
     {
         if ($model->hasColumn('excluir347')) {
@@ -39,24 +45,51 @@ class PurchasesHeaderHTMLMod implements PurchasesModInterface
         }
     }
 
+    /**
+     * No hace nada: el plugin solo usa apply().
+     *
+     * @param PurchaseDocument $model documento editado.
+     * @param array $formData datos enviados por el formulario.
+     */
     public function applyBefore(PurchaseDocument &$model, array $formData): void
     {
     }
 
+    /**
+     * No añade assets.
+     */
     public function assets(): void
     {
     }
 
+    /**
+     * No añade botones a la cabecera.
+     *
+     * @return array
+     */
     public function newBtnFields(): array
     {
         return [];
     }
 
+    /**
+     * No añade campos a la cabecera.
+     *
+     * @return array
+     */
     public function newFields(): array
     {
         return [];
     }
 
+    /**
+     * Dibuja el campo excluir347.
+     *
+     * @param PurchaseDocument $model documento mostrado.
+     * @param string $field nombre del campo.
+     *
+     * @return string|null null si el campo no es de este mod.
+     */
     public function renderField(PurchaseDocument $model, string $field): ?string
     {
         if ($field == 'excluir347') {
@@ -66,11 +99,23 @@ class PurchasesHeaderHTMLMod implements PurchasesModInterface
         return null;
     }
 
+    /**
+     * Añade el campo excluir347 a la ventana modal de la cabecera.
+     *
+     * @return array
+     */
     public function newModalFields(): array
     {
         return ['excluir347'];
     }
 
+    /**
+     * Dibuja el selector Sí/No de excluir347; deshabilitado si el documento no es editable.
+     *
+     * @param PurchaseDocument $model documento mostrado.
+     *
+     * @return string HTML del campo, vacío si el documento no tiene la columna.
+     */
     private static function excluir347(PurchaseDocument $model): string
     {
         if (false === $model->hasColumn('excluir347')) {
@@ -88,7 +133,7 @@ class PurchasesHeaderHTMLMod implements PurchasesModInterface
         $attributes = $model->editable ? 'name="excluir347" required=""' : 'disabled=""';
         return '<div class="col-sm-6">'
             . '<div class="mb-3">' . Tools::trans('exclude-347')
-            . '<select ' . $attributes . ' class="form-select"/>' . implode('', $options) . '</select>'
+            . '<select ' . $attributes . ' class="form-select">' . implode('', $options) . '</select>'
             . '</div>'
             . '</div>';
     }

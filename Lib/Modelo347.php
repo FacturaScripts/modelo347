@@ -230,33 +230,8 @@ class Modelo347
             $this->getCustomersDataInvoices() :
             $this->getCustomersDataAccounting();
 
-        // excluimos los que no alcanzan el importe mínimo
-        foreach ($this->customersData as $key => $row) {
-            if ($row['total'] < $this->amount) {
-                unset($this->customersData[$key]);
-            }
-        }
-
-        // totales
-        $this->customersTotals = [
-            'cifnif' => '',
-            'cliente' => '',
-            'codpostal' => '',
-            'ciudad' => '',
-            'provincia' => '',
-            't1' => 0.0,
-            't2' => 0.0,
-            't3' => 0.0,
-            't4' => 0.0,
-            'total' => 0.0
-        ];
-        foreach ($this->customersData as $row) {
-            $this->customersTotals['t1'] += $row['t1'];
-            $this->customersTotals['t2'] += $row['t2'];
-            $this->customersTotals['t3'] += $row['t3'];
-            $this->customersTotals['t4'] += $row['t4'];
-            $this->customersTotals['total'] += $row['total'];
-        }
+        $this->customersData = $this->filterByAmount($this->customersData);
+        $this->customersTotals = $this->sumTotals($this->customersData, 'cliente');
     }
 
     /**
@@ -268,33 +243,8 @@ class Modelo347
             $this->getSuppliersDataInvoices() :
             $this->getSuppliersDataAccounting();
 
-        // excluimos los que no alcanzan el importe mínimo
-        foreach ($this->suppliersData as $key => $row) {
-            if ($row['total'] < $this->amount) {
-                unset($this->suppliersData[$key]);
-            }
-        }
-
-        // totales
-        $this->suppliersTotals = [
-            'cifnif' => '',
-            'proveedor' => '',
-            'codpostal' => '',
-            'ciudad' => '',
-            'provincia' => '',
-            't1' => 0.0,
-            't2' => 0.0,
-            't3' => 0.0,
-            't4' => 0.0,
-            'total' => 0.0
-        ];
-        foreach ($this->suppliersData as $row) {
-            $this->suppliersTotals['t1'] += $row['t1'];
-            $this->suppliersTotals['t2'] += $row['t2'];
-            $this->suppliersTotals['t3'] += $row['t3'];
-            $this->suppliersTotals['t4'] += $row['t4'];
-            $this->suppliersTotals['total'] += $row['total'];
-        }
+        $this->suppliersData = $this->filterByAmount($this->suppliersData);
+        $this->suppliersTotals = $this->sumTotals($this->suppliersData, 'proveedor');
     }
 
     /**
@@ -327,8 +277,21 @@ class Modelo347
     }
 
     /**
+     * Quita los terceros que no alcanzan el importe mínimo.
+     *
+     * @param array $data clientes o proveedores indexados por código.
+     *
+     * @return array
+     */
+    protected function filterByAmount(array $data): array
+    {
+        return array_filter($data, fn(array $row) => $row['total'] >= $this->amount);
+    }
+
+    /**
      * Devuelve el importe del debe o del haber de las subcuentas de una cuenta, agrupado por mes,
-     * para las fechas del ejercicio. Excluye los asientos especiales (apertura, cierre, regularización).
+     * para las fechas del ejercicio. Excluye los asientos especiales (apertura, cierre, regularización)
+     * y los de las facturas que el cálculo por facturas tampoco cuenta (ver getExcludedEntriesSql()).
      *
      * @param Cuenta $cuenta cuenta especial de clientes o proveedores.
      * @param string $column 'debe' o 'haber'.
@@ -339,24 +302,19 @@ class Modelo347
     {
         $ejercicio = Ejercicios::get($this->codejercicio);
 
-        $dbType = Tools::config('db_type');
-        if (strtolower($dbType) == 'postgresql') {
-            $sql = "select idsubcuenta, codsubcuenta, to_char(fecha,'FMMM') as mes, sum(" . $column . ") as total from partidas p, asientos a"
-                . " where idsubcuenta IN (select idsubcuenta from subcuentas where idcuenta = " . $this->dataBase->var2str($cuenta->idcuenta) . ")"
-                . " and p.idasiento = a.idasiento"
-                . " and a.operacion is null"
-                . " and fecha >= " . $this->dataBase->var2str($ejercicio->fechainicio)
-                . " and fecha <= " . $this->dataBase->var2str($ejercicio->fechafin)
-                . " group by 1, 2, 3 order by idsubcuenta asc, mes asc;";
-        } else {
-            $sql = "select idsubcuenta, codsubcuenta, DATE_FORMAT(fecha, '%m') as mes, sum(" . $column . ") as total from partidas p, asientos a"
-                . " where idsubcuenta IN (select idsubcuenta from subcuentas where idcuenta = " . $this->dataBase->var2str($cuenta->idcuenta) . ")"
-                . " and p.idasiento = a.idasiento"
-                . " and a.operacion is null"
-                . " and fecha >= " . $this->dataBase->var2str($ejercicio->fechainicio)
-                . " and fecha <= " . $this->dataBase->var2str($ejercicio->fechafin)
-                . " group by 1, 2, 3 order by idsubcuenta asc, mes asc;";
-        }
+        $month = strtolower(Tools::config('db_type')) == 'postgresql' ?
+            "to_char(fecha,'FMMM')" :
+            "DATE_FORMAT(fecha, '%m')";
+
+        $sql = "select idsubcuenta, codsubcuenta, " . $month . " as mes, sum(" . $column . ") as total from partidas p, asientos a"
+            . " where idsubcuenta IN (select idsubcuenta from subcuentas where idcuenta = " . $this->dataBase->var2str($cuenta->idcuenta) . ")"
+            . " and p.idasiento = a.idasiento"
+            . " and a.operacion is null"
+            . " and fecha >= " . $this->dataBase->var2str($ejercicio->fechainicio)
+            . " and fecha <= " . $this->dataBase->var2str($ejercicio->fechafin)
+            . $this->getExcludedEntriesSql('facturascli')
+            . $this->getExcludedEntriesSql('facturasprov')
+            . " group by 1, 2, 3 order by idsubcuenta asc, mes asc;";
 
         return $this->dataBase->select($sql);
     }
@@ -490,6 +448,29 @@ class Modelo347
         }
 
         return $items;
+    }
+
+    /**
+     * Devuelve la condición que quita del cálculo por contabilidad los asientos de las facturas que
+     * el cálculo por facturas no cuenta: las excluidas del 347, las de series sin IVA y, si se
+     * excluye el IRPF, las que llevan retención. Así los dos orígenes aplican los mismos filtros.
+     *
+     * @param string $tableName tabla de facturas: 'facturascli' o 'facturasprov'.
+     *
+     * @return string
+     */
+    protected function getExcludedEntriesSql(string $tableName): string
+    {
+        $conditions = 'COALESCE(f.excluir347, false) = true OR COALESCE(s.siniva, false) = true';
+        if ($this->excludeIrpf) {
+            $conditions .= ' OR f.irpf <> 0';
+        }
+
+        return ' and a.idasiento NOT IN (SELECT f.idasiento FROM ' . $tableName . ' f'
+            . ' INNER JOIN series s ON f.codserie = s.codserie'
+            . ' WHERE f.idasiento IS NOT NULL'
+            . ' AND f.codejercicio = ' . $this->dataBase->var2str($this->codejercicio)
+            . ' AND (' . $conditions . '))';
     }
 
     /**
@@ -660,5 +641,35 @@ class Modelo347
         }
 
         $item['total'] += (float)$row['total'];
+    }
+
+    /**
+     * Construye la fila de totales (pantalla y Excel) sumando los trimestres y el total de los terceros.
+     *
+     * @param array  $data      clientes o proveedores ya filtrados por importe.
+     * @param string $nameField columna del nombre: 'cliente' o 'proveedor'.
+     *
+     * @return array
+     */
+    protected function sumTotals(array $data, string $nameField): array
+    {
+        $totals = [
+            'cifnif' => '',
+            $nameField => '',
+            'codpostal' => '',
+            'ciudad' => '',
+            'provincia' => '',
+            't1' => 0.0,
+            't2' => 0.0,
+            't3' => 0.0,
+            't4' => 0.0,
+            'total' => 0.0
+        ];
+        foreach ($data as $row) {
+            foreach (['t1', 't2', 't3', 't4', 'total'] as $field) {
+                $totals[$field] += $row[$field];
+            }
+        }
+        return $totals;
     }
 }

@@ -20,6 +20,7 @@
 namespace FacturaScripts\Test\Plugins;
 
 use FacturaScripts\Dinamic\Lib\Modelo347File;
+use FacturaScripts\Plugins\Modelo347\Controller\Modelo347 as Modelo347Controller;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
@@ -197,6 +198,23 @@ final class Modelo347FileTest extends TestCase
 
         $result2 = Modelo347File::sanitize('SEÑOR');
         $this->assertStringContainsString('Ñ', $result2);
+    }
+
+    public function testSanitizeApostrophes(): void
+    {
+        // el apóstrofo llega escapado como &#39; desde la base de datos y el acento agudo se cambia por un apóstrofo
+        $this->assertEquals("D'ARCY", Modelo347File::sanitize('D&#39;ARCY'));
+        $this->assertEquals("D'ARCY", Modelo347File::sanitize("D'ARCY"));
+        $this->assertEquals("O'NEIL", Modelo347File::sanitize('O´NEIL'));
+    }
+
+    public function testValidJustificante(): void
+    {
+        $this->assertTrue(Modelo347Controller::isValidJustificante('3472025000001'));
+        $this->assertFalse(Modelo347Controller::isValidJustificante(''));
+        $this->assertFalse(Modelo347Controller::isValidJustificante('347202500001'));
+        $this->assertFalse(Modelo347Controller::isValidJustificante('34720250000011'));
+        $this->assertFalse(Modelo347Controller::isValidJustificante('1112025000001'));
     }
 
     public function testSanitizeNull(): void

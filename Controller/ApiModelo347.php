@@ -37,7 +37,8 @@ use FacturaScripts\Dinamic\Lib\Modelo347Api;
 class ApiModelo347 extends ApiController
 {
     /** Parámetros de la query string que acepta el endpoint. */
-    private const PARAMS = ['codejercicio', 'idempresa', 'anio', 'periodo', 'detalle', 'importe', 'origen', 'agrupar', 'excluir_irpf'];
+    /** El detalle por cliente y proveedor es el contenido del modelo: se devuelve siempre, sin parámetro. */
+    private const PARAMS = ['codejercicio', 'idempresa', 'anio', 'periodo', 'importe', 'origen', 'agrupar', 'excluir_irpf'];
 
     /**
      * Valida el método, lee los parámetros y devuelve los datos del modelo.

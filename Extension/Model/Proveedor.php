@@ -18,9 +18,6 @@
  */
 namespace FacturaScripts\Plugins\Modelo347\Extension\Model;
 
-use FacturaScripts\Core\Tools;
-
-
 use Closure;
 
 /**
@@ -33,6 +30,11 @@ use Closure;
  */
 class Proveedor
 {
+    /**
+     * Extiende clear() del modelo: inicia excluir347 a false.
+     *
+     * @return Closure
+     */
     public function clear(): Closure
     {
         return function () {

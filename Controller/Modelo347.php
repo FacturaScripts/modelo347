@@ -39,42 +39,107 @@ use FacturaScripts\Dinamic\Model\Ejercicio;
 class Modelo347 extends Controller
 {
     /** @var string */
+    /**
+     * Pestaña activa de la pantalla: 'customers' o 'suppliers'.
+     *
+     * @var string
+     */
     public $activetab = 'customers';
 
     /** @var float */
+    /**
+     * Importe mínimo anual de operaciones para declarar a un tercero.
+     *
+     * @var float
+     */
     public $amount = 3005.06;
 
     /** @var string */
+    /**
+     * Código del ejercicio declarado.
+     *
+     * @var string
+     */
     public $codejercicio;
 
     /** @var array */
+    /**
+     * Clientes a declarar, calculados por Lib/Modelo347.
+     *
+     * @var array
+     */
     public $customersData = [];
 
     /** @var array */
+    /**
+     * Totales de los clientes a declarar.
+     *
+     * @var array
+     */
     public $customersTotals = [];
 
     /** @var string */
+    /**
+     * Tipo de declaración del fichero: vacío (normal), 'C' (complementaria) o 'S' (sustitutiva).
+     *
+     * @var string
+     */
     public $declarationType = '';
 
     /** @var string */
+    /**
+     * Origen de los datos: 'invoices' (facturas) o 'accounting' (contabilidad).
+     *
+     * @var string
+     */
     public $examine = 'invoices';
 
     /** @var bool */
+    /**
+     * Si es true, se excluyen las facturas con retención de IRPF.
+     *
+     * @var bool
+     */
     public $excludeIrpf = false;
 
     /** @var string */
+    /**
+     * Agrupación de los terceros: 'customer-supplier' o 'cifnif'.
+     *
+     * @var string
+     */
     public $grouping = 'customer-supplier';
 
     /** @var string */
+    /**
+     * Número de justificante del fichero, solo dígitos; vacío para que se genere.
+     *
+     * @var string
+     */
     public $justificante = '';
 
     /** @var string */
+    /**
+     * Justificante de la declaración anterior, solo dígitos.
+     *
+     * @var string
+     */
     public $justificanteAnterior = '';
 
     /** @var array */
+    /**
+     * Proveedores a declarar, calculados por Lib/Modelo347.
+     *
+     * @var array
+     */
     public $suppliersData = [];
 
     /** @var array */
+    /**
+     * Totales de los proveedores a declarar.
+     *
+     * @var array
+     */
     public $suppliersTotals = [];
 
     /**
@@ -116,6 +181,11 @@ class Modelo347 extends Controller
         return Modelo347Lib::allGroupBy();
     }
 
+    /**
+     * Datos de la página: menú Informes, submenú de modelos fiscales.
+     *
+     * @return array
+     */
     public function getPageData(): array
     {
         $data = parent::getPageData();
@@ -126,6 +196,25 @@ class Modelo347 extends Controller
         return $data;
     }
 
+    /**
+     * Indica si un número de justificante tiene el formato de la AEAT: 13 dígitos que empiezan por 347.
+     *
+     * @param string $justificante número ya limpio de caracteres que no son dígitos.
+     *
+     * @return bool
+     */
+    public static function isValidJustificante(string $justificante): bool
+    {
+        return 1 === preg_match('/^347\d{10}$/', $justificante);
+    }
+
+    /**
+     * Lee la pestaña y la acción de la petición, calcula los datos y ejecuta la acción.
+     *
+     * @param mixed $response respuesta HTTP.
+     * @param mixed $user usuario autenticado.
+     * @param mixed $permissions permisos del usuario en esta página.
+     */
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
@@ -177,6 +266,9 @@ class Modelo347 extends Controller
         $this->checkData($model347);
     }
 
+    /**
+     * Descarga un Excel con una hoja de clientes y otra de proveedores, cada una con su fila de totales.
+     */
     protected function downloadExcelAction(): void
     {
         $this->setTemplate(false);
@@ -226,8 +318,16 @@ class Modelo347 extends Controller
         $xlsExport->show($this->response);
     }
 
+    /**
+     * Descarga el fichero .347 para la AEAT con los datos calculados (Lib/Modelo347File).
+     */
     protected function downloadTxtAction(): void
     {
+        // si los justificantes no son válidos, la AEAT rechazaría el fichero: avisamos y no lo descargamos
+        if (false === $this->validateJustificantes()) {
+            return;
+        }
+
         $this->setTemplate(false);
 
         // generamos el contenido del archivo
@@ -356,5 +456,29 @@ class Modelo347 extends Controller
         }
 
         Tools::log()->warning('347-emails-none');
+    }
+
+    /**
+     * Comprueba los justificantes antes de generar el TXT: el indicado, si lo hay, debe tener 13 dígitos
+     * y empezar por 347, y una declaración complementaria o sustitutiva necesita además el justificante
+     * de la declaración anterior con ese mismo formato. Avisa al usuario de lo que falla.
+     *
+     * @return bool true si se puede generar el fichero.
+     */
+    protected function validateJustificantes(): bool
+    {
+        $valid = true;
+        if ('' !== $this->justificante && false === self::isValidJustificante($this->justificante)) {
+            Tools::log()->warning('347-invalid-justificante');
+            $valid = false;
+        }
+
+        if (in_array($this->declarationType, ['C', 'S'], true)
+            && false === self::isValidJustificante($this->justificanteAnterior)) {
+            Tools::log()->warning('347-previous-justificante-required');
+            $valid = false;
+        }
+
+        return $valid;
     }
 }

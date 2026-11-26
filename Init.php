@@ -63,6 +63,9 @@ final class Init extends InitClass
         ApiRoot::addCustomResource('modelo347');
     }
 
+    /**
+     * No hace nada: las columnas y las notificaciones se conservan al desinstalar.
+     */
     public function uninstall(): void
     {
     }

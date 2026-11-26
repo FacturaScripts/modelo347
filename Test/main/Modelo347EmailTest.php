@@ -28,9 +28,11 @@ use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Ejercicio;
 use FacturaScripts\Dinamic\Model\EmailNotification;
 use FacturaScripts\Dinamic\Model\Proveedor;
+use FacturaScripts\Plugins\Modelo347\Worker\Modelo347EmailWorker;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 /**
  * Pruebas de la preparación y el encolado de los emails del Modelo 347 (Lib/Modelo347Email).
@@ -201,6 +203,36 @@ final class Modelo347EmailTest extends TestCase
         $this->assertTrue($customer1->delete());
         $this->assertTrue($customer2->delete());
         $this->assertTrue($customer3->delete());
+    }
+
+    /**
+     * Comprueba que el worker vuelve a encolar un email que no ha salido, con el siguiente número de intento,
+     * y que deja de hacerlo al llegar al máximo de intentos.
+     */
+    public function testWorkerRetry(): void
+    {
+        $this->deleteTestEvents();
+
+        $worker = new Modelo347EmailWorker();
+        $retry = new ReflectionMethod($worker, 'retry');
+        $retry->setAccessible(true);
+
+        $params = ['codejercicio' => self::TEST_EXERCISE, 'email' => 'retry@example.com', 'name' => 'Cliente 347', 'total' => 4000];
+        $this->assertTrue($retry->invoke($worker, $params, Modelo347Email::TYPE_CUSTOMERS));
+
+        $events = WorkEvent::all([Where::eq('value', self::TEST_EXERCISE)]);
+        $this->assertCount(1, $events);
+        $this->assertEquals(Modelo347Email::EVENT_CUSTOMERS, $events[0]->name);
+        $this->assertEquals(2, $events[0]->param('attempt'));
+        $this->assertEquals('retry@example.com', $events[0]->param('email'));
+        $this->assertFalse((bool)$events[0]->done);
+
+        // el último intento ya no se vuelve a encolar
+        $params['attempt'] = Modelo347EmailWorker::MAX_ATTEMPTS;
+        $this->assertFalse($retry->invoke($worker, $params, Modelo347Email::TYPE_CUSTOMERS));
+        $this->assertCount(1, WorkEvent::all([Where::eq('value', self::TEST_EXERCISE)]));
+
+        $this->deleteTestEvents();
     }
 
     /**

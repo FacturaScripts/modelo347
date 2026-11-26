@@ -31,6 +31,11 @@ use Closure;
  */
 class FacturaProveedor
 {
+    /**
+     * Extiende clear() del modelo: inicia excluir347 a false.
+     *
+     * @return Closure
+     */
     public function clear(): Closure
     {
         return function () {
@@ -38,6 +43,11 @@ class FacturaProveedor
         };
     }
 
+    /**
+     * Extiende setSubject() del modelo: copia excluir347 del cliente o proveedor a la factura.
+     *
+     * @return Closure
+     */
     public function setSubject(): Closure
     {
         return function ($subject) {

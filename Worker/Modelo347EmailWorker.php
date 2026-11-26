@@ -23,6 +23,7 @@ use FacturaScripts\Core\Model\WorkEvent;
 use FacturaScripts\Core\Template\WorkerClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Validator;
+use FacturaScripts\Core\WorkQueue;
 use FacturaScripts\Dinamic\Lib\Email\MailNotifier;
 use FacturaScripts\Dinamic\Lib\Email\NewMail;
 use FacturaScripts\Dinamic\Lib\Modelo347Email;
@@ -50,9 +51,22 @@ class Modelo347EmailWorker extends WorkerClass
     /** Milisegundos mínimos entre dos envíos del mismo proceso. */
     const MIN_GAP_MS = 500;
 
+    /** Intentos máximos de envío de un email, contando el primero. */
+    const MAX_ATTEMPTS = 3;
+
+    /** Segundos de espera antes de reintentar un email que no se ha podido enviar. */
+    const RETRY_DELAY = 300;
+
     /** @var float|null Momento (microtime) del último envío de este proceso. */
     private static $lastSend = null;
 
+    /**
+     * Envía el email del evento (o, con el formato anterior, los de todos sus destinatarios).
+     *
+     * @param WorkEvent $event evento de la cola con el destinatario en sus parámetros.
+     *
+     * @return bool siempre true (resultado de done()). Si el email no sale, se reintenta hasta MAX_ATTEMPTS veces con un evento nuevo y el fallo queda en el log.
+     */
     public function run(WorkEvent $event): bool
     {
         $type = $event->name === Modelo347Email::EVENT_SUPPLIERS ?
@@ -66,6 +80,7 @@ class Modelo347EmailWorker extends WorkerClass
             $exercise->load($event->value);
             $params = [
                 'amount' => $event->param('amount', 0),
+                'codejercicio' => $event->value,
                 'idempresa' => $exercise->idempresa,
                 'year' => empty($exercise->fechainicio) ? $event->value : Modelo347Email::year($exercise),
             ];
@@ -75,8 +90,30 @@ class Modelo347EmailWorker extends WorkerClass
             return $this->done();
         }
 
-        $this->sendEmail($event->params(), $type);
+        // el ejercicio va en el valor del evento: lo pasamos para poder reintentar el envío
+        $this->sendEmail(array_merge(['codejercicio' => $event->value], $event->params()), $type);
         return $this->done();
+    }
+
+    /**
+     * Vuelve a encolar el email de un destinatario que no se ha podido enviar, RETRY_DELAY segundos
+     * después, mientras no se hayan agotado los MAX_ATTEMPTS intentos. El número de intento viaja en
+     * el parámetro 'attempt' del evento, así que el evento nuevo no se toma por un duplicado.
+     *
+     * @param array  $params parámetros del destinatario (los mismos que recibe sendEmail()).
+     * @param string $type   'customers' o 'suppliers'.
+     *
+     * @return bool true si se ha encolado un nuevo intento.
+     */
+    protected function retry(array $params, string $type): bool
+    {
+        $attempt = (int)($params['attempt'] ?? 1);
+        if ($attempt >= self::MAX_ATTEMPTS || empty($params['codejercicio'])) {
+            return false;
+        }
+
+        $params['attempt'] = $attempt + 1;
+        return WorkQueue::sendFuture(self::RETRY_DELAY, Modelo347Email::eventName($type), (string)$params['codejercicio'], $params);
     }
 
     /**
@@ -141,6 +178,16 @@ class Modelo347EmailWorker extends WorkerClass
         self::$lastSend = microtime(true);
         if ($sent) {
             return true;
+        }
+
+        // el servidor de correo puede fallar de forma puntual: lo reintentamos más tarde unas pocas veces
+        if ($this->retry($params, $type)) {
+            Tools::log()->warning('347-email-retry', [
+                '%name%' => $values['name'],
+                '%email%' => $email,
+                '%minutes%' => (int)(self::RETRY_DELAY / 60),
+            ]);
+            return false;
         }
 
         Tools::log()->warning('347-email-not-sent', [

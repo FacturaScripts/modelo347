@@ -32,6 +32,12 @@ use FacturaScripts\Core\Tools;
  */
 class SalesHeaderHTMLMod implements SalesModInterface
 {
+    /**
+     * Guarda excluir347 del formulario en el documento, si tiene la columna.
+     *
+     * @param SalesDocument $model documento editado.
+     * @param array $formData datos enviados por el formulario.
+     */
     public function apply(SalesDocument &$model, array $formData): void
     {
         if ($model->hasColumn('excluir347')) {
@@ -39,29 +45,61 @@ class SalesHeaderHTMLMod implements SalesModInterface
         }
     }
 
+    /**
+     * No hace nada: el plugin solo usa apply().
+     *
+     * @param SalesDocument $model documento editado.
+     * @param array $formData datos enviados por el formulario.
+     */
     public function applyBefore(SalesDocument &$model, array $formData): void
     {
     }
 
+    /**
+     * No añade assets.
+     */
     public function assets(): void
     {
     }
 
+    /**
+     * No añade botones a la cabecera.
+     *
+     * @return array
+     */
     public function newBtnFields(): array
     {
         return [];
     }
 
+    /**
+     * No añade campos a la cabecera.
+     *
+     * @return array
+     */
     public function newFields(): array
     {
         return [];
     }
 
+    /**
+     * Añade el campo excluir347 a la ventana modal de la cabecera.
+     *
+     * @return array
+     */
     public function newModalFields(): array
     {
         return ['excluir347'];
     }
 
+    /**
+     * Dibuja el campo excluir347.
+     *
+     * @param SalesDocument $model documento mostrado.
+     * @param string $field nombre del campo.
+     *
+     * @return string|null null si el campo no es de este mod.
+     */
     public function renderField(SalesDocument $model, string $field): ?string
     {
         if ($field == 'excluir347') {
@@ -71,6 +109,13 @@ class SalesHeaderHTMLMod implements SalesModInterface
         return null;
     }
 
+    /**
+     * Dibuja el selector Sí/No de excluir347; deshabilitado si el documento no es editable.
+     *
+     * @param SalesDocument $model documento mostrado.
+     *
+     * @return string HTML del campo, vacío si el documento no tiene la columna.
+     */
     private static function excluir347(SalesDocument $model): string
     {
         if (false === $model->hasColumn('excluir347')) {
@@ -88,7 +133,7 @@ class SalesHeaderHTMLMod implements SalesModInterface
         $attributes = $model->editable ? 'name="excluir347" required=""' : 'disabled=""';
         return '<div class="col-sm-6">'
             . '<div class="mb-3">' . Tools::trans('exclude-347')
-            . '<select ' . $attributes . ' class="form-select"/>' . implode('', $options) . '</select>'
+            . '<select ' . $attributes . ' class="form-select">' . implode('', $options) . '</select>'
             . '</div>'
             . '</div>';
     }
