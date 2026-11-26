@@ -22,13 +22,12 @@ namespace FacturaScripts\Plugins\Modelo347\Controller;
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\DataSrc\Ejercicios;
 use FacturaScripts\Core\Tools;
-use FacturaScripts\Core\WorkQueue;
+use FacturaScripts\Dinamic\Lib\Email\NewMail;
 use FacturaScripts\Dinamic\Lib\Export\XLSExport;
 use FacturaScripts\Dinamic\Lib\Modelo347 as Modelo347Lib;
+use FacturaScripts\Dinamic\Lib\Modelo347Email;
 use FacturaScripts\Dinamic\Lib\Modelo347File;
-use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\Ejercicio;
-use FacturaScripts\Dinamic\Model\Proveedor;
 
 /**
  * Pantalla del Modelo 347: muestra los clientes y proveedores a declarar, descarga el Excel y el TXT
@@ -267,68 +266,64 @@ class Modelo347 extends Controller
             ->setContent($content);
     }
 
+    /**
+     * Encola los emails del Modelo 347 a los clientes, proveedores o ambos y muestra al usuario cuántos
+     * se han encolado, quiénes no tienen email y si había un envío anterior pendiente. Requiere permiso
+     * de modificación y que el email esté configurado.
+     */
     protected function sendEmailsAction(): void
     {
+        if (false === $this->permissions->allowUpdate) {
+            Tools::log()->warning('not-allowed-modify');
+            return;
+        }
+
+        if (false === NewMail::create()->canSendMail()) {
+            Tools::log()->warning('email-not-configured');
+            return;
+        }
+
+        $exercise = new Ejercicio();
+        if (false === $exercise->load($this->codejercicio)) {
+            Tools::log()->warning('exercise-not-found');
+            return;
+        }
+
         $sendtype = $this->request->request->get('sendtype', 'both');
+        $types = [];
+        if (in_array($sendtype, ['customers', 'both'])) {
+            $types[Modelo347Email::TYPE_CUSTOMERS] = $this->customersData;
+        }
+        if (in_array($sendtype, ['suppliers', 'both'])) {
+            $types[Modelo347Email::TYPE_SUPPLIERS] = $this->suppliersData;
+        }
 
-        if (in_array($sendtype, ['customers', 'both']) && false === empty($this->customersData)) {
-            $data = [];
-            $sentEmails = [];
-            foreach ($this->customersData as $codcliente => $row) {
-                $cliente = new Cliente();
-                if (false === $cliente->load($codcliente)) {
-                    continue;
-                }
-                $email = $cliente->email;
-                if (empty($email) || isset($sentEmails[$email])) {
-                    continue;
-                }
-                $sentEmails[$email] = true;
-                $data[] = [
-                    'email' => $email,
-                    'name' => $row['cliente'],
-                    'cifnif' => $row['cifnif'],
-                    't1' => $row['t1'],
-                    't2' => $row['t2'],
-                    't3' => $row['t3'],
-                    't4' => $row['t4'],
-                    'total' => $row['total'],
-                ];
+        $queued = 0;
+        foreach ($types as $type => $data) {
+            if (empty($data)) {
+                continue;
             }
-            if (false === empty($data)) {
-                WorkQueue::send('Modelo347.SendCustomersEmails', $this->codejercicio, ['data' => $data, 'amount' => $this->amount]);
+
+            $result = Modelo347Email::queue($exercise, $this->amount, $data, $type);
+            if ($result['status'] !== 'queued') {
+                Tools::log()->warning('347-emails-pending', ['%type%' => Tools::trans($type)]);
+                continue;
+            }
+
+            $queued += $result['queued'];
+            foreach ($result['noEmail'] as $row) {
+                Tools::log()->warning('347-no-email', [
+                    '%name%' => $row['name'],
+                    '%cifnif%' => $row['cifnif'],
+                ]);
             }
         }
 
-        if (in_array($sendtype, ['suppliers', 'both']) && false === empty($this->suppliersData)) {
-            $data = [];
-            $sentEmails = [];
-            foreach ($this->suppliersData as $codproveedor => $row) {
-                $proveedor = new Proveedor();
-                if (false === $proveedor->load($codproveedor)) {
-                    continue;
-                }
-                $email = $proveedor->email;
-                if (empty($email) || isset($sentEmails[$email])) {
-                    continue;
-                }
-                $sentEmails[$email] = true;
-                $data[] = [
-                    'email' => $email,
-                    'name' => $row['proveedor'],
-                    'cifnif' => $row['cifnif'],
-                    't1' => $row['t1'],
-                    't2' => $row['t2'],
-                    't3' => $row['t3'],
-                    't4' => $row['t4'],
-                    'total' => $row['total'],
-                ];
-            }
-            if (false === empty($data)) {
-                WorkQueue::send('Modelo347.SendSuppliersEmails', $this->codejercicio, ['data' => $data, 'amount' => $this->amount]);
-            }
+        if ($queued > 0) {
+            Tools::log()->notice('347-emails-queued', ['%count%' => $queued]);
+            return;
         }
 
-        Tools::log()->info('347-emails-queued');
+        Tools::log()->warning('347-emails-none');
     }
 }
