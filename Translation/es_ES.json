@@ -22,5 +22,20 @@
     "exclude-347": "Excluir del 347",
     "exclude-irpf": "Excluir IRPF",
     "model-347": "Modelo 347",
-    "model-347-p": "El Modelo 347 es una declaración anual informativa de operaciones con terceras personas. Los empresarios y profesionales están obligados a la presentación del Modelo 347 siempre que hayan realizado operaciones con terceros por importe superior a 3.005,06 € durante el año natural (se puede cambiar la cantidad), computando de forma separada las entregas y las adquisiciones de bienes y servicios."
+    "model-347-p": "El Modelo 347 es una declaración anual informativa de operaciones con terceras personas. Los empresarios y profesionales están obligados a la presentación del Modelo 347 siempre que hayan realizado operaciones con terceros por importe superior a 3.005,06 € durante el año natural (se puede cambiar la cantidad), computando de forma separada las entregas y las adquisiciones de bienes y servicios.",
+    "---NEW---": "---------",
+    "modelo347-customers-body": "DECLARACIÓN ANUAL DE OPERACIONES CON TERCERAS PERSONAS.\n\nMuy Sres. Nuestros:\nEl próximo mes de febrero presentaremos relación de todos nuestros clientes cuya facturación haya superado la cantidad de {amount} durante el año {year}.\nHallándose Vds. incluidos en la relación que hacemos referencia, les informamos que el importe a declarar por este concepto es:\n\nDNI/NIF: {cifnif}\nNOMBRE/RAZÓN SOCIAL: {name}\n\nIMPORTE TRIMESTRAL OPERACIONES\nPrimer trimestre: {t1}\nSegundo trimestre: {t2}\nTercer trimestre: {t3}\nCuarto trimestre: {t4}\nTotal: {total}\n\nDe no recibir disconformidad por su parte antes del 20 de febrero, consideraremos que nuestra cifra es correcta.\nSin otro particular, les saludamos cordialmente.",
+    "modelo347-customers-subject": "Modelo 347 - Ejercicio {year}",
+    "modelo347-suppliers-body": "DECLARACIÓN ANUAL DE OPERACIONES CON TERCERAS PERSONAS.\n\nMuy Sres. Nuestros:\nEl próximo mes de febrero presentaremos relación de todos nuestros proveedores cuyas compras realizadas por nuestra parte hayan superado la cantidad de {amount} durante el año {year}.\nHallándose Vds. incluidos en la relación que hacemos referencia, les informamos que el importe a declarar por este concepto es:\n\nDNI/NIF: {cifnif}\nNOMBRE/RAZÓN SOCIAL: {name}\n\nIMPORTE TRIMESTRAL OPERACIONES\nPrimer trimestre: {t1}\nSegundo trimestre: {t2}\nTercer trimestre: {t3}\nCuarto trimestre: {t4}\nTotal: {total}\n\nDe no recibir disconformidad por su parte antes del 20 de febrero, consideraremos que nuestra cifra es correcta.\nSin otro particular, les saludamos cordialmente.",
+    "modelo347-suppliers-subject": "Modelo 347 - Ejercicio {year}",
+    "347-add-all": "Añadir todos los visibles",
+    "347-emails-queued-count": "Se han encolado %count% emails para su envío.",
+    "347-included": "Incluidos",
+    "347-letter-preview": "Vista previa de la carta",
+    "347-no-selected": "No hay destinatarios seleccionados con email.",
+    "347-remove-all": "Quitar todos",
+    "347-return": "Volver",
+    "347-search-help": "Separe varios términos con espacios. Use % para indicar comienza por (texto%) o termina por (%texto).",
+    "347-select-recipients": "Destinatarios del modelo 347",
+    "347-selected": "Seleccionados"
 }
